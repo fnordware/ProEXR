@@ -7,6 +7,7 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		2A4DFE7A1E1C621D009B6F29 /* cmsalpha.c in Sources */ = {isa = PBXBuildFile; fileRef = 2A4DFE791E1C621D009B6F29 /* cmsalpha.c */; };
 		2A8F80B71760373D00E03502 /* lcms2.h in Headers */ = {isa = PBXBuildFile; fileRef = 2A8F7FCA1760373D00E03502 /* lcms2.h */; };
 		2A8F80B81760373D00E03502 /* lcms2_plugin.h in Headers */ = {isa = PBXBuildFile; fileRef = 2A8F7FCB1760373D00E03502 /* lcms2_plugin.h */; };
 		2A8F80BD1760373D00E03502 /* cmscam02.c in Sources */ = {isa = PBXBuildFile; fileRef = 2A8F80571760373D00E03502 /* cmscam02.c */; };
@@ -38,6 +39,7 @@
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
+		2A4DFE791E1C621D009B6F29 /* cmsalpha.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; path = cmsalpha.c; sourceTree = "<group>"; };
 		2A8F7FCA1760373D00E03502 /* lcms2.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = lcms2.h; sourceTree = "<group>"; };
 		2A8F7FCB1760373D00E03502 /* lcms2_plugin.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = lcms2_plugin.h; sourceTree = "<group>"; };
 		2A8F80571760373D00E03502 /* cmscam02.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; path = cmscam02.c; sourceTree = "<group>"; };
@@ -119,6 +121,7 @@
 		2A8F80561760373D00E03502 /* src */ = {
 			isa = PBXGroup;
 			children = (
+				2A4DFE791E1C621D009B6F29 /* cmsalpha.c */,
 				2A8F80571760373D00E03502 /* cmscam02.c */,
 				2A8F80581760373D00E03502 /* cmscgats.c */,
 				2A8F80591760373D00E03502 /* cmscnvrt.c */,
@@ -236,6 +239,7 @@
 				2A8F80D41760373D00E03502 /* cmswtpnt.c in Sources */,
 				2A8F80D51760373D00E03502 /* cmsxform.c in Sources */,
 				2A8F82CA176064E000E03502 /* cmsio1.c in Sources */,
+				2A4DFE7A1E1C621D009B6F29 /* cmsalpha.c in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
