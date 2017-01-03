@@ -1,0 +1,10 @@
+[submodule "ext/openexr"]
+	path = ext/openexr
+	url = https://github.com/fnordware/openexr.git
+	branch = projects
+[submodule "ext/lcms"]
+	path = ext/lcms
+	url = https://github.com/mm2/Little-CMS.git
+[submodule "ext/zlib"]
+	path = ext/zlib
+	url = https://github.com/madler/zlib.git
