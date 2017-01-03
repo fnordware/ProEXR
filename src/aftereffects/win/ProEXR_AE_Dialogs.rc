@@ -1,0 +1,181 @@
+// Microsoft Visual C++ generated resource script.
+//
+#include "resource.h"
+
+#define APSTUDIO_READONLY_SYMBOLS
+/////////////////////////////////////////////////////////////////////////////
+//
+// Generated from the TEXTINCLUDE 2 resource.
+//
+#include "afxres.h"
+
+/////////////////////////////////////////////////////////////////////////////
+#undef APSTUDIO_READONLY_SYMBOLS
+
+/////////////////////////////////////////////////////////////////////////////
+// English (U.S.) resources
+
+#if !defined(AFX_RESOURCE_DLL) || defined(AFX_TARG_ENU)
+#ifdef _WIN32
+LANGUAGE LANG_ENGLISH, SUBLANG_ENGLISH_US
+#pragma code_page(1252)
+#endif //_WIN32
+
+#ifdef APSTUDIO_INVOKED
+/////////////////////////////////////////////////////////////////////////////
+//
+// TEXTINCLUDE
+//
+
+1 TEXTINCLUDE 
+BEGIN
+    "resource.h\0"
+END
+
+2 TEXTINCLUDE 
+BEGIN
+    "#include ""afxres.h""\r\n"
+    "\0"
+END
+
+3 TEXTINCLUDE 
+BEGIN
+    "\r\n"
+    "\0"
+END
+
+#endif    // APSTUDIO_INVOKED
+
+
+/////////////////////////////////////////////////////////////////////////////
+//
+// Dialog
+//
+
+OUTDIALOG DIALOGEX 0, 0, 181, 159
+STYLE DS_SETFONT | DS_MODALFRAME | DS_FIXEDSYS | DS_CENTER | WS_POPUP | WS_CAPTION | WS_SYSMENU
+CAPTION "ProEXR Options"
+FONT 8, "MS Shell Dlg", 400, 0, 0x1
+BEGIN
+    DEFPUSHBUTTON   "OK",IDOK,124,138,50,14
+    PUSHBUTTON      "Cancel",IDCANCEL,66,138,50,14
+    COMBOBOX        3,79,50,66,14,CBS_DROPDOWNLIST | WS_VSCROLL | WS_TABSTOP
+    LTEXT           "Compression",IDC_STATIC,25,50,48,12,SS_CENTERIMAGE,WS_EX_RIGHT
+    CONTROL         "BANNER1",IDC_STATIC,"Static",SS_BITMAP,7,7,15,13
+    CONTROL         "32-bit float",4,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,40,71,51,10
+    CONTROL         "Include layer composite",5,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,40,96,91,10
+    CONTROL         "Include hidden layers",6,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,40,112,84,10
+END
+
+GUIDIALOG DIALOGEX 0, 0, 380, 199
+STYLE DS_SETFONT | DS_MODALFRAME | DS_FIXEDSYS | DS_CENTER | WS_POPUP | WS_CAPTION | WS_SYSMENU
+CAPTION "ProEXR"
+FONT 8, "MS Shell Dlg", 400, 0, 0x1
+BEGIN
+    DEFPUSHBUTTON   "OK",IDOK,268,178,50,14
+    PUSHBUTTON      "Cancel",IDCANCEL,323,178,50,14
+    CONTROL         "BANNER1",IDC_STATIC,"Static",SS_BITMAP,105,7,15,13
+    EDITTEXT        3,54,45,260,14,ES_AUTOHSCROLL
+    PUSHBUTTON      "Browse...",4,319,45,50,14
+    RTEXT           "Path:",IDC_STATIC,32,47,18,8
+    GROUPBOX        "OpenEXR File Options",IDC_STATIC,200,71,148,93
+    RTEXT           "Compression:",IDC_STATIC,218,88,44,8
+    COMBOBOX        5,268,87,62,30,CBS_DROPDOWNLIST | WS_VSCROLL | WS_TABSTOP
+    CONTROL         "32-bit float",6,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,218,106,51,10
+    CONTROL         "Include layer composite",7,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,218,127,91,10
+    CONTROL         "Include hidden layers",8,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,218,139,84,10
+    RTEXT           "Time Span:",IDC_STATIC,14,75,36,8
+    COMBOBOX        9,53,73,90,30,CBS_DROPDOWNLIST | WS_VSCROLL | WS_TABSTOP
+    EDITTEXT        10,53,95,40,14,ES_AUTOHSCROLL | ES_NUMBER
+    RTEXT           "Start:",11,30,97,20,8
+    EDITTEXT        12,131,95,40,14,ES_AUTOHSCROLL | ES_NUMBER
+    RTEXT           "End:",13,113,97,16,8
+END
+
+
+/////////////////////////////////////////////////////////////////////////////
+//
+// DESIGNINFO
+//
+
+#ifdef APSTUDIO_INVOKED
+GUIDELINES DESIGNINFO 
+BEGIN
+    "OUTDIALOG", DIALOG
+    BEGIN
+        LEFTMARGIN, 7
+        RIGHTMARGIN, 174
+        TOPMARGIN, 7
+        BOTTOMMARGIN, 152
+    END
+
+    "GUIDIALOG", DIALOG
+    BEGIN
+        LEFTMARGIN, 7
+        RIGHTMARGIN, 373
+        TOPMARGIN, 7
+        BOTTOMMARGIN, 192
+    END
+END
+#endif    // APSTUDIO_INVOKED
+
+
+/////////////////////////////////////////////////////////////////////////////
+//
+// Bitmap
+//
+
+BANNER1                 BITMAP                  "ProEXR_banner.bmp"
+
+/////////////////////////////////////////////////////////////////////////////
+//
+// Version
+//
+
+VS_VERSION_INFO VERSIONINFO
+ FILEVERSION 1,6,0,0
+ PRODUCTVERSION 1,6,0,0
+ FILEFLAGSMASK 0x17L
+#ifdef _DEBUG
+ FILEFLAGS 0x1L
+#else
+ FILEFLAGS 0x0L
+#endif
+ FILEOS 0x4L
+ FILETYPE 0x2L
+ FILESUBTYPE 0x0L
+BEGIN
+    BLOCK "StringFileInfo"
+    BEGIN
+        BLOCK "040904b0"
+        BEGIN
+            VALUE "FileDescription", "ProEXR"
+            VALUE "FileVersion", "1.6"
+            VALUE "InternalName", "ProEXR"
+            VALUE "LegalCopyright", "Copyright (C) 2007-2011"
+            VALUE "OriginalFilename", "ProEXR_Dialogs.rc"
+            VALUE "ProductName", "ProEXR"
+            VALUE "ProductVersion", "1, 6, 0, 0"
+        END
+    END
+    BLOCK "VarFileInfo"
+    BEGIN
+        VALUE "Translation", 0x409, 1200
+    END
+END
+
+#endif    // English (U.S.) resources
+/////////////////////////////////////////////////////////////////////////////
+
+
+
+#ifndef APSTUDIO_INVOKED
+/////////////////////////////////////////////////////////////////////////////
+//
+// Generated from the TEXTINCLUDE 3 resource.
+//
+
+
+/////////////////////////////////////////////////////////////////////////////
+#endif    // not APSTUDIO_INVOKED
+

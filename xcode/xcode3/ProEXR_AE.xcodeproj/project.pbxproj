@@ -1,0 +1,801 @@
+// !$*UTF8*$!
+{
+	archiveVersion = 1;
+	classes = {
+	};
+	objectVersion = 42;
+	objects = {
+
+/* Begin PBXBuildFile section */
+		2A4DF4381E1B8D8F009B6F29 /* fnord_MissingSuiteError.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 2A4DF3A81E1B8D8F009B6F29 /* fnord_MissingSuiteError.cpp */; };
+		2A4DF4391E1B8D8F009B6F29 /* fnord_SuiteHandler.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 2A4DF3A91E1B8D8F009B6F29 /* fnord_SuiteHandler.cpp */; };
+		2A4DF43A1E1B8D8F009B6F29 /* ProEXR_AE_Dialogs_Cocoa.mm in Sources */ = {isa = PBXBuildFile; fileRef = 2A4DF3AC1E1B8D8F009B6F29 /* ProEXR_AE_Dialogs_Cocoa.mm */; };
+		2A4DF43B1E1B8D8F009B6F29 /* ProEXR_AE_GUI.xib in Resources */ = {isa = PBXBuildFile; fileRef = 2A4DF3AD1E1B8D8F009B6F29 /* ProEXR_AE_GUI.xib */; };
+		2A4DF43C1E1B8D8F009B6F29 /* ProEXR_AE_GUI_Controller.m in Sources */ = {isa = PBXBuildFile; fileRef = 2A4DF3AF1E1B8D8F009B6F29 /* ProEXR_AE_GUI_Controller.m */; };
+		2A4DF43D1E1B8D8F009B6F29 /* ProEXR_AE_Out.xib in Resources */ = {isa = PBXBuildFile; fileRef = 2A4DF3B01E1B8D8F009B6F29 /* ProEXR_AE_Out.xib */; };
+		2A4DF43E1E1B8D8F009B6F29 /* ProEXR_AE_Out_Controller.m in Sources */ = {isa = PBXBuildFile; fileRef = 2A4DF3B21E1B8D8F009B6F29 /* ProEXR_AE_Out_Controller.m */; };
+		2A4DF43F1E1B8D8F009B6F29 /* ProEXR_AE_Progress.xib in Resources */ = {isa = PBXBuildFile; fileRef = 2A4DF3B31E1B8D8F009B6F29 /* ProEXR_AE_Progress.xib */; };
+		2A4DF4401E1B8D8F009B6F29 /* ProEXR_AE_Progress_Controller.m in Sources */ = {isa = PBXBuildFile; fileRef = 2A4DF3B51E1B8D8F009B6F29 /* ProEXR_AE_Progress_Controller.m */; };
+		2A4DF4411E1B8D8F009B6F29 /* ProEXR_banner.png in Resources */ = {isa = PBXBuildFile; fileRef = 2A4DF3B61E1B8D8F009B6F29 /* ProEXR_banner.png */; };
+		2A4DF4441E1B8D8F009B6F29 /* ProEXR_AE.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 2A4DF3BA1E1B8D8F009B6F29 /* ProEXR_AE.cpp */; };
+		2A4DF4451E1B8D8F009B6F29 /* ProEXR_AE_FrameSeq.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 2A4DF3BD1E1B8D8F009B6F29 /* ProEXR_AE_FrameSeq.cpp */; };
+		2A4DF4461E1B8D8F009B6F29 /* ProEXR_AE_GUI.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 2A4DF3BF1E1B8D8F009B6F29 /* ProEXR_AE_GUI.cpp */; };
+		2A4DF4471E1B8D8F009B6F29 /* ProEXR_AE_PiPL.r in Rez */ = {isa = PBXBuildFile; fileRef = 2A4DF3C11E1B8D8F009B6F29 /* ProEXR_AE_PiPL.r */; };
+		2A4DF4481E1B8D8F009B6F29 /* ProEXR_AEIO.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 2A4DF3C21E1B8D8F009B6F29 /* ProEXR_AEIO.cpp */; };
+		2A4DF4491E1B8D8F009B6F29 /* ProEXR_Comp_Creator.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 2A4DF3C41E1B8D8F009B6F29 /* ProEXR_Comp_Creator.cpp */; };
+		2A4DF44B1E1B8D8F009B6F29 /* VRimg.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 2A4DF3C81E1B8D8F009B6F29 /* VRimg.cpp */; };
+		2A4DF44C1E1B8D8F009B6F29 /* VRimg_AEIO.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 2A4DF3CA1E1B8D8F009B6F29 /* VRimg_AEIO.cpp */; };
+		2A4DF44D1E1B8D8F009B6F29 /* VRimg_ChannelCache.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 2A4DF3CC1E1B8D8F009B6F29 /* VRimg_ChannelCache.cpp */; };
+		2A4DF44E1E1B8D8F009B6F29 /* VRimg_FrameSeq.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 2A4DF3CE1E1B8D8F009B6F29 /* VRimg_FrameSeq.cpp */; };
+		2A4DF4521E1B8D8F009B6F29 /* iccProfileAttribute.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 2A4DF3D61E1B8D8F009B6F29 /* iccProfileAttribute.cpp */; };
+		2A4DF4531E1B8D8F009B6F29 /* ImfHybridInputFile.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 2A4DF3D81E1B8D8F009B6F29 /* ImfHybridInputFile.cpp */; };
+		2A4DF4541E1B8D8F009B6F29 /* ProEXRdoc.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 2A4DF3DA1E1B8D8F009B6F29 /* ProEXRdoc.cpp */; };
+		2A4DF4551E1B8D8F009B6F29 /* ProEXRdoc_PS.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 2A4DF3DC1E1B8D8F009B6F29 /* ProEXRdoc_PS.cpp */; };
+		2A4DF4561E1B8D8F009B6F29 /* VRimgHeader.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 2A4DF3DF1E1B8D8F009B6F29 /* VRimgHeader.cpp */; };
+		2A4DF4571E1B8D8F009B6F29 /* VRimgInputFile.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 2A4DF3E11E1B8D8F009B6F29 /* VRimgInputFile.cpp */; };
+		2A4DF4581E1B8D8F009B6F29 /* VRimgVersion.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 2A4DF3E31E1B8D8F009B6F29 /* VRimgVersion.cpp */; };
+		2A4DF4951E1B8E39009B6F29 /* OpenEXR_PlatformIO.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 2A4DF4931E1B8E39009B6F29 /* OpenEXR_PlatformIO.cpp */; };
+		2A4DF5A31E1B927C009B6F29 /* ProEXR_UTF.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 2A4DF5A11E1B927C009B6F29 /* ProEXR_UTF.cpp */; };
+		2A4DF6081E1B9566009B6F29 /* OpenEXR_ChannelMap.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 2A4DF6061E1B9566009B6F29 /* OpenEXR_ChannelMap.cpp */; };
+		2A4DF6111E1B95B2009B6F29 /* ProEXRdoc_AE.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 2A4DF60F1E1B95B2009B6F29 /* ProEXRdoc_AE.cpp */; };
+		2A4DF6B81E1B9717009B6F29 /* libIlmBase.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 2A4DF6A21E1B96DF009B6F29 /* libIlmBase.a */; };
+		2A4DF6B91E1B9717009B6F29 /* liblcms.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 2A4DF6901E1B96C6009B6F29 /* liblcms.a */; };
+		2A4DF6BA1E1B9718009B6F29 /* libOpenEXR.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 2A4DF6B31E1B96F8009B6F29 /* libOpenEXR.a */; };
+		2A4DF6BB1E1B9719009B6F29 /* libzlib.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 2A4DF6961E1B96C6009B6F29 /* libzlib.a */; };
+		2A4DF7021E1B97A6009B6F29 /* ProEXR_AE_FrameSeq_Color.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 2A4DF7011E1B97A6009B6F29 /* ProEXR_AE_FrameSeq_Color.cpp */; };
+		2AFB31031487705F00FEBA1D /* Cocoa.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 2AFB31021487705F00FEBA1D /* Cocoa.framework */; };
+/* End PBXBuildFile section */
+
+/* Begin PBXContainerItemProxy section */
+		2A4DF68F1E1B96C6009B6F29 /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = 2A4DF6851E1B96C6009B6F29 /* lcms.xcodeproj */;
+			proxyType = 2;
+			remoteGlobalIDString = D2AAC046055464E500DB518D;
+			remoteInfo = lcms;
+		};
+		2A4DF6951E1B96C6009B6F29 /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = 2A4DF6881E1B96C6009B6F29 /* zlib.xcodeproj */;
+			proxyType = 2;
+			remoteGlobalIDString = D2AAC046055464E500DB518D;
+			remoteInfo = zlib;
+		};
+		2A4DF6A11E1B96DF009B6F29 /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = 2A4DF6971E1B96DF009B6F29 /* IlmBase.xcodeproj */;
+			proxyType = 2;
+			remoteGlobalIDString = 2A6D4C4D15CDEB0A006BADE7;
+			remoteInfo = IlmBase;
+		};
+		2A4DF6A31E1B96DF009B6F29 /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = 2A4DF6971E1B96DF009B6F29 /* IlmBase.xcodeproj */;
+			proxyType = 2;
+			remoteGlobalIDString = 2A6D4CFF15CDEBEF006BADE7;
+			remoteInfo = eLut;
+		};
+		2A4DF6A51E1B96DF009B6F29 /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = 2A4DF6971E1B96DF009B6F29 /* IlmBase.xcodeproj */;
+			proxyType = 2;
+			remoteGlobalIDString = 2A6D4D3715CDF275006BADE7;
+			remoteInfo = toFloat;
+		};
+		2A4DF6B21E1B96F8009B6F29 /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = 2A4DF6A71E1B96F7009B6F29 /* OpenEXR.xcodeproj */;
+			proxyType = 2;
+			remoteGlobalIDString = 2A6D4B1515CDE3DE006BADE7;
+			remoteInfo = OpenEXR;
+		};
+		2A4DF6B41E1B96F8009B6F29 /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = 2A4DF6A71E1B96F7009B6F29 /* OpenEXR.xcodeproj */;
+			proxyType = 2;
+			remoteGlobalIDString = 2A588C1A19787559000D94D0;
+			remoteInfo = b44ExpLogTable;
+		};
+		2A4DF6B61E1B96F8009B6F29 /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = 2A4DF6A71E1B96F7009B6F29 /* OpenEXR.xcodeproj */;
+			proxyType = 2;
+			remoteGlobalIDString = 2A588C3C197875C2000D94D0;
+			remoteInfo = dwaLookups;
+		};
+		2A4DF6BC1E1B9724009B6F29 /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = 2A4DF6851E1B96C6009B6F29 /* lcms.xcodeproj */;
+			proxyType = 1;
+			remoteGlobalIDString = D2AAC045055464E500DB518D;
+			remoteInfo = lcms;
+		};
+		2A4DF6BE1E1B9724009B6F29 /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = 2A4DF6881E1B96C6009B6F29 /* zlib.xcodeproj */;
+			proxyType = 1;
+			remoteGlobalIDString = D2AAC045055464E500DB518D;
+			remoteInfo = zlib;
+		};
+		2A4DF6C01E1B9724009B6F29 /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = 2A4DF6971E1B96DF009B6F29 /* IlmBase.xcodeproj */;
+			proxyType = 1;
+			remoteGlobalIDString = 2A6D4C4C15CDEB0A006BADE7;
+			remoteInfo = IlmBase;
+		};
+		2A4DF6C21E1B9724009B6F29 /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = 2A4DF6A71E1B96F7009B6F29 /* OpenEXR.xcodeproj */;
+			proxyType = 1;
+			remoteGlobalIDString = 2A6D4B1415CDE3DE006BADE7;
+			remoteInfo = OpenEXR;
+		};
+/* End PBXContainerItemProxy section */
+
+/* Begin PBXFileReference section */
+		2A4DF3A81E1B8D8F009B6F29 /* fnord_MissingSuiteError.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = fnord_MissingSuiteError.cpp; sourceTree = "<group>"; };
+		2A4DF3A91E1B8D8F009B6F29 /* fnord_SuiteHandler.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = fnord_SuiteHandler.cpp; sourceTree = "<group>"; };
+		2A4DF3AA1E1B8D8F009B6F29 /* fnord_SuiteHandler.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = fnord_SuiteHandler.h; sourceTree = "<group>"; };
+		2A4DF3AC1E1B8D8F009B6F29 /* ProEXR_AE_Dialogs_Cocoa.mm */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.objcpp; path = ProEXR_AE_Dialogs_Cocoa.mm; sourceTree = "<group>"; };
+		2A4DF3AD1E1B8D8F009B6F29 /* ProEXR_AE_GUI.xib */ = {isa = PBXFileReference; lastKnownFileType = file.xib; path = ProEXR_AE_GUI.xib; sourceTree = "<group>"; };
+		2A4DF3AE1E1B8D8F009B6F29 /* ProEXR_AE_GUI_Controller.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ProEXR_AE_GUI_Controller.h; sourceTree = "<group>"; };
+		2A4DF3AF1E1B8D8F009B6F29 /* ProEXR_AE_GUI_Controller.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = ProEXR_AE_GUI_Controller.m; sourceTree = "<group>"; };
+		2A4DF3B01E1B8D8F009B6F29 /* ProEXR_AE_Out.xib */ = {isa = PBXFileReference; lastKnownFileType = file.xib; path = ProEXR_AE_Out.xib; sourceTree = "<group>"; };
+		2A4DF3B11E1B8D8F009B6F29 /* ProEXR_AE_Out_Controller.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ProEXR_AE_Out_Controller.h; sourceTree = "<group>"; };
+		2A4DF3B21E1B8D8F009B6F29 /* ProEXR_AE_Out_Controller.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = ProEXR_AE_Out_Controller.m; sourceTree = "<group>"; };
+		2A4DF3B31E1B8D8F009B6F29 /* ProEXR_AE_Progress.xib */ = {isa = PBXFileReference; lastKnownFileType = file.xib; path = ProEXR_AE_Progress.xib; sourceTree = "<group>"; };
+		2A4DF3B41E1B8D8F009B6F29 /* ProEXR_AE_Progress_Controller.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ProEXR_AE_Progress_Controller.h; sourceTree = "<group>"; };
+		2A4DF3B51E1B8D8F009B6F29 /* ProEXR_AE_Progress_Controller.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = ProEXR_AE_Progress_Controller.m; sourceTree = "<group>"; };
+		2A4DF3B61E1B8D8F009B6F29 /* ProEXR_banner.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = ProEXR_banner.png; sourceTree = "<group>"; };
+		2A4DF3BA1E1B8D8F009B6F29 /* ProEXR_AE.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = ProEXR_AE.cpp; sourceTree = "<group>"; };
+		2A4DF3BB1E1B8D8F009B6F29 /* ProEXR_AE.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ProEXR_AE.h; sourceTree = "<group>"; };
+		2A4DF3BC1E1B8D8F009B6F29 /* ProEXR_AE_Dialogs.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ProEXR_AE_Dialogs.h; sourceTree = "<group>"; };
+		2A4DF3BD1E1B8D8F009B6F29 /* ProEXR_AE_FrameSeq.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = ProEXR_AE_FrameSeq.cpp; sourceTree = "<group>"; };
+		2A4DF3BE1E1B8D8F009B6F29 /* ProEXR_AE_FrameSeq.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ProEXR_AE_FrameSeq.h; sourceTree = "<group>"; };
+		2A4DF3BF1E1B8D8F009B6F29 /* ProEXR_AE_GUI.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = ProEXR_AE_GUI.cpp; sourceTree = "<group>"; };
+		2A4DF3C01E1B8D8F009B6F29 /* ProEXR_AE_GUI.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ProEXR_AE_GUI.h; sourceTree = "<group>"; };
+		2A4DF3C11E1B8D8F009B6F29 /* ProEXR_AE_PiPL.r */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.rez; path = ProEXR_AE_PiPL.r; sourceTree = "<group>"; };
+		2A4DF3C21E1B8D8F009B6F29 /* ProEXR_AEIO.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = ProEXR_AEIO.cpp; sourceTree = "<group>"; };
+		2A4DF3C31E1B8D8F009B6F29 /* ProEXR_AEIO.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ProEXR_AEIO.h; sourceTree = "<group>"; };
+		2A4DF3C41E1B8D8F009B6F29 /* ProEXR_Comp_Creator.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = ProEXR_Comp_Creator.cpp; sourceTree = "<group>"; };
+		2A4DF3C51E1B8D8F009B6F29 /* ProEXR_Comp_Creator.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ProEXR_Comp_Creator.h; sourceTree = "<group>"; };
+		2A4DF3C81E1B8D8F009B6F29 /* VRimg.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = VRimg.cpp; sourceTree = "<group>"; };
+		2A4DF3C91E1B8D8F009B6F29 /* VRimg.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = VRimg.h; sourceTree = "<group>"; };
+		2A4DF3CA1E1B8D8F009B6F29 /* VRimg_AEIO.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = VRimg_AEIO.cpp; sourceTree = "<group>"; };
+		2A4DF3CB1E1B8D8F009B6F29 /* VRimg_AEIO.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = VRimg_AEIO.h; sourceTree = "<group>"; };
+		2A4DF3CC1E1B8D8F009B6F29 /* VRimg_ChannelCache.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = VRimg_ChannelCache.cpp; sourceTree = "<group>"; };
+		2A4DF3CD1E1B8D8F009B6F29 /* VRimg_ChannelCache.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = VRimg_ChannelCache.h; sourceTree = "<group>"; };
+		2A4DF3CE1E1B8D8F009B6F29 /* VRimg_FrameSeq.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = VRimg_FrameSeq.cpp; sourceTree = "<group>"; };
+		2A4DF3CF1E1B8D8F009B6F29 /* VRimg_FrameSeq.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = VRimg_FrameSeq.h; sourceTree = "<group>"; };
+		2A4DF3D61E1B8D8F009B6F29 /* iccProfileAttribute.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = iccProfileAttribute.cpp; sourceTree = "<group>"; };
+		2A4DF3D71E1B8D8F009B6F29 /* iccProfileAttribute.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = iccProfileAttribute.h; sourceTree = "<group>"; };
+		2A4DF3D81E1B8D8F009B6F29 /* ImfHybridInputFile.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = ImfHybridInputFile.cpp; sourceTree = "<group>"; };
+		2A4DF3D91E1B8D8F009B6F29 /* ImfHybridInputFile.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ImfHybridInputFile.h; sourceTree = "<group>"; };
+		2A4DF3DA1E1B8D8F009B6F29 /* ProEXRdoc.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = ProEXRdoc.cpp; sourceTree = "<group>"; };
+		2A4DF3DB1E1B8D8F009B6F29 /* ProEXRdoc.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ProEXRdoc.h; sourceTree = "<group>"; };
+		2A4DF3DC1E1B8D8F009B6F29 /* ProEXRdoc_PS.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = ProEXRdoc_PS.cpp; sourceTree = "<group>"; };
+		2A4DF3DD1E1B8D8F009B6F29 /* ProEXRdoc_PS.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ProEXRdoc_PS.h; sourceTree = "<group>"; };
+		2A4DF3DF1E1B8D8F009B6F29 /* VRimgHeader.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = VRimgHeader.cpp; sourceTree = "<group>"; };
+		2A4DF3E01E1B8D8F009B6F29 /* VRimgHeader.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = VRimgHeader.h; sourceTree = "<group>"; };
+		2A4DF3E11E1B8D8F009B6F29 /* VRimgInputFile.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = VRimgInputFile.cpp; sourceTree = "<group>"; };
+		2A4DF3E21E1B8D8F009B6F29 /* VRimgInputFile.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = VRimgInputFile.h; sourceTree = "<group>"; };
+		2A4DF3E31E1B8D8F009B6F29 /* VRimgVersion.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = VRimgVersion.cpp; sourceTree = "<group>"; };
+		2A4DF3E41E1B8D8F009B6F29 /* VRimgVersion.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = VRimgVersion.h; sourceTree = "<group>"; };
+		2A4DF3E51E1B8D8F009B6F29 /* VRimgXdr.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = VRimgXdr.h; sourceTree = "<group>"; };
+		2A4DF4931E1B8E39009B6F29 /* OpenEXR_PlatformIO.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = OpenEXR_PlatformIO.cpp; sourceTree = "<group>"; };
+		2A4DF4941E1B8E39009B6F29 /* OpenEXR_PlatformIO.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = OpenEXR_PlatformIO.h; sourceTree = "<group>"; };
+		2A4DF5A11E1B927C009B6F29 /* ProEXR_UTF.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = ProEXR_UTF.cpp; sourceTree = "<group>"; };
+		2A4DF5A21E1B927C009B6F29 /* ProEXR_UTF.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ProEXR_UTF.h; sourceTree = "<group>"; };
+		2A4DF6061E1B9566009B6F29 /* OpenEXR_ChannelMap.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = OpenEXR_ChannelMap.cpp; sourceTree = "<group>"; };
+		2A4DF6071E1B9566009B6F29 /* OpenEXR_ChannelMap.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = OpenEXR_ChannelMap.h; sourceTree = "<group>"; };
+		2A4DF60F1E1B95B2009B6F29 /* ProEXRdoc_AE.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = ProEXRdoc_AE.cpp; sourceTree = "<group>"; };
+		2A4DF6101E1B95B2009B6F29 /* ProEXRdoc_AE.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ProEXRdoc_AE.h; sourceTree = "<group>"; };
+		2A4DF6851E1B96C6009B6F29 /* lcms.xcodeproj */ = {isa = PBXFileReference; lastKnownFileType = "wrapper.pb-project"; name = lcms.xcodeproj; path = ext/lcms.xcodeproj; sourceTree = "<group>"; };
+		2A4DF6881E1B96C6009B6F29 /* zlib.xcodeproj */ = {isa = PBXFileReference; lastKnownFileType = "wrapper.pb-project"; name = zlib.xcodeproj; path = ext/zlib.xcodeproj; sourceTree = "<group>"; };
+		2A4DF6971E1B96DF009B6F29 /* IlmBase.xcodeproj */ = {isa = PBXFileReference; lastKnownFileType = "wrapper.pb-project"; name = IlmBase.xcodeproj; path = ../../ext/openexr/IlmBase/xcode/xcode3/IlmBase.xcodeproj; sourceTree = SOURCE_ROOT; };
+		2A4DF69A1E1B96DF009B6F29 /* IlmBaseConfig.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = IlmBaseConfig.h; path = ../../ext/openexr/IlmBase/xcode/xcode3/IlmBaseConfig.h; sourceTree = SOURCE_ROOT; };
+		2A4DF6A71E1B96F7009B6F29 /* OpenEXR.xcodeproj */ = {isa = PBXFileReference; lastKnownFileType = "wrapper.pb-project"; name = OpenEXR.xcodeproj; path = ../../ext/openexr/OpenEXR/xcode/xcode3/OpenEXR.xcodeproj; sourceTree = SOURCE_ROOT; };
+		2A4DF6AA1E1B96F7009B6F29 /* OpenEXRConfig.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = OpenEXRConfig.h; path = ../../ext/openexr/OpenEXR/xcode/xcode3/OpenEXRConfig.h; sourceTree = SOURCE_ROOT; };
+		2A4DF7011E1B97A6009B6F29 /* ProEXR_AE_FrameSeq_Color.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = ProEXR_AE_FrameSeq_Color.cpp; sourceTree = "<group>"; };
+		2AFB302614876E2D00FEBA1D /* ASConfig.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ASConfig.h; sourceTree = "<group>"; };
+		2AFB302714876E2D00FEBA1D /* ASPragma.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ASPragma.h; sourceTree = "<group>"; };
+		2AFB302814876E2D00FEBA1D /* ASPreInclude.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ASPreInclude.h; sourceTree = "<group>"; };
+		2AFB302914876E2D00FEBA1D /* ASTypes.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ASTypes.h; sourceTree = "<group>"; };
+		2AFB302A14876E2D00FEBA1D /* ASZStringSuite.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ASZStringSuite.h; sourceTree = "<group>"; };
+		2AFB302B14876E2D00FEBA1D /* PI3D.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = PI3D.h; sourceTree = "<group>"; };
+		2AFB302C14876E2D00FEBA1D /* PIAbout.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = PIAbout.h; sourceTree = "<group>"; };
+		2AFB302D14876E2D00FEBA1D /* PIAcquire.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = PIAcquire.h; sourceTree = "<group>"; };
+		2AFB302E14876E2D00FEBA1D /* PIActions.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = PIActions.h; sourceTree = "<group>"; };
+		2AFB302F14876E2D00FEBA1D /* PIActionsPlugin.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = PIActionsPlugin.h; sourceTree = "<group>"; };
+		2AFB303014876E2D00FEBA1D /* PIAliasSuite.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = PIAliasSuite.h; sourceTree = "<group>"; };
+		2AFB303114876E2D00FEBA1D /* PIBufferSuite.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = PIBufferSuite.h; sourceTree = "<group>"; };
+		2AFB303214876E2D00FEBA1D /* PIChannelPortOperations.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = PIChannelPortOperations.h; sourceTree = "<group>"; };
+		2AFB303314876E2D00FEBA1D /* PIChannelPortsSuite.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = PIChannelPortsSuite.h; sourceTree = "<group>"; };
+		2AFB303414876E2D00FEBA1D /* PIColorSpaceSuite.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = PIColorSpaceSuite.h; sourceTree = "<group>"; };
+		2AFB303514876E2D00FEBA1D /* PIErrorSuite.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = PIErrorSuite.h; sourceTree = "<group>"; };
+		2AFB303614876E2D00FEBA1D /* PIExport.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = PIExport.h; sourceTree = "<group>"; };
+		2AFB303714876E2D00FEBA1D /* PIFeatureSuite.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = PIFeatureSuite.h; sourceTree = "<group>"; };
+		2AFB303814876E2D00FEBA1D /* PIFilter.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = PIFilter.h; sourceTree = "<group>"; };
+		2AFB303914876E2D00FEBA1D /* PIFormat.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = PIFormat.h; sourceTree = "<group>"; };
+		2AFB303A14876E2D00FEBA1D /* PIGeneral.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = PIGeneral.h; sourceTree = "<group>"; };
+		2AFB303B14876E2D00FEBA1D /* PIGetFileListSuite.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = PIGetFileListSuite.h; sourceTree = "<group>"; };
+		2AFB303C14876E2D00FEBA1D /* PIGetPathSuite.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = PIGetPathSuite.h; sourceTree = "<group>"; };
+		2AFB303D14876E2D00FEBA1D /* PIHandleSuite.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = PIHandleSuite.h; sourceTree = "<group>"; };
+		2AFB303E14876E2D00FEBA1D /* PIMeasurement.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = PIMeasurement.h; sourceTree = "<group>"; };
+		2AFB303F14876E2D00FEBA1D /* PIPatternsSuite.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = PIPatternsSuite.h; sourceTree = "<group>"; };
+		2AFB304014876E2D00FEBA1D /* PIPicker.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = PIPicker.h; sourceTree = "<group>"; };
+		2AFB304114876E2D00FEBA1D /* PIProgressSuite.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = PIProgressSuite.h; sourceTree = "<group>"; };
+		2AFB304214876E2D00FEBA1D /* PIProperties.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = PIProperties.h; sourceTree = "<group>"; };
+		2AFB304314876E2D00FEBA1D /* PIResDefines.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = PIResDefines.h; sourceTree = "<group>"; };
+		2AFB304414876E2D00FEBA1D /* PISelection.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = PISelection.h; sourceTree = "<group>"; };
+		2AFB304514876E2D00FEBA1D /* PIStringTerminology.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = PIStringTerminology.h; sourceTree = "<group>"; };
+		2AFB304614876E2D00FEBA1D /* PITerminology.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = PITerminology.h; sourceTree = "<group>"; };
+		2AFB304714876E2D00FEBA1D /* PITypes.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = PITypes.h; sourceTree = "<group>"; };
+		2AFB304814876E2D00FEBA1D /* PIUIHooksSuite.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = PIUIHooksSuite.h; sourceTree = "<group>"; };
+		2AFB304914876E2D00FEBA1D /* PSErrorDefines.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = PSErrorDefines.h; sourceTree = "<group>"; };
+		2AFB31021487705F00FEBA1D /* Cocoa.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Cocoa.framework; path = System/Library/Frameworks/Cocoa.framework; sourceTree = SDKROOT; };
+		C4E618CC095A3CE80012CA3F /* ProEXR AE.plugin */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = "ProEXR AE.plugin"; sourceTree = BUILT_PRODUCTS_DIR; };
+/* End PBXFileReference section */
+
+/* Begin PBXFrameworksBuildPhase section */
+		C4E618CA095A3CE80012CA3F /* Frameworks */ = {
+			isa = PBXFrameworksBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				2AFB31031487705F00FEBA1D /* Cocoa.framework in Frameworks */,
+				2A4DF6B81E1B9717009B6F29 /* libIlmBase.a in Frameworks */,
+				2A4DF6B91E1B9717009B6F29 /* liblcms.a in Frameworks */,
+				2A4DF6BA1E1B9718009B6F29 /* libOpenEXR.a in Frameworks */,
+				2A4DF6BB1E1B9719009B6F29 /* libzlib.a in Frameworks */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXFrameworksBuildPhase section */
+
+/* Begin PBXGroup section */
+		2A4DF3A31E1B8D8F009B6F29 /* src */ = {
+			isa = PBXGroup;
+			children = (
+				2A4DF3A41E1B8D8F009B6F29 /* aftereffects */,
+				2A4DF3D51E1B8D8F009B6F29 /* common */,
+			);
+			name = src;
+			path = ../../src;
+			sourceTree = SOURCE_ROOT;
+		};
+		2A4DF3A41E1B8D8F009B6F29 /* aftereffects */ = {
+			isa = PBXGroup;
+			children = (
+				2A4DF3A81E1B8D8F009B6F29 /* fnord_MissingSuiteError.cpp */,
+				2A4DF3A91E1B8D8F009B6F29 /* fnord_SuiteHandler.cpp */,
+				2A4DF3AA1E1B8D8F009B6F29 /* fnord_SuiteHandler.h */,
+				2A4DF3AB1E1B8D8F009B6F29 /* mac */,
+				2A4DF6061E1B9566009B6F29 /* OpenEXR_ChannelMap.cpp */,
+				2A4DF6071E1B9566009B6F29 /* OpenEXR_ChannelMap.h */,
+				2A4DF4931E1B8E39009B6F29 /* OpenEXR_PlatformIO.cpp */,
+				2A4DF4941E1B8E39009B6F29 /* OpenEXR_PlatformIO.h */,
+				2A4DF3BA1E1B8D8F009B6F29 /* ProEXR_AE.cpp */,
+				2A4DF3BB1E1B8D8F009B6F29 /* ProEXR_AE.h */,
+				2A4DF3BC1E1B8D8F009B6F29 /* ProEXR_AE_Dialogs.h */,
+				2A4DF7011E1B97A6009B6F29 /* ProEXR_AE_FrameSeq_Color.cpp */,
+				2A4DF3BD1E1B8D8F009B6F29 /* ProEXR_AE_FrameSeq.cpp */,
+				2A4DF3BE1E1B8D8F009B6F29 /* ProEXR_AE_FrameSeq.h */,
+				2A4DF3BF1E1B8D8F009B6F29 /* ProEXR_AE_GUI.cpp */,
+				2A4DF3C01E1B8D8F009B6F29 /* ProEXR_AE_GUI.h */,
+				2A4DF3C11E1B8D8F009B6F29 /* ProEXR_AE_PiPL.r */,
+				2A4DF3C21E1B8D8F009B6F29 /* ProEXR_AEIO.cpp */,
+				2A4DF3C31E1B8D8F009B6F29 /* ProEXR_AEIO.h */,
+				2A4DF3C41E1B8D8F009B6F29 /* ProEXR_Comp_Creator.cpp */,
+				2A4DF3C51E1B8D8F009B6F29 /* ProEXR_Comp_Creator.h */,
+				2A4DF60F1E1B95B2009B6F29 /* ProEXRdoc_AE.cpp */,
+				2A4DF6101E1B95B2009B6F29 /* ProEXRdoc_AE.h */,
+				2A4DF3C81E1B8D8F009B6F29 /* VRimg.cpp */,
+				2A4DF3C91E1B8D8F009B6F29 /* VRimg.h */,
+				2A4DF3CA1E1B8D8F009B6F29 /* VRimg_AEIO.cpp */,
+				2A4DF3CB1E1B8D8F009B6F29 /* VRimg_AEIO.h */,
+				2A4DF3CC1E1B8D8F009B6F29 /* VRimg_ChannelCache.cpp */,
+				2A4DF3CD1E1B8D8F009B6F29 /* VRimg_ChannelCache.h */,
+				2A4DF3CE1E1B8D8F009B6F29 /* VRimg_FrameSeq.cpp */,
+				2A4DF3CF1E1B8D8F009B6F29 /* VRimg_FrameSeq.h */,
+			);
+			path = aftereffects;
+			sourceTree = "<group>";
+		};
+		2A4DF3AB1E1B8D8F009B6F29 /* mac */ = {
+			isa = PBXGroup;
+			children = (
+				2A4DF3AC1E1B8D8F009B6F29 /* ProEXR_AE_Dialogs_Cocoa.mm */,
+				2A4DF3AD1E1B8D8F009B6F29 /* ProEXR_AE_GUI.xib */,
+				2A4DF3AE1E1B8D8F009B6F29 /* ProEXR_AE_GUI_Controller.h */,
+				2A4DF3AF1E1B8D8F009B6F29 /* ProEXR_AE_GUI_Controller.m */,
+				2A4DF3B01E1B8D8F009B6F29 /* ProEXR_AE_Out.xib */,
+				2A4DF3B11E1B8D8F009B6F29 /* ProEXR_AE_Out_Controller.h */,
+				2A4DF3B21E1B8D8F009B6F29 /* ProEXR_AE_Out_Controller.m */,
+				2A4DF3B31E1B8D8F009B6F29 /* ProEXR_AE_Progress.xib */,
+				2A4DF3B41E1B8D8F009B6F29 /* ProEXR_AE_Progress_Controller.h */,
+				2A4DF3B51E1B8D8F009B6F29 /* ProEXR_AE_Progress_Controller.m */,
+				2A4DF3B61E1B8D8F009B6F29 /* ProEXR_banner.png */,
+			);
+			path = mac;
+			sourceTree = "<group>";
+		};
+		2A4DF3D51E1B8D8F009B6F29 /* common */ = {
+			isa = PBXGroup;
+			children = (
+				2A4DF3D61E1B8D8F009B6F29 /* iccProfileAttribute.cpp */,
+				2A4DF3D71E1B8D8F009B6F29 /* iccProfileAttribute.h */,
+				2A4DF3D81E1B8D8F009B6F29 /* ImfHybridInputFile.cpp */,
+				2A4DF3D91E1B8D8F009B6F29 /* ImfHybridInputFile.h */,
+				2A4DF5A11E1B927C009B6F29 /* ProEXR_UTF.cpp */,
+				2A4DF5A21E1B927C009B6F29 /* ProEXR_UTF.h */,
+				2A4DF3DA1E1B8D8F009B6F29 /* ProEXRdoc.cpp */,
+				2A4DF3DB1E1B8D8F009B6F29 /* ProEXRdoc.h */,
+				2A4DF3DC1E1B8D8F009B6F29 /* ProEXRdoc_PS.cpp */,
+				2A4DF3DD1E1B8D8F009B6F29 /* ProEXRdoc_PS.h */,
+				2A4DF3DE1E1B8D8F009B6F29 /* VRimg */,
+			);
+			path = common;
+			sourceTree = "<group>";
+		};
+		2A4DF3DE1E1B8D8F009B6F29 /* VRimg */ = {
+			isa = PBXGroup;
+			children = (
+				2A4DF3DF1E1B8D8F009B6F29 /* VRimgHeader.cpp */,
+				2A4DF3E01E1B8D8F009B6F29 /* VRimgHeader.h */,
+				2A4DF3E11E1B8D8F009B6F29 /* VRimgInputFile.cpp */,
+				2A4DF3E21E1B8D8F009B6F29 /* VRimgInputFile.h */,
+				2A4DF3E31E1B8D8F009B6F29 /* VRimgVersion.cpp */,
+				2A4DF3E41E1B8D8F009B6F29 /* VRimgVersion.h */,
+				2A4DF3E51E1B8D8F009B6F29 /* VRimgXdr.h */,
+			);
+			path = VRimg;
+			sourceTree = "<group>";
+		};
+		2A4DF6861E1B96C6009B6F29 /* Products */ = {
+			isa = PBXGroup;
+			children = (
+				2A4DF6901E1B96C6009B6F29 /* liblcms.a */,
+			);
+			name = Products;
+			sourceTree = "<group>";
+		};
+		2A4DF6891E1B96C6009B6F29 /* Products */ = {
+			isa = PBXGroup;
+			children = (
+				2A4DF6961E1B96C6009B6F29 /* libzlib.a */,
+			);
+			name = Products;
+			sourceTree = "<group>";
+		};
+		2A4DF6981E1B96DF009B6F29 /* Products */ = {
+			isa = PBXGroup;
+			children = (
+				2A4DF6A21E1B96DF009B6F29 /* libIlmBase.a */,
+				2A4DF6A41E1B96DF009B6F29 /* eLut */,
+				2A4DF6A61E1B96DF009B6F29 /* toFloat */,
+			);
+			name = Products;
+			sourceTree = "<group>";
+		};
+		2A4DF6A81E1B96F7009B6F29 /* Products */ = {
+			isa = PBXGroup;
+			children = (
+				2A4DF6B31E1B96F8009B6F29 /* libOpenEXR.a */,
+				2A4DF6B51E1B96F8009B6F29 /* b44ExpLogTable */,
+				2A4DF6B71E1B96F8009B6F29 /* dwaLookups */,
+			);
+			name = Products;
+			sourceTree = "<group>";
+		};
+		2AFB302514876E2D00FEBA1D /* photoshop */ = {
+			isa = PBXGroup;
+			children = (
+				2AFB302614876E2D00FEBA1D /* ASConfig.h */,
+				2AFB302714876E2D00FEBA1D /* ASPragma.h */,
+				2AFB302814876E2D00FEBA1D /* ASPreInclude.h */,
+				2AFB302914876E2D00FEBA1D /* ASTypes.h */,
+				2AFB302A14876E2D00FEBA1D /* ASZStringSuite.h */,
+				2AFB302B14876E2D00FEBA1D /* PI3D.h */,
+				2AFB302C14876E2D00FEBA1D /* PIAbout.h */,
+				2AFB302D14876E2D00FEBA1D /* PIAcquire.h */,
+				2AFB302E14876E2D00FEBA1D /* PIActions.h */,
+				2AFB302F14876E2D00FEBA1D /* PIActionsPlugin.h */,
+				2AFB303014876E2D00FEBA1D /* PIAliasSuite.h */,
+				2AFB303114876E2D00FEBA1D /* PIBufferSuite.h */,
+				2AFB303214876E2D00FEBA1D /* PIChannelPortOperations.h */,
+				2AFB303314876E2D00FEBA1D /* PIChannelPortsSuite.h */,
+				2AFB303414876E2D00FEBA1D /* PIColorSpaceSuite.h */,
+				2AFB303514876E2D00FEBA1D /* PIErrorSuite.h */,
+				2AFB303614876E2D00FEBA1D /* PIExport.h */,
+				2AFB303714876E2D00FEBA1D /* PIFeatureSuite.h */,
+				2AFB303814876E2D00FEBA1D /* PIFilter.h */,
+				2AFB303914876E2D00FEBA1D /* PIFormat.h */,
+				2AFB303A14876E2D00FEBA1D /* PIGeneral.h */,
+				2AFB303B14876E2D00FEBA1D /* PIGetFileListSuite.h */,
+				2AFB303C14876E2D00FEBA1D /* PIGetPathSuite.h */,
+				2AFB303D14876E2D00FEBA1D /* PIHandleSuite.h */,
+				2AFB303E14876E2D00FEBA1D /* PIMeasurement.h */,
+				2AFB303F14876E2D00FEBA1D /* PIPatternsSuite.h */,
+				2AFB304014876E2D00FEBA1D /* PIPicker.h */,
+				2AFB304114876E2D00FEBA1D /* PIProgressSuite.h */,
+				2AFB304214876E2D00FEBA1D /* PIProperties.h */,
+				2AFB304314876E2D00FEBA1D /* PIResDefines.h */,
+				2AFB304414876E2D00FEBA1D /* PISelection.h */,
+				2AFB304514876E2D00FEBA1D /* PIStringTerminology.h */,
+				2AFB304614876E2D00FEBA1D /* PITerminology.h */,
+				2AFB304714876E2D00FEBA1D /* PITypes.h */,
+				2AFB304814876E2D00FEBA1D /* PIUIHooksSuite.h */,
+				2AFB304914876E2D00FEBA1D /* PSErrorDefines.h */,
+			);
+			name = photoshop;
+			path = ../../ext/adobe_photoshop_cs5_sdk_mac/pluginsdk/photoshopapi/photoshop;
+			sourceTree = SOURCE_ROOT;
+		};
+		C4E6187C095A3C800012CA3F = {
+			isa = PBXGroup;
+			children = (
+				2A4DF3A31E1B8D8F009B6F29 /* src */,
+				2A4DF6A71E1B96F7009B6F29 /* OpenEXR.xcodeproj */,
+				2A4DF6AA1E1B96F7009B6F29 /* OpenEXRConfig.h */,
+				2A4DF6971E1B96DF009B6F29 /* IlmBase.xcodeproj */,
+				2A4DF69A1E1B96DF009B6F29 /* IlmBaseConfig.h */,
+				2A4DF6851E1B96C6009B6F29 /* lcms.xcodeproj */,
+				2A4DF6881E1B96C6009B6F29 /* zlib.xcodeproj */,
+				2AFB302514876E2D00FEBA1D /* photoshop */,
+				C4E6188C095A3C800012CA3F /* Products */,
+				2AFB31021487705F00FEBA1D /* Cocoa.framework */,
+			);
+			comments = "SDK Backwards is some pretty rudimentary audio processing, but the flags and params are handled in an appropriate manner.";
+			sourceTree = "<group>";
+		};
+		C4E6188C095A3C800012CA3F /* Products */ = {
+			isa = PBXGroup;
+			children = (
+				C4E618CC095A3CE80012CA3F /* ProEXR AE.plugin */,
+			);
+			name = Products;
+			sourceTree = "<group>";
+		};
+/* End PBXGroup section */
+
+/* Begin PBXNativeTarget section */
+		C4E618CB095A3CE80012CA3F /* ProEXR AE */ = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = C4E618CE095A3CE90012CA3F /* Build configuration list for PBXNativeTarget "ProEXR AE" */;
+			buildPhases = (
+				C4E618C8095A3CE80012CA3F /* Resources */,
+				C4E618C9095A3CE80012CA3F /* Sources */,
+				C4E618CA095A3CE80012CA3F /* Frameworks */,
+				C4E618EA095A3E040012CA3F /* Rez */,
+			);
+			buildRules = (
+			);
+			dependencies = (
+				2A4DF6BD1E1B9724009B6F29 /* PBXTargetDependency */,
+				2A4DF6BF1E1B9724009B6F29 /* PBXTargetDependency */,
+				2A4DF6C11E1B9724009B6F29 /* PBXTargetDependency */,
+				2A4DF6C31E1B9724009B6F29 /* PBXTargetDependency */,
+			);
+			name = "ProEXR AE";
+			productName = SDK_Backwards.plugin;
+			productReference = C4E618CC095A3CE80012CA3F /* ProEXR AE.plugin */;
+			productType = "com.apple.product-type.bundle";
+		};
+/* End PBXNativeTarget section */
+
+/* Begin PBXProject section */
+		C4E6187E095A3C800012CA3F /* Project object */ = {
+			isa = PBXProject;
+			buildConfigurationList = C4E6187F095A3C800012CA3F /* Build configuration list for PBXProject "ProEXR_AE" */;
+			compatibilityVersion = "Xcode 2.4";
+			developmentRegion = English;
+			hasScannedForEncodings = 0;
+			knownRegions = (
+				English,
+				Japanese,
+				French,
+				German,
+			);
+			mainGroup = C4E6187C095A3C800012CA3F;
+			productRefGroup = C4E6188C095A3C800012CA3F /* Products */;
+			projectDirPath = "";
+			projectReferences = (
+				{
+					ProductGroup = 2A4DF6981E1B96DF009B6F29 /* Products */;
+					ProjectRef = 2A4DF6971E1B96DF009B6F29 /* IlmBase.xcodeproj */;
+				},
+				{
+					ProductGroup = 2A4DF6861E1B96C6009B6F29 /* Products */;
+					ProjectRef = 2A4DF6851E1B96C6009B6F29 /* lcms.xcodeproj */;
+				},
+				{
+					ProductGroup = 2A4DF6A81E1B96F7009B6F29 /* Products */;
+					ProjectRef = 2A4DF6A71E1B96F7009B6F29 /* OpenEXR.xcodeproj */;
+				},
+				{
+					ProductGroup = 2A4DF6891E1B96C6009B6F29 /* Products */;
+					ProjectRef = 2A4DF6881E1B96C6009B6F29 /* zlib.xcodeproj */;
+				},
+			);
+			projectRoot = "";
+			targets = (
+				C4E618CB095A3CE80012CA3F /* ProEXR AE */,
+			);
+		};
+/* End PBXProject section */
+
+/* Begin PBXReferenceProxy section */
+		2A4DF6901E1B96C6009B6F29 /* liblcms.a */ = {
+			isa = PBXReferenceProxy;
+			fileType = archive.ar;
+			path = liblcms.a;
+			remoteRef = 2A4DF68F1E1B96C6009B6F29 /* PBXContainerItemProxy */;
+			sourceTree = BUILT_PRODUCTS_DIR;
+		};
+		2A4DF6961E1B96C6009B6F29 /* libzlib.a */ = {
+			isa = PBXReferenceProxy;
+			fileType = archive.ar;
+			path = libzlib.a;
+			remoteRef = 2A4DF6951E1B96C6009B6F29 /* PBXContainerItemProxy */;
+			sourceTree = BUILT_PRODUCTS_DIR;
+		};
+		2A4DF6A21E1B96DF009B6F29 /* libIlmBase.a */ = {
+			isa = PBXReferenceProxy;
+			fileType = archive.ar;
+			path = libIlmBase.a;
+			remoteRef = 2A4DF6A11E1B96DF009B6F29 /* PBXContainerItemProxy */;
+			sourceTree = BUILT_PRODUCTS_DIR;
+		};
+		2A4DF6A41E1B96DF009B6F29 /* eLut */ = {
+			isa = PBXReferenceProxy;
+			fileType = "compiled.mach-o.executable";
+			path = eLut;
+			remoteRef = 2A4DF6A31E1B96DF009B6F29 /* PBXContainerItemProxy */;
+			sourceTree = BUILT_PRODUCTS_DIR;
+		};
+		2A4DF6A61E1B96DF009B6F29 /* toFloat */ = {
+			isa = PBXReferenceProxy;
+			fileType = "compiled.mach-o.executable";
+			path = toFloat;
+			remoteRef = 2A4DF6A51E1B96DF009B6F29 /* PBXContainerItemProxy */;
+			sourceTree = BUILT_PRODUCTS_DIR;
+		};
+		2A4DF6B31E1B96F8009B6F29 /* libOpenEXR.a */ = {
+			isa = PBXReferenceProxy;
+			fileType = archive.ar;
+			path = libOpenEXR.a;
+			remoteRef = 2A4DF6B21E1B96F8009B6F29 /* PBXContainerItemProxy */;
+			sourceTree = BUILT_PRODUCTS_DIR;
+		};
+		2A4DF6B51E1B96F8009B6F29 /* b44ExpLogTable */ = {
+			isa = PBXReferenceProxy;
+			fileType = "compiled.mach-o.executable";
+			path = b44ExpLogTable;
+			remoteRef = 2A4DF6B41E1B96F8009B6F29 /* PBXContainerItemProxy */;
+			sourceTree = BUILT_PRODUCTS_DIR;
+		};
+		2A4DF6B71E1B96F8009B6F29 /* dwaLookups */ = {
+			isa = PBXReferenceProxy;
+			fileType = "compiled.mach-o.executable";
+			path = dwaLookups;
+			remoteRef = 2A4DF6B61E1B96F8009B6F29 /* PBXContainerItemProxy */;
+			sourceTree = BUILT_PRODUCTS_DIR;
+		};
+/* End PBXReferenceProxy section */
+
+/* Begin PBXResourcesBuildPhase section */
+		C4E618C8095A3CE80012CA3F /* Resources */ = {
+			isa = PBXResourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				2A4DF43B1E1B8D8F009B6F29 /* ProEXR_AE_GUI.xib in Resources */,
+				2A4DF43D1E1B8D8F009B6F29 /* ProEXR_AE_Out.xib in Resources */,
+				2A4DF43F1E1B8D8F009B6F29 /* ProEXR_AE_Progress.xib in Resources */,
+				2A4DF4411E1B8D8F009B6F29 /* ProEXR_banner.png in Resources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXResourcesBuildPhase section */
+
+/* Begin PBXRezBuildPhase section */
+		C4E618EA095A3E040012CA3F /* Rez */ = {
+			isa = PBXRezBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				2A4DF4471E1B8D8F009B6F29 /* ProEXR_AE_PiPL.r in Rez */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXRezBuildPhase section */
+
+/* Begin PBXSourcesBuildPhase section */
+		C4E618C9095A3CE80012CA3F /* Sources */ = {
+			isa = PBXSourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				2A4DF4381E1B8D8F009B6F29 /* fnord_MissingSuiteError.cpp in Sources */,
+				2A4DF4391E1B8D8F009B6F29 /* fnord_SuiteHandler.cpp in Sources */,
+				2A4DF43A1E1B8D8F009B6F29 /* ProEXR_AE_Dialogs_Cocoa.mm in Sources */,
+				2A4DF43C1E1B8D8F009B6F29 /* ProEXR_AE_GUI_Controller.m in Sources */,
+				2A4DF43E1E1B8D8F009B6F29 /* ProEXR_AE_Out_Controller.m in Sources */,
+				2A4DF4401E1B8D8F009B6F29 /* ProEXR_AE_Progress_Controller.m in Sources */,
+				2A4DF4441E1B8D8F009B6F29 /* ProEXR_AE.cpp in Sources */,
+				2A4DF4451E1B8D8F009B6F29 /* ProEXR_AE_FrameSeq.cpp in Sources */,
+				2A4DF4461E1B8D8F009B6F29 /* ProEXR_AE_GUI.cpp in Sources */,
+				2A4DF4481E1B8D8F009B6F29 /* ProEXR_AEIO.cpp in Sources */,
+				2A4DF4491E1B8D8F009B6F29 /* ProEXR_Comp_Creator.cpp in Sources */,
+				2A4DF44B1E1B8D8F009B6F29 /* VRimg.cpp in Sources */,
+				2A4DF44C1E1B8D8F009B6F29 /* VRimg_AEIO.cpp in Sources */,
+				2A4DF44D1E1B8D8F009B6F29 /* VRimg_ChannelCache.cpp in Sources */,
+				2A4DF44E1E1B8D8F009B6F29 /* VRimg_FrameSeq.cpp in Sources */,
+				2A4DF4521E1B8D8F009B6F29 /* iccProfileAttribute.cpp in Sources */,
+				2A4DF4531E1B8D8F009B6F29 /* ImfHybridInputFile.cpp in Sources */,
+				2A4DF4541E1B8D8F009B6F29 /* ProEXRdoc.cpp in Sources */,
+				2A4DF4551E1B8D8F009B6F29 /* ProEXRdoc_PS.cpp in Sources */,
+				2A4DF4561E1B8D8F009B6F29 /* VRimgHeader.cpp in Sources */,
+				2A4DF4571E1B8D8F009B6F29 /* VRimgInputFile.cpp in Sources */,
+				2A4DF4581E1B8D8F009B6F29 /* VRimgVersion.cpp in Sources */,
+				2A4DF4951E1B8E39009B6F29 /* OpenEXR_PlatformIO.cpp in Sources */,
+				2A4DF5A31E1B927C009B6F29 /* ProEXR_UTF.cpp in Sources */,
+				2A4DF6081E1B9566009B6F29 /* OpenEXR_ChannelMap.cpp in Sources */,
+				2A4DF6111E1B95B2009B6F29 /* ProEXRdoc_AE.cpp in Sources */,
+				2A4DF7021E1B97A6009B6F29 /* ProEXR_AE_FrameSeq_Color.cpp in Sources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXSourcesBuildPhase section */
+
+/* Begin PBXTargetDependency section */
+		2A4DF6BD1E1B9724009B6F29 /* PBXTargetDependency */ = {
+			isa = PBXTargetDependency;
+			name = lcms;
+			targetProxy = 2A4DF6BC1E1B9724009B6F29 /* PBXContainerItemProxy */;
+		};
+		2A4DF6BF1E1B9724009B6F29 /* PBXTargetDependency */ = {
+			isa = PBXTargetDependency;
+			name = zlib;
+			targetProxy = 2A4DF6BE1E1B9724009B6F29 /* PBXContainerItemProxy */;
+		};
+		2A4DF6C11E1B9724009B6F29 /* PBXTargetDependency */ = {
+			isa = PBXTargetDependency;
+			name = IlmBase;
+			targetProxy = 2A4DF6C01E1B9724009B6F29 /* PBXContainerItemProxy */;
+		};
+		2A4DF6C31E1B9724009B6F29 /* PBXTargetDependency */ = {
+			isa = PBXTargetDependency;
+			name = OpenEXR;
+			targetProxy = 2A4DF6C21E1B9724009B6F29 /* PBXContainerItemProxy */;
+		};
+/* End PBXTargetDependency section */
+
+/* Begin XCBuildConfiguration section */
+		2AFB34581488918E00FEBA1D /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				AE_SDK = "\"../../ext/Adobe After Effects CS6 Mac SDK\"";
+				ARCHS = "$(ARCHS_STANDARD_64_BIT_PRE_XCODE_3_1)";
+				ARCHS_STANDARD_64_BIT_PRE_XCODE_3_1 = x86_64;
+				GCC_GENERATE_DEBUGGING_SYMBOLS = NO;
+				GCC_MODEL_TUNING = "";
+				GCC_OPTIMIZATION_LEVEL = 3;
+				GCC_PREPROCESSOR_DEFINITIONS = NDEBUG;
+				GCC_WARN_ABOUT_DEPRECATED_FUNCTIONS = NO;
+				HEADER_SEARCH_PATHS = (
+					"$(AE_SDK)/Examples/Headers",
+					"$(AE_SDK)/Examples/Util",
+					"$(AE_SDK)/Examples/Headers/SP",
+					"$(AE_SDK)/Examples/Resources",
+					../../ext/openexr/IlmBase/xcode/xcode3,
+					../../ext/openexr/IlmBase/Half,
+					../../ext/openexr/IlmBase/IlmThread,
+					../../ext/openexr/IlmBase/Iex,
+					../../ext/openexr/IlmBase/Imath,
+					../../ext/openexr/OpenEXR/xcode/xcode3,
+					../../ext/openexr/OpenEXR/IlmImf,
+					../../ext/lcms/include,
+					../../ext/lcms/src,
+				);
+				REZ_PREPROCESSOR_DEFINITIONS = __MACH__;
+				SDKROOT = "";
+			};
+			name = Release;
+		};
+		2AFB34591488918E00FEBA1D /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				GCC_ENABLE_FIX_AND_CONTINUE = YES;
+				GCC_MODEL_TUNING = G5;
+				GCC_PRECOMPILE_PREFIX_HEADER = YES;
+				GCC_PREFIX_HEADER = "$(SYSTEM_LIBRARY_DIR)/Frameworks/Carbon.framework/Headers/Carbon.h";
+				GENERATE_PKGINFO_FILE = YES;
+				INFOPLIST_FILE = "ProEXR_AE.plugin-Info.plist";
+				INSTALL_PATH = "$(HOME)/Library/Bundles";
+				LINK_WITH_STANDARD_LIBRARIES = YES;
+				OTHER_LDFLAGS = (
+					"-framework",
+					Carbon,
+				);
+				PREBINDING = NO;
+				PRODUCT_NAME = "ProEXR AE";
+				WRAPPER_EXTENSION = plugin;
+				ZERO_LINK = NO;
+			};
+			name = Release;
+		};
+		C4E61880095A3C800012CA3F /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				AE_SDK = "\"../../ext/Adobe After Effects CS6 Mac SDK\"";
+				ARCHS = "$(ARCHS_STANDARD_64_BIT_PRE_XCODE_3_1)";
+				ARCHS_STANDARD_64_BIT_PRE_XCODE_3_1 = x86_64;
+				GCC_MODEL_TUNING = "";
+				GCC_OPTIMIZATION_LEVEL = 0;
+				GCC_WARN_ABOUT_DEPRECATED_FUNCTIONS = NO;
+				HEADER_SEARCH_PATHS = (
+					"$(AE_SDK)/Examples/Headers",
+					"$(AE_SDK)/Examples/Util",
+					"$(AE_SDK)/Examples/Headers/SP",
+					"$(AE_SDK)/Examples/Resources",
+					../../ext/openexr/IlmBase/xcode/xcode3,
+					../../ext/openexr/IlmBase/Half,
+					../../ext/openexr/IlmBase/IlmThread,
+					../../ext/openexr/IlmBase/Iex,
+					../../ext/openexr/IlmBase/Imath,
+					../../ext/openexr/OpenEXR/xcode/xcode3,
+					../../ext/openexr/OpenEXR/IlmImf,
+					../../ext/lcms/include,
+					../../ext/lcms/src,
+				);
+				REZ_PREPROCESSOR_DEFINITIONS = __MACH__;
+				SDKROOT = "";
+			};
+			name = Debug;
+		};
+		C4E618CF095A3CE90012CA3F /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				GCC_ENABLE_FIX_AND_CONTINUE = YES;
+				GCC_MODEL_TUNING = G5;
+				GCC_PRECOMPILE_PREFIX_HEADER = YES;
+				GCC_PREFIX_HEADER = "$(SYSTEM_LIBRARY_DIR)/Frameworks/Carbon.framework/Headers/Carbon.h";
+				GENERATE_PKGINFO_FILE = YES;
+				INFOPLIST_FILE = "ProEXR_AE.plugin-Info.plist";
+				INSTALL_PATH = "$(HOME)/Library/Bundles";
+				LINK_WITH_STANDARD_LIBRARIES = YES;
+				OTHER_LDFLAGS = (
+					"-framework",
+					Carbon,
+				);
+				PREBINDING = NO;
+				PRODUCT_NAME = "ProEXR AE";
+				WRAPPER_EXTENSION = plugin;
+				ZERO_LINK = NO;
+			};
+			name = Debug;
+		};
+/* End XCBuildConfiguration section */
+
+/* Begin XCConfigurationList section */
+		C4E6187F095A3C800012CA3F /* Build configuration list for PBXProject "ProEXR_AE" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				C4E61880095A3C800012CA3F /* Debug */,
+				2AFB34581488918E00FEBA1D /* Release */,
+			);
+			defaultConfigurationIsVisible = 1;
+			defaultConfigurationName = Debug;
+		};
+		C4E618CE095A3CE90012CA3F /* Build configuration list for PBXNativeTarget "ProEXR AE" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				C4E618CF095A3CE90012CA3F /* Debug */,
+				2AFB34591488918E00FEBA1D /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Debug;
+		};
+/* End XCConfigurationList section */
+	};
+	rootObject = C4E6187E095A3C800012CA3F /* Project object */;
+}
