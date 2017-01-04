@@ -35,6 +35,7 @@ typedef unsigned long long	uint64_t;
 #include "PIFormat.h"				// Format Photoshop header file.
 #include "PIExport.h"				// Export Photoshop header file.
 #include "PIUtilities.h"			// SDK Utility library.
+#include "FileUtilities.h"
 
 #include "ProEXR_PSIO.h"
 #include "ProEXRdoc_PS.h"

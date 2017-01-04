@@ -37,7 +37,7 @@
 // Dictionary (aete) resources:
 
 #define vendorName			"fnord"
-#define plugInAETEComment 	"†berEXR format"
+#define plugInAETEComment 	"UberEXR format"
 
 #define plugInSuiteID		'EXRs'
 #define plugInClassID		'pEXR' //'simP'
