@@ -25,10 +25,10 @@
 
 #define ProEXR_Major_Version 1
 #define ProEXR_Minor_Version 9
-#define ProEXR_Version_String "1.9.2"
+#define ProEXR_Version_String "1.9.3"
 #define ProEXR_Build_Date __DATE__
-#define ProEXR_Build_Date_Manual "3 January 2016"
-#define ProEXR_Build_Complete_Manual "v1.9.2 - 3 January 2017"
+#define ProEXR_Build_Date_Manual "4 January 2017"
+#define ProEXR_Build_Complete_Manual "v1.9.3 - 4 January 2017"
 #define ProEXR_Copyright_Year "2007-2017"
 #define ProEXR_Build_Year "2017"
 

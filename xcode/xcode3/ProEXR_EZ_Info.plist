@@ -7,7 +7,7 @@
 	<key>CFBundleExecutable</key>
 	<string>$(PRODUCT_NAME)</string>
 	<key>CFBundleGetInfoString</key>
-	<string>©2007-2014 fnord</string>
+	<string>©2007-2017 fnord</string>
 	<key>CFBundleIdentifier</key>
 	<string>com.fnordware.Photoshop.ProEXR_EZ</string>
 	<key>CFBundleName</key>
