@@ -1,0 +1,725 @@
+<?xml version="1.0" encoding="Windows-1252"?>
+<VisualStudioProject
+	ProjectType="Visual C++"
+	Version="9.00"
+	Name="ProEXR AE"
+	ProjectGUID="{E08AC1B1-4589-46B7-B014-6E999356EC77}"
+	RootNamespace="ProEXR_AE"
+	TargetFrameworkVersion="131072"
+	>
+	<Platforms>
+		<Platform
+			Name="x64"
+		/>
+	</Platforms>
+	<ToolFiles>
+	</ToolFiles>
+	<Configurations>
+		<Configuration
+			Name="Debug|x64"
+			OutputDirectory="build\$(PlatformName)\$(ConfigurationName)"
+			IntermediateDirectory="$(SolutionName)\$(PlatformName)\$(ConfigurationName)"
+			ConfigurationType="2"
+			InheritedPropertySheets="$(VCInstallDir)VCProjectDefaults\UpgradeFromVC71.vsprops"
+			UseOfMFC="0"
+			ATLMinimizesCRunTimeLibraryUsage="false"
+			>
+			<Tool
+				Name="VCPreBuildEventTool"
+			/>
+			<Tool
+				Name="VCCustomBuildTool"
+			/>
+			<Tool
+				Name="VCXMLDataGeneratorTool"
+			/>
+			<Tool
+				Name="VCWebServiceProxyGeneratorTool"
+			/>
+			<Tool
+				Name="VCMIDLTool"
+				PreprocessorDefinitions="_DEBUG"
+				MkTypLibCompatible="true"
+				SuppressStartupBanner="true"
+				TargetEnvironment="3"
+				TypeLibraryName=".\Debug/IO.tlb"
+				HeaderFileName=""
+			/>
+			<Tool
+				Name="VCCLCompilerTool"
+				Optimization="0"
+				AdditionalIncludeDirectories="..\..\src\aftereffects;..\..\src\common;..\..\src\common\VRimg;..\..\ext\zlib;..\..\ext\lcms\include;..\..\ext\lcms\src;..\..\ext\openexr\OpenEXR\config.windows;..\..\ext\openexr\OpenEXR\IlmImf;..\..\ext\openexr\IlmBase\config.windows;..\..\ext\openexr\IlmBase\Imath;..\..\ext\openexr\IlmBase\IlmThread;..\..\ext\openexr\IlmBase\Iex;..\..\ext\openexr\IlmBase\Half;..\..\ext\adobe_photoshop_cs6_sdk_win\pluginsdk\photoshopapi\photoshop;&quot;..\..\ext\Adobe After Effects CS6 Win SDK\Examples\Headers&quot;;&quot;..\..\ext\Adobe After Effects CS6 Win SDK\Examples\Headers\SP&quot;;&quot;..\..\ext\Adobe After Effects CS6 Win SDK\Examples\Headers\Win&quot;;&quot;..\..\ext\Adobe After Effects CS6 Win SDK\Examples\Resources&quot;;&quot;..\..\ext\Adobe After Effects CS6 Win SDK\Examples\Util&quot;"
+				PreprocessorDefinitions="MSWindows;WIN32;_DEBUG;_WINDOWS"
+				RuntimeLibrary="3"
+				StructMemberAlignment="3"
+				PrecompiledHeaderFile="$(IntDir)\OpenEXR.pch"
+				AssemblerOutput="4"
+				BrowseInformation="1"
+				WarningLevel="3"
+				WarnAsError="false"
+				SuppressStartupBanner="true"
+				DebugInformationFormat="3"
+				CompileAs="0"
+			/>
+			<Tool
+				Name="VCManagedResourceCompilerTool"
+			/>
+			<Tool
+				Name="VCResourceCompilerTool"
+				PreprocessorDefinitions="_DEBUG"
+				Culture="1033"
+			/>
+			<Tool
+				Name="VCPreLinkEventTool"
+			/>
+			<Tool
+				Name="VCLinkerTool"
+				IgnoreImportLibrary="true"
+				ShowProgress="0"
+				OutputFile="$(OutDir)\ProEXR AE.aex"
+				LinkIncremental="2"
+				SuppressStartupBanner="true"
+				GenerateDebugInformation="true"
+				ProgramDatabaseFile="$(IntDir)\OpenEXR.pdb"
+				SubSystem="2"
+				RandomizedBaseAddress="1"
+				DataExecutionPrevention="0"
+				ImportLibrary="$(IntDir)\ProEXR_AE.lib"
+				TargetMachine="17"
+			/>
+			<Tool
+				Name="VCALinkTool"
+			/>
+			<Tool
+				Name="VCManifestTool"
+				UseFAT32Workaround="true"
+			/>
+			<Tool
+				Name="VCXDCMakeTool"
+			/>
+			<Tool
+				Name="VCBscMakeTool"
+			/>
+			<Tool
+				Name="VCFxCopTool"
+			/>
+			<Tool
+				Name="VCAppVerifierTool"
+			/>
+			<Tool
+				Name="VCPostBuildEventTool"
+			/>
+		</Configuration>
+		<Configuration
+			Name="Release|x64"
+			OutputDirectory="build\$(PlatformName)\$(ConfigurationName)"
+			IntermediateDirectory="$(SolutionName)\$(PlatformName)\$(ConfigurationName)"
+			ConfigurationType="2"
+			InheritedPropertySheets="$(VCInstallDir)VCProjectDefaults\UpgradeFromVC71.vsprops"
+			UseOfMFC="0"
+			ATLMinimizesCRunTimeLibraryUsage="false"
+			>
+			<Tool
+				Name="VCPreBuildEventTool"
+			/>
+			<Tool
+				Name="VCCustomBuildTool"
+			/>
+			<Tool
+				Name="VCXMLDataGeneratorTool"
+			/>
+			<Tool
+				Name="VCWebServiceProxyGeneratorTool"
+			/>
+			<Tool
+				Name="VCMIDLTool"
+				PreprocessorDefinitions="_DEBUG"
+				MkTypLibCompatible="true"
+				SuppressStartupBanner="true"
+				TargetEnvironment="3"
+				TypeLibraryName=".\Debug/IO.tlb"
+				HeaderFileName=""
+			/>
+			<Tool
+				Name="VCCLCompilerTool"
+				Optimization="2"
+				AdditionalIncludeDirectories="..\..\src\aftereffects;..\..\src\common;..\..\src\common\VRimg;..\..\ext\zlib;..\..\ext\lcms\include;..\..\ext\lcms\src;..\..\ext\openexr\OpenEXR\config.windows;..\..\ext\openexr\OpenEXR\IlmImf;..\..\ext\openexr\IlmBase\config.windows;..\..\ext\openexr\IlmBase\Imath;..\..\ext\openexr\IlmBase\IlmThread;..\..\ext\openexr\IlmBase\Iex;..\..\ext\openexr\IlmBase\Half;..\..\ext\adobe_photoshop_cs6_sdk_win\pluginsdk\photoshopapi\photoshop;&quot;..\..\ext\Adobe After Effects CS6 Win SDK\Examples\Headers&quot;;&quot;..\..\ext\Adobe After Effects CS6 Win SDK\Examples\Headers\SP&quot;;&quot;..\..\ext\Adobe After Effects CS6 Win SDK\Examples\Headers\Win&quot;;&quot;..\..\ext\Adobe After Effects CS6 Win SDK\Examples\Resources&quot;;&quot;..\..\ext\Adobe After Effects CS6 Win SDK\Examples\Util&quot;"
+				PreprocessorDefinitions="MSWindows;WIN32;NDEBUG;_WINDOWS"
+				RuntimeLibrary="2"
+				StructMemberAlignment="3"
+				PrecompiledHeaderFile="$(IntDir)\OpenEXR.pch"
+				AssemblerOutput="4"
+				BrowseInformation="1"
+				WarningLevel="3"
+				WarnAsError="false"
+				SuppressStartupBanner="true"
+				DebugInformationFormat="0"
+				CompileAs="0"
+			/>
+			<Tool
+				Name="VCManagedResourceCompilerTool"
+			/>
+			<Tool
+				Name="VCResourceCompilerTool"
+				PreprocessorDefinitions="_DEBUG"
+				Culture="1033"
+			/>
+			<Tool
+				Name="VCPreLinkEventTool"
+			/>
+			<Tool
+				Name="VCLinkerTool"
+				IgnoreImportLibrary="true"
+				ShowProgress="0"
+				OutputFile="$(OutDir)\ProEXR AE.aex"
+				LinkIncremental="2"
+				SuppressStartupBanner="true"
+				GenerateDebugInformation="false"
+				ProgramDatabaseFile="$(IntDir)\OpenEXR.pdb"
+				SubSystem="2"
+				RandomizedBaseAddress="1"
+				DataExecutionPrevention="0"
+				ImportLibrary="$(IntDir)\ProEXR_AE.lib"
+				TargetMachine="17"
+			/>
+			<Tool
+				Name="VCALinkTool"
+			/>
+			<Tool
+				Name="VCManifestTool"
+				UseFAT32Workaround="true"
+			/>
+			<Tool
+				Name="VCXDCMakeTool"
+			/>
+			<Tool
+				Name="VCBscMakeTool"
+			/>
+			<Tool
+				Name="VCFxCopTool"
+			/>
+			<Tool
+				Name="VCAppVerifierTool"
+			/>
+			<Tool
+				Name="VCPostBuildEventTool"
+			/>
+		</Configuration>
+	</Configurations>
+	<References>
+	</References>
+	<Files>
+		<Filter
+			Name="Headers"
+			Filter="h;hpp;hxx;hm;inl;fi;fd"
+			>
+			<File
+				RelativePath="..\..\src\aftereffects\fnord_SuiteHandler.h"
+				>
+			</File>
+			<File
+				RelativePath="..\..\src\common\iccProfileAttribute.h"
+				>
+			</File>
+			<File
+				RelativePath="..\..\src\common\ImfHybridInputFile.h"
+				>
+			</File>
+			<File
+				RelativePath="..\..\src\aftereffects\OpenEXR_ChannelMap.h"
+				>
+			</File>
+			<File
+				RelativePath="..\..\src\aftereffects\OpenEXR_PlatformIO.h"
+				>
+			</File>
+			<File
+				RelativePath="..\..\src\aftereffects\ProEXR_AE.h"
+				>
+			</File>
+			<File
+				RelativePath="..\..\src\aftereffects\ProEXR_AE_Dialogs.h"
+				>
+			</File>
+			<File
+				RelativePath="..\..\src\aftereffects\ProEXR_AE_FrameSeq.h"
+				>
+			</File>
+			<File
+				RelativePath="..\..\src\aftereffects\ProEXR_AE_GUI.h"
+				>
+			</File>
+			<File
+				RelativePath="..\..\src\aftereffects\ProEXR_AEIO.h"
+				>
+			</File>
+			<File
+				RelativePath="..\..\src\aftereffects\ProEXR_Comp_Creator.h"
+				>
+			</File>
+			<File
+				RelativePath="..\..\src\common\ProEXR_UTF.h"
+				>
+			</File>
+			<File
+				RelativePath="..\..\src\common\ProEXRdoc.h"
+				>
+			</File>
+			<File
+				RelativePath="..\..\src\aftereffects\ProEXRdoc_AE.h"
+				>
+			</File>
+			<File
+				RelativePath="..\..\src\common\ProEXRdoc_PS.h"
+				>
+			</File>
+			<File
+				RelativePath="..\..\src\aftereffects\VRimg.h"
+				>
+			</File>
+			<File
+				RelativePath="..\..\src\aftereffects\VRimg_AEIO.h"
+				>
+			</File>
+			<File
+				RelativePath="..\..\src\aftereffects\VRimg_ChannelCache.h"
+				>
+			</File>
+			<File
+				RelativePath="..\..\src\aftereffects\VRimg_FrameSeq.h"
+				>
+			</File>
+			<Filter
+				Name="Windows"
+				>
+				<File
+					RelativePath="..\..\..\..\..\..\..\..\..\Program Files\Microsoft Visual Studio\VC98\Include\BASETSD.H"
+					>
+				</File>
+				<File
+					RelativePath="..\..\..\..\..\..\..\..\..\devstudio\Include\BASETSD.H"
+					>
+				</File>
+			</Filter>
+			<Filter
+				Name="AE"
+				>
+				<File
+					RelativePath="..\..\ext\Adobe After Effects CS6 Win SDK\Examples\Headers\A.h"
+					>
+				</File>
+				<File
+					RelativePath="..\..\ext\Adobe After Effects CS6 Win SDK\Examples\Headers\AE_Effect.h"
+					>
+				</File>
+				<File
+					RelativePath="..\..\ext\Adobe After Effects CS6 Win SDK\Examples\Headers\AE_EffectCB.h"
+					>
+				</File>
+				<File
+					RelativePath="..\..\ext\Adobe After Effects CS6 Win SDK\Examples\Headers\AE_EffectCBSuites.h"
+					>
+				</File>
+				<File
+					RelativePath="..\..\ext\Adobe After Effects CS6 Win SDK\Examples\Headers\AE_EffectSuites.h"
+					>
+				</File>
+				<File
+					RelativePath="..\..\ext\Adobe After Effects CS6 Win SDK\Examples\Util\AE_EffectSuitesHelper.h"
+					>
+				</File>
+				<File
+					RelativePath="..\..\ext\Adobe After Effects CS6 Win SDK\Examples\Headers\AE_EffectUI.h"
+					>
+				</File>
+				<File
+					RelativePath="..\..\ext\Adobe After Effects CS6 Win SDK\Examples\Headers\AE_GeneralPlug.h"
+					>
+				</File>
+				<File
+					RelativePath="..\..\ext\Adobe After Effects CS6 Win SDK\Examples\Headers\AE_GeneralPlugOld.h"
+					>
+				</File>
+				<File
+					RelativePath="..\..\ext\Adobe After Effects CS6 Win SDK\Examples\Headers\AE_IO.h"
+					>
+				</File>
+				<File
+					RelativePath="..\..\ext\Adobe After Effects CS6 Win SDK\Examples\Headers\AE_Macros.h"
+					>
+				</File>
+				<File
+					RelativePath="..\..\ext\Adobe After Effects CS6 Win SDK\Examples\Util\entry.h"
+					>
+				</File>
+				<File
+					RelativePath="..\..\ext\Adobe After Effects CS6 Win SDK\Examples\Headers\FIEL_Public.h"
+					>
+				</File>
+				<File
+					RelativePath="..\..\ext\Adobe After Effects CS6 Win SDK\Examples\Headers\PF_Masks.h"
+					>
+				</File>
+				<File
+					RelativePath="..\..\ext\Adobe After Effects CS6 Win SDK\Examples\Headers\PR_Public.h"
+					>
+				</File>
+				<Filter
+					Name="PICA"
+					>
+					<File
+						RelativePath="..\..\ext\Adobe After Effects CS6 Win SDK\Examples\Headers\AS\ASConfig.h"
+						>
+					</File>
+					<File
+						RelativePath="..\..\ext\Adobe After Effects CS6 Win SDK\Examples\Headers\AS\ASHelp.h"
+						>
+					</File>
+					<File
+						RelativePath="..\..\ext\Adobe After Effects CS6 Win SDK\Examples\Headers\AS\ASPragma.h"
+						>
+					</File>
+					<File
+						RelativePath="..\..\ext\Adobe After Effects CS6 Win SDK\Examples\Headers\AS\ASTypes.h"
+						>
+					</File>
+					<File
+						RelativePath="..\..\ext\Adobe After Effects CS6 Win SDK\Examples\Headers\PICA\SPAccess.h"
+						>
+					</File>
+					<File
+						RelativePath="..\..\ext\Adobe After Effects CS6 Win SDK\Examples\Headers\SPAdapts.h"
+						>
+					</File>
+					<File
+						RelativePath="..\..\ext\Adobe After Effects CS6 Win SDK\Examples\Headers\PICA\SPAdapts.h"
+						>
+					</File>
+					<File
+						RelativePath="..\..\ext\Adobe After Effects CS6 Win SDK\Examples\Headers\PICA\SPBasic.h"
+						>
+					</File>
+					<File
+						RelativePath="..\..\ext\Adobe After Effects CS6 Win SDK\Examples\Headers\SPBasic.h"
+						>
+					</File>
+					<File
+						RelativePath="..\..\ext\Adobe After Effects CS6 Win SDK\Examples\Headers\SPCaches.h"
+						>
+					</File>
+					<File
+						RelativePath="..\..\ext\Adobe After Effects CS6 Win SDK\Examples\Headers\PICA\SPCaches.h"
+						>
+					</File>
+					<File
+						RelativePath="..\..\ext\Adobe After Effects CS6 Win SDK\Examples\Headers\SPConfig.h"
+						>
+					</File>
+					<File
+						RelativePath="..\..\ext\Adobe After Effects CS6 Win SDK\Examples\Headers\PICA\SPConfig.h"
+						>
+					</File>
+					<File
+						RelativePath="..\..\ext\Adobe After Effects CS6 Win SDK\Examples\Headers\SPErrorCodes.h"
+						>
+					</File>
+					<File
+						RelativePath="..\..\ext\Adobe After Effects CS6 Win SDK\Examples\Headers\PICA\SPErrorCodes.h"
+						>
+					</File>
+					<File
+						RelativePath="..\..\ext\Adobe After Effects CS6 Win SDK\Examples\Headers\PICA\SPFiles.h"
+						>
+					</File>
+					<File
+						RelativePath="..\..\ext\Adobe After Effects CS6 Win SDK\Examples\Headers\SPFiles.h"
+						>
+					</File>
+					<File
+						RelativePath="..\..\ext\Adobe After Effects CS6 Win SDK\Examples\Headers\SPInterf.h"
+						>
+					</File>
+					<File
+						RelativePath="..\..\ext\Adobe After Effects CS6 Win SDK\Examples\Headers\SPMData.h"
+						>
+					</File>
+					<File
+						RelativePath="..\..\ext\Adobe After Effects CS6 Win SDK\Examples\Headers\PICA\SPMData.h"
+						>
+					</File>
+					<File
+						RelativePath="..\..\ext\Adobe After Effects CS6 Win SDK\Examples\Headers\SPPiPL.h"
+						>
+					</File>
+					<File
+						RelativePath="..\..\ext\Adobe After Effects CS6 Win SDK\Examples\Headers\PICA\SPPiPL.h"
+						>
+					</File>
+					<File
+						RelativePath="..\..\ext\Adobe After Effects CS6 Win SDK\Examples\Headers\SPPlugs.h"
+						>
+					</File>
+					<File
+						RelativePath="..\..\ext\Adobe After Effects CS6 Win SDK\Examples\Headers\PICA\SPPlugs.h"
+						>
+					</File>
+					<File
+						RelativePath="..\..\ext\Adobe After Effects CS6 Win SDK\Examples\Headers\PICA\SPProps.h"
+						>
+					</File>
+					<File
+						RelativePath="..\..\ext\Adobe After Effects CS6 Win SDK\Examples\Headers\SPProps.h"
+						>
+					</File>
+					<File
+						RelativePath="..\..\ext\Adobe After Effects CS6 Win SDK\Examples\Headers\SPStrngs.h"
+						>
+					</File>
+					<File
+						RelativePath="..\..\ext\Adobe After Effects CS6 Win SDK\Examples\Headers\PICA\SPStrngs.h"
+						>
+					</File>
+					<File
+						RelativePath="..\..\ext\Adobe After Effects CS6 Win SDK\Examples\Headers\PICA\SPSuites.h"
+						>
+					</File>
+					<File
+						RelativePath="..\..\ext\Adobe After Effects CS6 Win SDK\Examples\Headers\SPTypes.h"
+						>
+					</File>
+					<File
+						RelativePath="..\..\ext\Adobe After Effects CS6 Win SDK\Examples\Headers\PICA\SPTypes.h"
+						>
+					</File>
+				</Filter>
+				<Filter
+					Name="ADM"
+					>
+					<File
+						RelativePath="..\..\ext\Adobe After Effects CS6 Win SDK\Examples\Headers\ADM\ADMBasic.h"
+						>
+					</File>
+					<File
+						RelativePath="..\..\ext\Adobe After Effects CS6 Win SDK\Examples\Headers\Legacy\ADMBasicOld.h"
+						>
+					</File>
+					<File
+						RelativePath="..\..\ext\Adobe After Effects CS6 Win SDK\Examples\Headers\ADM\ADMDialog.h"
+						>
+					</File>
+					<File
+						RelativePath="..\..\ext\Adobe After Effects CS6 Win SDK\Examples\Headers\ADM\ADMDialogGroup.h"
+						>
+					</File>
+					<File
+						RelativePath="..\..\ext\Adobe After Effects CS6 Win SDK\Examples\Headers\Legacy\ADMDialogGroupOld.h"
+						>
+					</File>
+					<File
+						RelativePath="..\..\ext\Adobe After Effects CS6 Win SDK\Examples\Headers\Legacy\ADMDialogOld.h"
+						>
+					</File>
+					<File
+						RelativePath="..\..\ext\Adobe After Effects CS6 Win SDK\Examples\Headers\ADM\ADMEntry.h"
+						>
+					</File>
+					<File
+						RelativePath="..\..\ext\Adobe After Effects CS6 Win SDK\Examples\Headers\Legacy\ADMEntryOld.h"
+						>
+					</File>
+					<File
+						RelativePath="..\..\ext\Adobe After Effects CS6 Win SDK\Examples\Headers\ADM\ADMItem.h"
+						>
+					</File>
+					<File
+						RelativePath="..\..\ext\Adobe After Effects CS6 Win SDK\Examples\Headers\Legacy\ADMItemOld.h"
+						>
+					</File>
+					<File
+						RelativePath="..\..\ext\Adobe After Effects CS6 Win SDK\Examples\Headers\ADM\ADMList.h"
+						>
+					</File>
+					<File
+						RelativePath="..\..\ext\Adobe After Effects CS6 Win SDK\Examples\Headers\Legacy\ADMListOld.h"
+						>
+					</File>
+					<File
+						RelativePath="..\..\ext\Adobe After Effects CS6 Win SDK\Examples\Headers\ADM\ADMNotifier.h"
+						>
+					</File>
+					<File
+						RelativePath="..\..\ext\Adobe After Effects CS6 Win SDK\Examples\Headers\Legacy\ADMNotifierOld.h"
+						>
+					</File>
+					<File
+						RelativePath="..\..\ext\Adobe After Effects CS6 Win SDK\Examples\Headers\ADM\ADMTracker.h"
+						>
+					</File>
+					<File
+						RelativePath="..\..\ext\Adobe After Effects CS6 Win SDK\Examples\Headers\ADM\ADMTypes.h"
+						>
+					</File>
+				</Filter>
+			</Filter>
+		</Filter>
+		<Filter
+			Name="Resources"
+			Filter="ico;cur;bmp;dlg;rc2;rct;bin;cnt;rtf;gif;jpg;jpeg;jpe"
+			>
+			<File
+				RelativePath="..\..\src\aftereffects\win\ProEXR_AE_Dialogs.rc"
+				>
+			</File>
+			<File
+				RelativePath="..\..\src\aftereffects\ProEXR_AE_PiPL.r"
+				>
+				<FileConfiguration
+					Name="Debug|x64"
+					>
+					<Tool
+						Name="VCCustomBuildTool"
+						Description="Compiling the PiPL"
+						CommandLine="cl /I &quot;$(ProjectDir)..\..\ext\Adobe After Effects CS6 Win SDK\Examples\Headers&quot; /EP &quot;..\..\src\aftereffects&quot;\\&quot;$(InputName).r&quot; &gt; &quot;$(IntDir)&quot;\\&quot;$(InputName).rr&quot;&#x0D;&#x0A;&quot;$(ProjectDir)..\..\ext\Adobe After Effects CS6 Win SDK\Examples\Resources\PiPLTool&quot; &quot;$(IntDir)\$(InputName).rr&quot; &quot;$(IntDir)\$(InputName).rrc&quot;&#x0D;&#x0A;cl /D &quot;MSWindows&quot; /EP $(IntDir)\$(InputName).rrc &gt;               &quot;$(ProjectDir)&quot;\\&quot;$(InputName)&quot;.rc&#x0D;&#x0A;"
+						Outputs="$(ProjectDir)$(InputName).rc"
+					/>
+				</FileConfiguration>
+				<FileConfiguration
+					Name="Release|x64"
+					>
+					<Tool
+						Name="VCCustomBuildTool"
+						Description="Compiling the PiPL"
+						CommandLine="cl /I &quot;$(ProjectDir)..\..\ext\Adobe After Effects CS6 Win SDK\Examples\Headers&quot; /EP &quot;..\..\src\aftereffects&quot;\\&quot;$(InputName).r&quot; &gt; &quot;$(IntDir)&quot;\\&quot;$(InputName).rr&quot;&#x0D;&#x0A;&quot;$(ProjectDir)..\..\ext\Adobe After Effects CS6 Win SDK\Examples\Resources\PiPLTool&quot; &quot;$(IntDir)\$(InputName).rr&quot; &quot;$(IntDir)\$(InputName).rrc&quot;&#x0D;&#x0A;cl /D &quot;MSWindows&quot; /EP $(IntDir)\$(InputName).rrc &gt;               &quot;$(ProjectDir)&quot;\\&quot;$(InputName)&quot;.rc&#x0D;&#x0A;"
+						Outputs="$(ProjectDir)$(InputName).rc"
+					/>
+				</FileConfiguration>
+			</File>
+			<File
+				RelativePath=".\ProEXR_AE_PiPL.rc"
+				>
+			</File>
+			<File
+				RelativePath="..\..\src\aftereffects\win\ProEXR_banner.bmp"
+				>
+			</File>
+		</Filter>
+		<Filter
+			Name="VRimg"
+			>
+			<File
+				RelativePath="..\..\src\common\VRimg\VRimgHeader.cpp"
+				>
+			</File>
+			<File
+				RelativePath="..\..\src\common\VRimg\VRimgHeader.h"
+				>
+			</File>
+			<File
+				RelativePath="..\..\src\common\VRimg\VRimgInputFile.cpp"
+				>
+			</File>
+			<File
+				RelativePath="..\..\src\common\VRimg\VRimgInputFile.h"
+				>
+			</File>
+			<File
+				RelativePath="..\..\src\common\VRimg\VRimgVersion.cpp"
+				>
+			</File>
+			<File
+				RelativePath="..\..\src\common\VRimg\VRimgVersion.h"
+				>
+			</File>
+			<File
+				RelativePath="..\..\src\common\VRimg\VRimgXdr.h"
+				>
+			</File>
+		</Filter>
+		<File
+			RelativePath="..\..\src\aftereffects\fnord_MissingSuiteError.cpp"
+			>
+		</File>
+		<File
+			RelativePath="..\..\src\aftereffects\fnord_SuiteHandler.cpp"
+			>
+		</File>
+		<File
+			RelativePath="..\..\src\common\iccProfileAttribute.cpp"
+			>
+		</File>
+		<File
+			RelativePath="..\..\src\common\ImfHybridInputFile.cpp"
+			>
+		</File>
+		<File
+			RelativePath="..\..\src\aftereffects\OpenEXR_ChannelMap.cpp"
+			>
+		</File>
+		<File
+			RelativePath="..\..\src\aftereffects\OpenEXR_PlatformIO.cpp"
+			>
+		</File>
+		<File
+			RelativePath="..\..\src\aftereffects\ProEXR_AE.cpp"
+			>
+		</File>
+		<File
+			RelativePath="..\..\src\aftereffects\win\ProEXR_AE_Dialogs_Win.cpp"
+			>
+		</File>
+		<File
+			RelativePath="..\..\src\aftereffects\ProEXR_AE_FrameSeq.cpp"
+			>
+		</File>
+		<File
+			RelativePath="..\..\src\aftereffects\ProEXR_AE_FrameSeq_Color.cpp"
+			>
+		</File>
+		<File
+			RelativePath="..\..\src\aftereffects\ProEXR_AE_GUI.cpp"
+			>
+		</File>
+		<File
+			RelativePath="..\..\src\aftereffects\ProEXR_AEIO.cpp"
+			>
+		</File>
+		<File
+			RelativePath="..\..\src\aftereffects\ProEXR_Comp_Creator.cpp"
+			>
+		</File>
+		<File
+			RelativePath="..\..\src\common\ProEXR_UTF.cpp"
+			>
+		</File>
+		<File
+			RelativePath="..\..\src\common\ProEXRdoc.cpp"
+			>
+		</File>
+		<File
+			RelativePath="..\..\src\aftereffects\ProEXRdoc_AE.cpp"
+			>
+		</File>
+		<File
+			RelativePath="..\..\src\common\ProEXRdoc_PS.cpp"
+			>
+		</File>
+		<File
+			RelativePath="..\..\src\aftereffects\VRimg.cpp"
+			>
+		</File>
+		<File
+			RelativePath="..\..\src\aftereffects\VRimg_AEIO.cpp"
+			>
+		</File>
+		<File
+			RelativePath="..\..\src\aftereffects\VRimg_ChannelCache.cpp"
+			>
+		</File>
+		<File
+			RelativePath="..\..\src\aftereffects\VRimg_FrameSeq.cpp"
+			>
+		</File>
+	</Files>
+	<Globals>
+	</Globals>
+</VisualStudioProject>
