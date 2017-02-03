@@ -437,6 +437,14 @@
 				>
 			</File>
 			<File
+				RelativePath="..\..\src\photoshop\ProEXR_Export.cpp"
+				>
+			</File>
+			<File
+				RelativePath="..\..\src\photoshop\ProEXR_Export_Scripting.cpp"
+				>
+			</File>
+			<File
 				RelativePath="..\..\src\photoshop\ProEXR_PSIO.cpp"
 				>
 			</File>
