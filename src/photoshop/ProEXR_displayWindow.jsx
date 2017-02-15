@@ -1,4 +1,4 @@
-#target photoshop
+﻿#target photoshop
 
 /*
 
@@ -21,7 +21,7 @@
 function makeWindow()
 {
 	var window_start = [300, 300];
-	var window_size = [450,150];
+	var window_size = [450,175];
 
 	var button_size = [100, 25];
 
@@ -65,6 +65,22 @@ function makeWindow()
 		dlg.dataWindowFields[i].justify = 'right';
 		dlg.displayWindowFields[i].justify = 'right';
 	}
+	
+	
+	var radioButtonsLabel_bounds = [displayWindow_bounds[0], displayWindow_bounds[3] + dlg.margins[3], displayWindow_bounds[2], displayWindow_bounds[3] + dlg.margins[3] + text_size[1]];
+	
+	var radioButtonsLabel = dlg.add('statictext', radioButtonsLabel_bounds, 'Convert to');
+	
+	radioButtonsLabel.justify = 'right';
+	
+	
+	var radioButtonData_bounds = [dlg.displayWindowFields[0].bounds[0], radioButtonsLabel_bounds[1] - 8, dlg.displayWindowFields[1].bounds[2], radioButtonsLabel_bounds[3]];
+	var radioButtonDisplay_bounds = [dlg.displayWindowFields[2].bounds[0], radioButtonData_bounds[1], dlg.displayWindowFields[3].bounds[2], radioButtonData_bounds[3]];
+	
+	dlg.dataRadio = dlg.add('radiobutton', radioButtonData_bounds, 'dataWindow');
+	dlg.displayRadio = dlg.add('radiobutton', radioButtonDisplay_bounds, 'displayWindow');
+	
+	dlg.displayRadio.value = true;
 
 	return dlg;
 }
@@ -92,10 +108,20 @@ function parseBox2i(source_text, box_name)
 
 function processWindows(dialog, doc)
 {
+	// these are the values for converting to displayWindow
 	var expand_left = parseInt(dialog.dataWindowFields[0].text, 10) - parseInt(dialog.displayWindowFields[0].text, 10);
 	var expand_top = parseInt(dialog.dataWindowFields[1].text, 10) - parseInt(dialog.displayWindowFields[1].text, 10);
 	var expand_right = parseInt(dialog.displayWindowFields[2].text, 10) - parseInt(dialog.dataWindowFields[2].text, 10);
 	var expand_bottom = parseInt(dialog.displayWindowFields[3].text, 10) - parseInt(dialog.dataWindowFields[3].text, 10);
+	
+	// we reverse them if converting back to dataWindow
+	if(dlg.dataRadio.value == true)
+	{
+		expand_left = -expand_left;
+		expand_top = -expand_top;
+		expand_right = -expand_right;
+		expand_bottom = -expand_bottom;
+	}
 	
 	if(isNaN(expand_left) || isNaN(expand_top) || isNaN(expand_right) || isNaN(expand_bottom))
 	{
@@ -110,10 +136,18 @@ function processWindows(dialog, doc)
 		var width = doc.width.as('px');
 		var height = doc.height.as('px');
 		
-		var dw_width = 1 + parseInt(dialog.dataWindowFields[2].text, 10) - parseInt(dialog.dataWindowFields[0].text, 10);
-		var dw_height = 1 + parseInt(dialog.dataWindowFields[3].text, 10) - parseInt(dialog.dataWindowFields[1].text, 10);
+		if(dlg.dataRadio.value == true)
+		{
+			var current_width = 1 + parseInt(dialog.displayWindowFields[2].text, 10) - parseInt(dialog.displayWindowFields[0].text, 10);
+			var current_height = 1 + parseInt(dialog.displayWindowFields[3].text, 10) - parseInt(dialog.displayWindowFields[1].text, 10);
+		}
+		else
+		{
+			var current_width = 1 + parseInt(dialog.dataWindowFields[2].text, 10) - parseInt(dialog.dataWindowFields[0].text, 10);
+			var current_height = 1 + parseInt(dialog.dataWindowFields[3].text, 10) - parseInt(dialog.dataWindowFields[1].text, 10);
+		}
 		
-		if(width == dw_width && height == dw_height)
+		if(width == current_width && height == current_height)
 		{
 			if(expand_left > expand_right)
 			{
@@ -161,7 +195,12 @@ function processWindows(dialog, doc)
 			dialog.close();
 		}
 		else
-			alert('Document size does not match dataWindow size.');
+		{
+			if(dlg.dataRadio.value == true)
+				alert('Document size does not match displayWindow size.');
+			else
+				alert('Document size does not match dataWindow size.');
+		}
 	}
 }
 
