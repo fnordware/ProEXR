@@ -5,6 +5,7 @@
 <javascriptresource>
 <name>ProEXR displayWindow</name>
 <about>Part of ProEXR from fnord software^r^rResizes a document based on OpenEXR displayWindow.</about>
+<enableinfo>true</enableinfo>
 </javascriptresource>
 
 */
@@ -79,8 +80,7 @@ function makeWindow()
 	
 	dlg.dataRadio = dlg.add('radiobutton', radioButtonData_bounds, 'dataWindow');
 	dlg.displayRadio = dlg.add('radiobutton', radioButtonDisplay_bounds, 'displayWindow');
-	
-	dlg.displayRadio.value = true;
+
 
 	return dlg;
 }
@@ -224,6 +224,19 @@ if(app.documents.length)
 		if(displayWindow instanceof Array)
 			dlg.displayWindowFields[i].text = displayWindow[i];
 	}
+
+	// which size is it?
+	var doc_width = theDoc.width.as('px');
+	var doc_height = theDoc.height.as('px');
+		
+	var displayWindow_width = 1 + parseInt(dlg.displayWindowFields[2].text, 10) - parseInt(dlg.displayWindowFields[0].text, 10);
+	var displayWindow_height = 1 + parseInt(dlg.displayWindowFields[3].text, 10) - parseInt(dlg.displayWindowFields[1].text, 10);
+	
+	if(doc_width == displayWindow_width && doc_height == displayWindow_height)
+		dlg.dataRadio.value = true;
+	else
+		dlg.displayRadio.value = true;
+	
 	
 	// callbacks
 	dlg.OKbutton.onClick = function() { processWindows(dlg, theDoc); };
