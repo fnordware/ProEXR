@@ -1,11 +1,10 @@
 //
-//	EXtractoR
+//	Cryptomatte AE plug-in
 //		by Brendan Bolles <brendan@fnordware.com>
 //
-//	extract float channels
 //
-//	Part of the fnord OpenEXR tools
-//		http://www.fnordware.com/OpenEXR/
+//	Part of ProEXR
+//		http://www.fnordware.com/ProEXR
 //
 //
 

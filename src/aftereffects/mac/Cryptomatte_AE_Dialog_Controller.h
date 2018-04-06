@@ -1,3 +1,12 @@
+//
+//	Cryptomatte AE plug-in
+//		by Brendan Bolles <brendan@fnordware.com>
+//
+//
+//	Part of ProEXR
+//		http://www.fnordware.com/ProEXR
+//
+//
 
 #import <Cocoa/Cocoa.h>
 
