@@ -150,7 +150,9 @@ DoClick(
 					
 					std::set<std::string> newSelection;
 					
-					if((event_extra->u.do_click.modifiers & (PF_Mod_SHIFT_KEY | PF_Mod_OPT_ALT_KEY)) == 0) // select
+				#define ALL_MODIFIERS (PF_Mod_CMD_CTRL_KEY | PF_Mod_SHIFT_KEY | PF_Mod_OPT_ALT_KEY | PF_Mod_MAC_CONTROL_KEY)
+				
+					if((event_extra->u.do_click.modifiers & ALL_MODIFIERS) == 0) // select
 					{
 						for(std::set<std::string>::iterator i = clickedItems.begin(); i != clickedItems.end(); ++i)
 						{
@@ -222,6 +224,9 @@ DoClick(
 					
 					if(!(event_extra->u.do_click.modifiers & PF_Mod_CAPS_LOCK_KEY))
 						seq_data->selectionChanged = TRUE;
+						
+					
+					event_extra->u.do_click.send_drag = TRUE;
 				}
 			}
 		}
@@ -281,9 +286,9 @@ HandleEvent (
 				}
 				else if((*extra->contextH)->w_type != PF_Window_NONE)
 				{
-					if((extra->u.adjust_cursor.modifiers & (PF_Mod_SHIFT_KEY | PF_Mod_OPT_ALT_KEY)) == 0)
+					if((extra->u.adjust_cursor.modifiers & ALL_MODIFIERS) == 0)
 						extra->u.adjust_cursor.set_cursor = PF_Cursor_HOLLOW_ARROW;
-					else if(extra->u.adjust_cursor.modifiers & (PF_Mod_SHIFT_KEY))
+					else if(extra->u.adjust_cursor.modifiers & PF_Mod_SHIFT_KEY)
 						extra->u.adjust_cursor.set_cursor = PF_Cursor_HOLLOW_ARROW_PLUS;
 					else
 						extra->u.adjust_cursor.set_cursor = PF_Cursor_SCISSORS;
