@@ -34,7 +34,7 @@
 #include "ProEXR_UTF.h"
 
 #include <ImfVersion.h>
-#include <ImfStandardAttributes.h>
+//#include <ImfStandardAttributes.h>
 
 #include <ImfChannelList.h>
 #include <ImfFloatAttribute.h>
@@ -52,6 +52,7 @@
 
 #include <list>
 
+
 using namespace std;
 using namespace Imf;
 using namespace Imath;
@@ -65,6 +66,7 @@ static SPBasicSuite			*sP							=	NULL;
 
 AEGP_InstalledEffectKey		gEXtractoR_key				=	NULL;
 AEGP_InstalledEffectKey		gIDentifier_key				=	NULL;
+AEGP_InstalledEffectKey		gCryptomatte_key			=	NULL;
 
 static	A_char				S_path[AEGP_MAX_PATH_SIZE+1]	=	{'\0'};
 
@@ -111,6 +113,102 @@ typedef struct {
 
 #define IDENTIFIER_ARB_INDEX	1
 
+
+#ifndef MAX_LAYER_NAME_LEN
+#define MAX_LAYER_NAME_LEN 63 // same as PF_CHANNEL_NAME_LEN
+#endif
+
+typedef struct {
+	char		magic[4]; // "cry1"
+	A_u_long	hash; // djb2 hash of everything after this, for quick comparison
+	char		reserved[24]; // 32 bytes at this point
+	char		layer[MAX_LAYER_NAME_LEN + 1];
+	A_u_long	manifest_size; // including null character
+	A_u_long	selection_size;
+	char		data[4]; // manifest string + selection string 
+} CryptomatteArbitraryData;
+
+#define CRYPTOMATTE_ARB_INDEX	1
+
+#ifndef SWAP_LONG
+#define SWAP_LONG(a)		((a >> 24) | ((a >> 8) & 0xff00) | ((a << 8) & 0xff0000) | (a << 24))
+#endif
+
+static void 
+SwapArbData(CryptomatteArbitraryData *arb_data)
+{
+	arb_data->hash = SWAP_LONG(arb_data->hash);
+	arb_data->selection_size = SWAP_LONG(arb_data->selection_size);
+	arb_data->manifest_size = SWAP_LONG(arb_data->manifest_size);
+}
+
+static A_u_long
+djb2(const A_u_char *data, size_t len)
+{
+	A_u_long hash = 5381;
+	
+	while(len--)
+		hash = ((hash << 5) + hash) + *data++; // hash * 33 + c
+	
+	return hash;
+}
+
+static void
+HashCryptoArb(CryptomatteArbitraryData *arb)
+{
+	const size_t len = sizeof(CryptomatteArbitraryData) + arb->selection_size + arb->manifest_size - 8 - 4;
+
+	#ifdef AE_BIG_ENDIAN
+		// really, you're compiling this for PPC?
+		SwapArbData(arb);
+	#endif
+	
+	arb->hash = djb2((A_u_char *)&arb->reserved[0], len);
+	
+	#ifdef AE_BIG_ENDIAN
+		SwapArbData(arb);
+	#endif
+}
+
+static A_Handle MakeCryptomatteHandle(AEGP_SuiteHandler &suites, std::string layer, const std::string &manifest)
+{
+	const std::string selection("");
+	
+	assert(sizeof(CryptomatteArbitraryData) == 108);
+	
+	const size_t siz = sizeof(CryptomatteArbitraryData) + manifest.size() + selection.size();
+	
+	A_Handle handle = (A_Handle)suites.HandleSuite()->host_new_handle( siz );
+	
+	CryptomatteArbitraryData *arb = (CryptomatteArbitraryData *)suites.HandleSuite()->host_lock_handle((PF_Handle)handle);
+	
+	arb->magic[0] = 'c';
+	arb->magic[1] = 'r';
+	arb->magic[2] = 'y';
+	arb->magic[3] = '1';
+
+	if(layer.size() > MAX_LAYER_NAME_LEN)
+		layer.resize(MAX_LAYER_NAME_LEN);
+	
+	strncpy(arb->layer, layer.c_str(), MAX_LAYER_NAME_LEN + 1);
+	
+	arb->manifest_size = manifest.size() + 1;
+	arb->selection_size = selection.size() + 1;
+	
+	strncpy(&arb->data[0], manifest.c_str(), arb->manifest_size);
+	strncpy(&arb->data[arb->manifest_size], selection.c_str(), arb->selection_size);
+	
+	HashCryptoArb(arb);
+	
+	#ifdef AE_BIG_ENDIAN
+		// really, you're compiling this for PPC?
+		SwapArbData(arb);
+	#endif
+	
+	suites.HandleSuite()->host_unlock_handle((PF_Handle)handle);
+	
+	return handle;
+}
 
 
 #ifdef AE_HFS_PATHS
@@ -479,6 +577,9 @@ static void PrintAttributeValue(string &desc, const Attribute &attrib)
 	{
 		const StringAttribute &a = dynamic_cast<const StringAttribute &>(attrib);
 		string val = a.value();
+		
+		if(val.size() > 128)
+			val = val.substr(0, 128) + "...";
 
 		desc += ": \"" + val + "\"";
 	}
@@ -1387,7 +1488,7 @@ static A_Err BuildEXRcompsFromLayer(AEGP_LayerH layerH)
 		AEGP_FootageH footH;
 		suites.FootageSuite()->AEGP_GetMainFootageFromItem(layer_itemH, &footH);
 		
-		A_char path[AEGP_MAX_PATH_SIZE+1];
+		//A_char path[AEGP_MAX_PATH_SIZE+1];
 	
 	#ifdef AE_UNICODE_PATHS	
 		AEGP_MemHandle u_pathH = NULL;
@@ -1398,11 +1499,13 @@ static A_Err BuildEXRcompsFromLayer(AEGP_LayerH layerH)
 		{
 			suites.MemorySuite()->AEGP_LockMemHandle(u_pathH, (void **)&file_pathZ);
 			
-			string char_path = UTF16toUTF8(file_pathZ);
+			//string char_path = UTF16toUTF8(file_pathZ);
 			
-			strncpy(path, char_path.c_str(), AEGP_MAX_PATH_SIZE);
+			//strncpy(path, char_path.c_str(), AEGP_MAX_PATH_SIZE);
 		}
 	#else
+		A_char path[AEGP_MAX_PATH_SIZE+1];
+		
 		suites.FootageSuite()->AEGP_GetFootagePath(footH, 0, AEGP_FOOTAGE_MAIN_FILE_INDEX, path);
 		
 		A_PathType *file_pathZ = path;
@@ -1518,7 +1621,7 @@ static A_Err BuildEXRcompsFromLayer(AEGP_LayerH layerH)
 		
 		if(contact_sheet_mult > 0 && in_file.layers().size() > 1)
 		{
-			const int total_tiles = in_file.layers().size();
+			const int total_tiles = in_file.layers().size() + in_file.cryptoLayers().size();
 		
 			while(contact_tiles_x * contact_tiles_y < total_tiles)
 			{
@@ -1549,9 +1652,13 @@ static A_Err BuildEXRcompsFromLayer(AEGP_LayerH layerH)
 		
 		
 		// create source comps, add to master comp
-		for(int i=0; i < in_file.layers().size(); i++)
+		for(int i=0; i < (in_file.layers().size() + in_file.cryptoLayers().size()); i++)
 		{
-			const ProEXRlayer_readPS &layer = dynamic_cast<const ProEXRlayer_readPS &>( *in_file.layers().at(i) );
+			const bool cryptoLayer = (i >= in_file.layers().size());
+			
+			const ProEXRlayer_readPS &layer = cryptoLayer ?
+												dynamic_cast<const ProEXRlayer_readPS &>( *in_file.cryptoLayers().at(i - in_file.layers().size()) ) :
+												dynamic_cast<const ProEXRlayer_readPS &>( *in_file.layers().at(i) );
 			
 			string source_comp_name = layer.name() + " source";
 			
@@ -1612,7 +1719,55 @@ static A_Err BuildEXRcompsFromLayer(AEGP_LayerH layerH)
 				(layer.channels().at(0)->name() == "Y" && layer.channels().at(1)->name() == "RY" && layer.channels().at(2)->name() == "BY")) ) )
 			{
 				// add effect to layer
-				if(layer.channels().at(0)->pixelType() == Imf::UINT && gIDentifier_key)
+				if(cryptoLayer)
+				{
+					if(gCryptomatte_key)
+					{
+						std::string manifest = layer.manifest();
+						
+						if(manifest.empty() && !layer.manif_file().empty())
+						{
+						#ifdef AE_UNICODE_PATHS	
+							std::string manifest_path = UTF16toUTF8(file_pathZ);
+						#else
+							std::string manifest_path = file_pathZ;
+						#endif
+							manifest_path.resize( manifest_path.find_last_of( PATH_DELIMITER ) + 1 );
+							manifest_path += layer.manif_file();
+							
+							std::ifstream f(manifest_path.c_str());
+							
+							f.seekg(0, std::ios::end);
+							manifest.reserve(f.tellg());
+							f.seekg(0, std::ios::beg);
+							
+							manifest.assign(std::istreambuf_iterator<char>(f), std::istreambuf_iterator<char>(f));
+						}
+						
+						A_Handle handle = MakeCryptomatteHandle(suites, layer.name(), manifest);
+						
+						AEGP_EffectRefH new_effectH;
+						AEGP_StreamRefH arb_stream;
+						AEGP_StreamValue2 val;
+						
+						val.val.arbH = handle;
+						
+						suites.EffectSuite()->AEGP_ApplyEffect(S_mem_id, footage_layerH, gCryptomatte_key, &new_effectH);
+						
+						
+						suites.StreamSuite()->AEGP_GetNewEffectStreamByIndex(S_mem_id,
+											new_effectH, CRYPTOMATTE_ARB_INDEX, &arb_stream);
+						
+						suites.StreamSuite()->AEGP_SetStreamValue(S_mem_id, arb_stream, &val);
+						
+						//suites.StreamSuite()->AEGP_DisposeStreamValue(&val);
+						
+						suites.StreamSuite()->AEGP_DisposeStream(arb_stream);
+						
+						suites.EffectSuite()->AEGP_DisposeEffect(new_effectH);
+					}
+				}
+				else if(layer.channels().at(0)->pixelType() == Imf::UINT && gIDentifier_key)
 				{
 					// set up the parameter data
 					IDentifierArbitraryData arb;
@@ -2959,6 +3114,7 @@ void GetControlKeys(SPBasicSuite *pica_basicP)
 	
 #define EXTRACTOR_KEY "EXtractoR"
 #define IDENTIFIER_KEY "IDentifier"
+#define CRYPTOMATTE_KEY "Cryptomatte"
 
 	suites.EffectSuite()->AEGP_GetNextInstalledEffect(prev_key, &next_key);
 	
@@ -2970,6 +3126,8 @@ void GetControlKeys(SPBasicSuite *pica_basicP)
 			gEXtractoR_key = next_key;
 		else if(string(plug_name) == string(IDENTIFIER_KEY) )
 			gIDentifier_key = next_key;
+		else if(string(plug_name) == string(CRYPTOMATTE_KEY) )
+			gCryptomatte_key = next_key;
 				
 		prev_key = next_key;
 

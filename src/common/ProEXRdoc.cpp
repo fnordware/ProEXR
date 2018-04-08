@@ -1404,6 +1404,12 @@ ProEXRdoc::findLayer(string layerName) const
 			return *i;
 	}
 	
+	for(vector<ProEXRlayer *>::const_iterator i = cryptoLayers().begin(); i != cryptoLayers().end(); ++i)
+	{
+		if( layerName.size() > 2 && (*i)->name() == layerName.substr(0, layerName.size() - 2) )
+			return *i;
+	}
+	
 	return NULL;
 }
 

@@ -25,11 +25,13 @@
 #define __ProEXRdoc_H__
 
 #include <vector>
+#include <map>
 
 #include <ImfRgbaFile.h>
 #include "ImfHybridInputFile.h"
 #include <ImfOutputFile.h>
 #include <ImfChannelList.h>
+#include <ImfStandardAttributes.h>
 
 #include <IexBaseExc.h>
 
@@ -167,6 +169,11 @@ class ProEXRlayer
 	void assignDoc(ProEXRdoc *doc);
 	ProEXRdoc *doc() const { return _doc; }
 	
+	const std::string & manifest() const { return _manifest; } // for Cryptomatte
+	void setManifest(const std::string &s) { _manifest = s; }
+	const std::string & manif_file() const { return _manif_file; }
+	void setManif_File(const std::string &s) { _manif_file = s; }
+	
 	bool loaded() const;
 	
 	void premultiply(ProEXRchannel *shared_alpha);
@@ -183,6 +190,9 @@ class ProEXRlayer
   private:
 	std::string _name;
 	std::vector<ProEXRchannel *> _channels;
+	
+	std::string _manifest;
+	std::string _manif_file;
 	
 	ProEXRchannel *_alpha;
 	
@@ -229,6 +239,8 @@ class ProEXRdoc
 	const std::vector<ProEXRchannel *> & channels() const { return _channels; }
 	std::vector<ProEXRlayer *> & layers() { return _layers; }
 	const std::vector<ProEXRlayer *> & layers() const { return _layers; }
+	std::vector<ProEXRlayer *> & cryptoLayers() { return _cryptoLayers; }
+	const std::vector<ProEXRlayer *> & cryptoLayers() const { return _cryptoLayers; }
 	
 	ProEXRchannel *findChannel(std::string channelName) const;
 	ProEXRlayer *findLayer(std::string layerName) const;
@@ -254,6 +266,7 @@ class ProEXRdoc
   private:
 	std::vector<ProEXRchannel *> _channels;
 	std::vector<ProEXRlayer *> _layers;
+	std::vector<ProEXRlayer *> _cryptoLayers;
   
 	ProEXRchannel *_black_channel;
 	ProEXRchannel *_white_channel;
@@ -286,6 +299,11 @@ class ProEXRdoc_read : public ProEXRdoc
   protected:
 	template<class ChannelType>
  	void initChannels();
+	
+	typedef struct {
+		std::string manifest;
+		std::string manif_file;
+	} CryptoManifest;
 	
 	template<class LayerType>
 	void buildLayers(bool split_alpha=false);
@@ -624,6 +642,42 @@ ProEXRdoc_read::buildLayers(bool split_alpha)
 	bool have_AG = false;
 	bool have_AB = false;
 	
+	
+	std::map<std::string, CryptoManifest> cryptoNames;
+	
+	for(int i=0; i < parts(); i++)
+	{
+		const Imf::Header &head = header(i);
+		
+		for(Imf::Header::ConstIterator j = head.begin(); j != head.end(); ++j)
+		{
+			const Imf::Attribute &attrib = j.attribute();
+			
+			const std::string attribName = j.name();
+			
+			if(std::string(attrib.typeName()) == "string" &&
+				attribName.substr(0, 12) == "cryptomatte/" &&
+				attribName.substr(attribName.size() - 5) == "/name")
+			{
+				const Imf::StringAttribute &a = dynamic_cast<const Imf::StringAttribute &>(attrib);
+				
+				CryptoManifest manifest;
+				
+				const std::string manifestAttribName = attribName.substr(0, attribName.size() - 5) + "/manifest";
+				const Imf::StringAttribute *manifestAttrib = head.findTypedAttribute<Imf::StringAttribute>(manifestAttribName.c_str());
+				if(manifestAttrib)
+					manifest.manifest = manifestAttrib->value();
+					
+				const std::string manif_fileAttribName = attribName.substr(0, attribName.size() - 11) + "/manif_file";
+				const Imf::StringAttribute *manif_fileAttrib = head.findTypedAttribute<Imf::StringAttribute>(manif_fileAttribName.c_str());
+				if(manif_fileAttrib)
+					manifest.manif_file = manif_fileAttrib->value();
+				
+				cryptoNames[a.value()] = manifest;
+			}
+		}
+	}
+	
 	// make the regular layers
 	for(std::vector<ProEXRchannel *>::iterator i = channels().begin(); i != channels().end(); ++i)
 	{
@@ -653,18 +707,46 @@ ProEXRdoc_read::buildLayers(bool split_alpha)
 			}
 			else
 			{
-				LayerType *l = NULL;
+				bool isCryptoChannel = false;
 				
-				if(chan->pixelType() == Imf::UINT)
-					l = new LayerType(chan->name()); // because this layer won't really match the channel
-				else
-					l = new LayerType;
+				for(std::map<std::string, CryptoManifest>::const_iterator j = cryptoNames.begin(); j != cryptoNames.end(); ++j)
+				{
+					const std::string &cryptoName = j->first;
+					
+					const std::string layerName = chan->layerName();
+					
+					if(layerName.size() == (cryptoName.size() + 2) &&
+						layerName.substr(0, layerName.size() - 2) == cryptoName &&
+						chan->channelType() == CHANNEL_LAYER)
+					{
+						LayerType *l = new LayerType(cryptoName);
+						
+						l->setManifest(j->second.manifest);
+						l->setManif_File(j->second.manif_file);
+						
+						cryptoLayers().push_back(l);
+						
+						isCryptoChannel = true;
+						
+						break;
+					}
+				}
 				
-				l->addChannel( chan );
+				if(!isCryptoChannel)
+				{
+					LayerType *l = NULL;
+					
+					if(chan->pixelType() == Imf::UINT)
+						l = new LayerType(chan->name()); // because this layer won't really match the channel
+					else
+						l = new LayerType;
+					
+					l->addChannel( chan );
+					
+					l->assignDoc(this);
 				
-				l->assignDoc(this);
-				
-				layers().push_back(l);
+					layers().push_back(l);
+				}
 			}
 		}
 	}
