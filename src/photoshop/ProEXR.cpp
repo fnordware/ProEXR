@@ -509,6 +509,9 @@ static void DoReadStart(GPtr globals)
 	globals->doc_in = new ProEXRdoc_readPS( *(globals->ps_in), &ps_calls, unMult, clip_alpha, true, split_alpha, !gInOptions.ignore_layertext, true);
 	
 	ProEXRdoc_readPS *exr = globals->doc_in;
+	
+	if(exr->layers().size() == 0)
+		throw Iex::InputExc("No non-Cryptomatte layers in file");
 		
 	gStuff->PluginUsing32BitCoordinates = TRUE;
 	gStuff->imageSize.h = gStuff->imageSize32.h = exr->width();
