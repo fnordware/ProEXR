@@ -1619,11 +1619,11 @@ static A_Err BuildEXRcompsFromLayer(AEGP_LayerH layerH)
 		AEGP_CompH contact_sheet_compH = NULL;
 		int contact_tiles_x = 1, contact_tiles_y = 1;
 		
-		if(contact_sheet_mult > 0 && in_file.layers().size() > 1)
+		const int total_layers = in_file.layers().size() + in_file.cryptoLayers().size();
+	
+		if(contact_sheet_mult > 0 && total_layers > 1)
 		{
-			const int total_tiles = in_file.layers().size() + in_file.cryptoLayers().size();
-		
-			while(contact_tiles_x * contact_tiles_y < total_tiles)
+			while(contact_tiles_x * contact_tiles_y < total_layers)
 			{
 				if(contact_tiles_y > contact_tiles_x)
 					contact_tiles_x++;
@@ -1652,15 +1652,15 @@ static A_Err BuildEXRcompsFromLayer(AEGP_LayerH layerH)
 		
 		
 		// create source comps, add to master comp
-		for(int i=0; i < (in_file.layers().size() + in_file.cryptoLayers().size()); i++)
+		for(int i=0; i < total_layers; i++)
 		{
-			const bool cryptoLayer = (i >= in_file.layers().size());
+			const bool cryptoLayer = (i < in_file.cryptoLayers().size());
 			
 			const ProEXRlayer_readPS &layer = cryptoLayer ?
-												dynamic_cast<const ProEXRlayer_readPS &>( *in_file.cryptoLayers().at(i - in_file.layers().size()) ) :
-												dynamic_cast<const ProEXRlayer_readPS &>( *in_file.layers().at(i) );
+												dynamic_cast<const ProEXRlayer_readPS &>( *in_file.cryptoLayers().at(i) ) :
+												dynamic_cast<const ProEXRlayer_readPS &>( *in_file.layers().at(i - in_file.cryptoLayers().size()) );
 			
-			string source_comp_name = layer.name() + " source";
+			string source_comp_name = layer.name() + (cryptoLayer ? " Cryptomatte source" : " source");
 			
 			ResizeName(source_comp_name, (AEGP_MAX_ITEM_NAME_SIZE-1));
 
@@ -1950,9 +1950,7 @@ static A_Err BuildEXRcompsFromLayer(AEGP_LayerH layerH)
 			// add source comp to contact sheet
 			if(contact_sheet_mult > 0 && contact_sheet_compH != NULL)
 			{
-				const int total_tiles = in_file.layers().size();
-			
-				const int tile_pos = total_tiles - 1 - i;
+				const int tile_pos = total_layers - 1 - i;
 				
 				const int tile_y = tile_pos / contact_tiles_x;
 				const int tile_x = tile_pos % contact_tiles_x;
@@ -2350,8 +2348,8 @@ static A_Err BuildVRimgCompsFromLayer(AEGP_LayerH layerH)
 			AEGP_CompH source_compH;
 			
 			string source_comp_name = layer_name + " source";
-			if(source_comp_name.size() > (AEGP_MAX_ITEM_NAME_SIZE-1))
-				source_comp_name.resize(AEGP_MAX_ITEM_NAME_SIZE-1);
+			
+			ResizeName(source_comp_name, (AEGP_MAX_ITEM_NAME_SIZE-1));
 			
 			AeName source_comp_nameAE = source_comp_name;
 
