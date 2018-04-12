@@ -2812,6 +2812,24 @@ GPCommandHook(
 	{
 		try{
 
+		// fix the auto cache threshold for the poor user, seeing as the Plabt refuses to fix their sequence settings bug
+	#define PREFS_AUTO_CACHE "Auto Cache Threshold"
+		
+		AEGP_PersistentBlobH blobH = NULL;
+		suites.PersistentDataSuite()->AEGP_GetApplicationBlob(&blobH);
+		
+		A_long auto_cache_channels = 5;
+		suites.PersistentDataSuite()->AEGP_GetLong(blobH, PREFS_SECTION, PREFS_AUTO_CACHE, auto_cache_channels, &auto_cache_channels);
+		
+		if(auto_cache_channels == 0)
+		{
+			suites.PersistentDataSuite()->AEGP_SetLong(blobH, PREFS_SECTION, PREFS_AUTO_CACHE, 5);
+			
+			//suites.UtilitySuite()->AEGP_ReportInfo(S_mem_id, "Your OpenEXR Auto Cache Threshold has been set to 5. You're welcome!");
+			suites.UtilitySuite()->AEGP_ExecuteScript(S_mem_id, "alert(\"Your OpenEXR Auto Cache Threshold has been set to 5. You're welcome!\\n\\n(You might want to re-import existing footage though.)\")", FALSE, NULL, NULL);
+		}
+		
+		
 		A_Boolean easter_egg = OptionKeyHeld();
 		
 		AEGP_ProjectH projH;
