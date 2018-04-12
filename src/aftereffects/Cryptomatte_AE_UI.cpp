@@ -139,8 +139,8 @@ DoClick(
 				
 				event_extra->cbs.comp_to_layer(event_extra->cbs.refcon, event_extra->contextH, in_data->current_time, in_data->time_scale, &mouse_downFixPt);
 				
-				mouse_downPt.h = FIX2INT(mouse_downFixPt.x);
-				mouse_downPt.v = FIX2INT(mouse_downFixPt.y);
+				mouse_downPt.h = FIX2INT(mouse_downFixPt.x * context->DownsampleX().num / context->DownsampleX().den);
+				mouse_downPt.v = FIX2INT(mouse_downFixPt.y * context->DownsampleY().num / context->DownsampleY().den);
 				
 				
 				if(mouse_downPt.h > 0 && mouse_downPt.h < context->Width() &&
@@ -232,6 +232,7 @@ DoClick(
 		}
 		
 		PF_UNLOCK_HANDLE(params[CRYPTO_DATA]->u.arb_d.value);
+		PF_UNLOCK_HANDLE(in_data->sequence_data);
 	}
 	
 	return PF_Err_NONE;

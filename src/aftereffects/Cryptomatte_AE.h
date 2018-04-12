@@ -56,7 +56,7 @@ enum {
 	CRYPTO_INPUT = 0,
 	CRYPTO_DATA,
 	//CRYPTO_ACTION,
-	CRYPTO_MATTE_ONLY,
+	CRYPTO_DISPLAY,
 	
 	CRYPTO_NUM_PARAMS
 };
@@ -64,8 +64,18 @@ enum {
 enum {
 	ARBITRARY_DATA_ID = 1,
 	//ACTION_ID,
-	MATTE_ID
+	DISPLAY_ID
 };
+
+
+enum {
+	DISPLAY_COLORS = 1,
+	DISPLAY_MATTED_RGBA,
+	DISPLAY_MATTE_ONLY,
+	DISPLAY_NUM_OPTIONS = DISPLAY_MATTE_ONLY
+};
+
+#define DISPLAY_MENU_STR "Colors|Matted RGBA|Matte Only"
 
 /*
 enum {
@@ -228,10 +238,16 @@ class CryptomatteContext
 	
 	float GetCoverage(int x, int y) const;
 	
+	PF_PixelFloat GetColor(int x, int y) const;
+	
 	std::set<std::string> GetItems(int x, int y) const;
 	
 	int Width() const;
 	int Height() const;
+	
+	const PF_RationalScale & DownsampleX() const { return _downsampleX; }
+	const PF_RationalScale & DownsampleY() const { return _downsampleY; }
+	
 	
 	A_u_long Hash() const { return _hash; }
 	
@@ -254,6 +270,8 @@ class CryptomatteContext
 		~Level();
 		
 		float GetCoverage(const std::set<A_u_long> &selection, int x, int y) const;
+		
+		PF_PixelFloat GetColor(int x, int y) const;
 		
 		A_u_long GetHash(int x, int y) const;
 		
@@ -283,6 +301,9 @@ class CryptomatteContext
 	};
 	
 	std::vector<Level *> _levels;
+	
+	PF_RationalScale _downsampleX;
+	PF_RationalScale _downsampleY;
 	
 	void CalculateNextNames(std::string &nextHashName, std::string &nextCoverageName);
 	void CalculateNext4Name(std::string &fourName);

@@ -88,6 +88,9 @@ CryptomatteContext::CryptomatteContext(CryptomatteArbitraryData *arb) :
 	}
 	
 	SetSelection(arb);
+	
+	_downsampleX.num = _downsampleX.den = 0;
+	_downsampleY.num = _downsampleY.den = 0;
 }
 
 
@@ -249,6 +252,9 @@ CryptomatteContext::LoadLevels(PF_InData *in_data)
 			}
 		}
 	}
+	
+	_downsampleX = in_data->downsample_x;
+	_downsampleY = in_data->downsample_y;
 }
 
 
@@ -268,6 +274,43 @@ CryptomatteContext::GetCoverage(int x, int y) const
 	}
 	
 	return coverage;
+}
+
+
+PF_PixelFloat
+CryptomatteContext::GetColor(int x, int y) const
+{
+	PF_PixelFloat color;
+	
+	color.alpha = color.red = color.green = color.blue = 0.f;
+	color.alpha = 1.f;
+
+	for(std::vector<Level *>::const_iterator i = _levels.begin(); i != _levels.end(); ++i)
+	{
+		const Level *level = *i;
+		
+		const PF_PixelFloat level_color = level->GetColor(x, y);
+		
+		if(level_color.red == 0.f && level_color.green == 0.f && level_color.blue == 0.f)
+			break;
+		
+		color.red += level_color.red;
+		color.green += level_color.green;
+		color.blue += level_color.blue;
+	}
+	
+	
+	const float selectedCoverage = this->GetCoverage(x, y);
+	
+	if(selectedCoverage > 0.f)
+	{
+		color.red	+= (selectedCoverage * (1.0f - color.red));
+		color.green	+= (selectedCoverage * (1.0f - color.green));
+		color.blue	+= (selectedCoverage * (1.0f - color.blue));
+	}
+	
+	
+	return color;
 }
 
 
@@ -589,6 +632,30 @@ CryptomatteContext::Level::GetCoverage(const std::set<A_u_long> &selection, int 
 }
 
 
+PF_PixelFloat
+CryptomatteContext::Level::GetColor(int x, int y) const
+{
+	const float floatHash = _hash->Get(x, y);
+	
+	//const A_u_long *hash = (A_u_long *)&floatHash;
+	
+	const float coverage = _coverage->Get(x, y);
+	
+	
+	int exp;
+	
+	PF_PixelFloat color;
+	
+	color.red	= coverage * fmodf(frexpf(fabsf(floatHash), &exp) * 1, 0.25);
+	color.green	= coverage * fmodf(frexpf(fabsf(floatHash), &exp) * 4, 0.25);
+	color.blue	= coverage * fmodf(frexpf(fabsf(floatHash), &exp) * 16, 0.25);
+	
+	color.alpha = 1.f;
+	
+	return color;
+}
+
+
 A_u_long
 CryptomatteContext::Level::GetHash(int x, int y) const
 {
@@ -819,6 +886,13 @@ ParamsSetup (
 						ARBITRARY_DATA_ID,
 						ARB_REFCON);
 	
+	AEFX_CLR_STRUCT(def);
+	PF_ADD_POPUP(	"Output",
+					DISPLAY_NUM_OPTIONS, //number of choices
+					DISPLAY_COLORS, //default
+					DISPLAY_MENU_STR,
+					DISPLAY_ID);
+
 /*	AEFX_CLR_STRUCT(def);
 	def.flags = PF_ParamFlag_SUPERVISE | PF_ParamFlag_CANNOT_TIME_VARY;
 	def.ui_flags = PF_PUI_STD_CONTROL_ONLY;
@@ -828,11 +902,12 @@ ParamsSetup (
 					ACTION_MENU_STR,
 					ACTION_ID);
 */
-
+/*
 	AEFX_CLR_STRUCT(def);
 	PF_ADD_CHECKBOX("", "Matte Only",
 					FALSE, 0,
 					MATTE_ID);
+*/
 
 	out_data->num_params = CRYPTO_NUM_PARAMS;
 
@@ -876,27 +951,33 @@ SequenceSetup (
 	CryptomatteSequenceData *sequence_data = NULL;
 	
 	// set up sequence data
-	if( (in_data->sequence_data == NULL) )
+	if(in_data->sequence_data == NULL)
 	{
 		out_data->sequence_data = PF_NEW_HANDLE( sizeof(CryptomatteSequenceData) );
 		
 		sequence_data = (CryptomatteSequenceData *)PF_LOCK_HANDLE(out_data->sequence_data);
+		
+		// set defaults
+		sequence_data->context = NULL;
+		sequence_data->selectionChanged = FALSE;
+		
+		PF_UNLOCK_HANDLE(out_data->sequence_data);
 	}
 	else // reset pre-existing sequence data
 	{
-		if( PF_GET_HANDLE_SIZE(in_data->sequence_data) != sizeof(CryptomatteSequenceData) )
+		assert(PF_GET_HANDLE_SIZE(in_data->sequence_data) == sizeof(CryptomatteSequenceData));
 		{
 			PF_RESIZE_HANDLE(sizeof(CryptomatteSequenceData), &in_data->sequence_data);
 		}
 			
 		sequence_data = (CryptomatteSequenceData *)PF_LOCK_HANDLE(in_data->sequence_data);
+		
+		// set defaults
+		sequence_data->context = NULL;
+		sequence_data->selectionChanged = FALSE;
+		
+		PF_UNLOCK_HANDLE(in_data->sequence_data);
 	}
-	
-	// set defaults
-	sequence_data->context = NULL;
-	sequence_data->selectionChanged = FALSE;
-	
-	PF_UNLOCK_HANDLE(in_data->sequence_data);
 	
 	return err;
 }
@@ -920,9 +1001,6 @@ SequenceSetdown (
 			CryptomatteContext *ctx = (CryptomatteContext *)seq_data->context;
 			
 			delete ctx;
-			
-			seq_data->context = NULL;
-			seq_data->selectionChanged = FALSE;
 		}
 	
 		PF_DISPOSE_HANDLE(in_data->sequence_data);
@@ -953,18 +1031,14 @@ SequenceFlatten (
 {
 	if(in_data->sequence_data)
 	{
-		CryptomatteSequenceData *seq_data = (CryptomatteSequenceData *)PF_LOCK_HANDLE(in_data->sequence_data);
+		CryptomatteSequenceData *in_sequence_data = (CryptomatteSequenceData *)PF_LOCK_HANDLE(in_data->sequence_data);
 		
-		if(seq_data->context != NULL)
-		{
-			CryptomatteContext *ctx = (CryptomatteContext *)seq_data->context;
-			
-			delete ctx;
-			
-			seq_data->context = NULL;
-			seq_data->selectionChanged = FALSE;
-		}
-	
+		CryptomatteContext *ctx = (CryptomatteContext *)in_sequence_data->context;
+		
+		delete ctx;
+		
+		in_sequence_data->context = NULL;
+		
 		PF_UNLOCK_HANDLE(in_data->sequence_data);
 	}
 
@@ -1080,43 +1154,62 @@ static inline float ChanToFloat<A_u_char>(const A_u_char &val)
 */
 
 
-typedef struct AlphaIterateData {
+typedef struct MatteIterateData {
 	PF_InData			*in_data;
 	CryptomatteContext	*context;
 	PF_PixelPtr			data;
 	A_long				rowbytes;
 	PF_Point			channelMove;
 	A_long				width;
+	int					display;
 	
-	AlphaIterateData(PF_InData *in, CryptomatteContext *c, PF_PixelPtr d, A_long rb, PF_Point ch, A_long w) :
+	MatteIterateData(PF_InData *in, CryptomatteContext *c, PF_PixelPtr d, A_long rb, PF_Point ch, A_long w, int di) :
 		in_data(in),
 		context(c),
 		data(d),
 		rowbytes(rb),
 		channelMove(ch),
-		width(w) {}
-} AlphaIterateData;
+		width(w),
+		display(di) {}
+} MatteIterateData;
 
 
 template <typename PIXTYPE, typename CHANTYPE>
 static PF_Err
-DrawAlpha_Iterate(void *refconPV,
+DrawMatte_Iterate(void *refconPV,
 					A_long thread_indexL,
 					A_long i,
 					A_long iterationsL)
 {
 	PF_Err err = PF_Err_NONE;
 	
-	AlphaIterateData *i_data = (AlphaIterateData *)refconPV;
+	MatteIterateData *i_data = (MatteIterateData *)refconPV;
 	PF_InData *in_data = i_data->in_data;
 	
 	PIXTYPE *pix = (PIXTYPE *)((char *)i_data->data + ((i + i_data->channelMove.v) * i_data->rowbytes) + (i_data->channelMove.h * sizeof(PIXTYPE)));
 	
-	for(int x=0; x < i_data->width; x++)
+	if(i_data->display == DISPLAY_COLORS)
 	{
-		pix->alpha = FloatToChan<CHANTYPE>(i_data->context->GetCoverage(x + i_data->channelMove.h, i + i_data->channelMove.v));
-		
-		pix++;
+		for(int x=0; x < i_data->width; x++)
+		{
+			const PF_PixelFloat color = i_data->context->GetColor(x + i_data->channelMove.h, i + i_data->channelMove.v);
+			
+			pix->alpha	= FloatToChan<CHANTYPE>(color.alpha);
+			pix->red	= FloatToChan<CHANTYPE>(color.red);
+			pix->green	= FloatToChan<CHANTYPE>(color.green);
+			pix->blue	= FloatToChan<CHANTYPE>(color.blue);
+			
+			pix++;
+		}
+	}
+	else
+	{
+		for(int x=0; x < i_data->width; x++)
+		{
+			pix->alpha = FloatToChan<CHANTYPE>(i_data->context->GetCoverage(x + i_data->channelMove.h, i + i_data->channelMove.v));
+			
+			pix++;
+		}
 	}
 
 #ifdef NDEBUG
@@ -1136,9 +1229,9 @@ typedef struct MergeIterateData {
 	PF_Point		worldMove;
 	PF_Point		channelMove;
 	A_long			width;
-	bool			matteOnly;
+	int				display;
 	
-	MergeIterateData(PF_InData *in, PF_EffectWorld *a, PF_EffectWorld *i, PF_EffectWorld *o, PF_Point w, PF_Point c, A_long wd, bool m) :
+	MergeIterateData(PF_InData *in, PF_EffectWorld *a, PF_EffectWorld *i, PF_EffectWorld *o, PF_Point w, PF_Point c, A_long wd, int d) :
 		in_data(in),
 		alpha(a),
 		input(i),
@@ -1146,7 +1239,7 @@ typedef struct MergeIterateData {
 		worldMove(w),
 		channelMove(c),
 		width(wd),
-		matteOnly(m) {}
+		display(d) {}
 } MergeIterateData;
 
 
@@ -1166,7 +1259,7 @@ Merge_Iterate(void *refconPV,
 	PIXTYPE *input = (PIXTYPE *)((char *)i_data->input->data + ((i + i_data->worldMove.v) * i_data->input->rowbytes) + (i_data->worldMove.h * sizeof(PIXTYPE)));
 	PIXTYPE *output = (PIXTYPE *)((char *)i_data->output->data + ((i + i_data->worldMove.v) * i_data->output->rowbytes) + (i_data->worldMove.h * sizeof(PIXTYPE)));
 	
-	if(i_data->matteOnly)
+	if(i_data->display == DISPLAY_MATTE_ONLY)
 	{
 		const CHANTYPE white = FloatToChan<CHANTYPE>(1.f);
 	
@@ -1210,7 +1303,7 @@ DoRender(
 		PF_InData		*in_data,
 		PF_EffectWorld 	*input,
 		PF_ParamDef		*CRYPTO_data,
-		PF_ParamDef		*CRYPTO_matte,
+		PF_ParamDef		*CRYPTO_display,
 		PF_OutData		*out_data,
 		PF_EffectWorld	*output)
 {
@@ -1260,7 +1353,11 @@ DoRender(
 		
 			context->LoadLevels(in_data);
 		}
-		else if(!seq_data->selectionChanged)
+		else if(!seq_data->selectionChanged ||
+				context->DownsampleX().num != in_data->downsample_x.num ||
+				context->DownsampleX().den != in_data->downsample_x.den ||
+				context->DownsampleY().num != in_data->downsample_y.num ||
+				context->DownsampleY().den != in_data->downsample_y.den)
 		{
 			// don't re-load levels if the selection JUST changed
 			// hopefully people don't switch frames in between the click and the render,
@@ -1299,19 +1396,19 @@ DoRender(
 			const int copy_height = MIN(output->height - world_move.v, alphaWorld->height - chan_move.v);
 
 
-			AlphaIterateData alpha_iter(in_data, context, alphaWorld->data, alphaWorld->rowbytes, chan_move, copy_width);
+			MatteIterateData matte_iter(in_data, context, alphaWorld->data, alphaWorld->rowbytes, chan_move, copy_width, CRYPTO_display->u.pd.value);
 			
 			if(format == PF_PixelFormat_ARGB128)
 			{
-				err = suites.PFIterate8Suite()->iterate_generic(copy_height, &alpha_iter, DrawAlpha_Iterate<PF_PixelFloat, PF_FpShort>);
+				err = suites.PFIterate8Suite()->iterate_generic(copy_height, &matte_iter, DrawMatte_Iterate<PF_PixelFloat, PF_FpShort>);
 			}
 			else if(format == PF_PixelFormat_ARGB64)
 			{
-				err = suites.PFIterate8Suite()->iterate_generic(copy_height, &alpha_iter, DrawAlpha_Iterate<PF_Pixel16, A_u_short>);
+				err = suites.PFIterate8Suite()->iterate_generic(copy_height, &matte_iter, DrawMatte_Iterate<PF_Pixel16, A_u_short>);
 			}
 			else if(format == PF_PixelFormat_ARGB32)
 			{
-				err = suites.PFIterate8Suite()->iterate_generic(copy_height, &alpha_iter, DrawAlpha_Iterate<PF_Pixel, A_u_char>);
+				err = suites.PFIterate8Suite()->iterate_generic(copy_height, &matte_iter, DrawMatte_Iterate<PF_Pixel, A_u_char>);
 			}
 			
 			/*
@@ -1336,19 +1433,29 @@ DoRender(
 			}
 			*/
 			
-			MergeIterateData merge_iter(in_data, alphaWorld, input, output, world_move, chan_move, copy_width, CRYPTO_matte->u.bd.value);
-			
-			if(format == PF_PixelFormat_ARGB128)
+			if(CRYPTO_display->u.pd.value == DISPLAY_COLORS)
 			{
-				err = suites.PFIterate8Suite()->iterate_generic(copy_height, &merge_iter, Merge_Iterate<PF_PixelFloat, PF_FpShort>);
+				if(in_data->quality == PF_Quality_HI)
+					err = suites.PFWorldTransformSuite()->copy_hq(in_data->effect_ref, alphaWorld, output, NULL, NULL);
+				else
+					err = suites.PFWorldTransformSuite()->copy(in_data->effect_ref, alphaWorld, output, NULL, NULL);
 			}
-			else if(format == PF_PixelFormat_ARGB64)
+			else
 			{
-				err = suites.PFIterate8Suite()->iterate_generic(copy_height, &merge_iter, Merge_Iterate<PF_Pixel16, A_u_short>);
-			}
-			else if(format == PF_PixelFormat_ARGB32)
-			{
-				err = suites.PFIterate8Suite()->iterate_generic(copy_height, &merge_iter, Merge_Iterate<PF_Pixel, A_u_char>);
+				MergeIterateData merge_iter(in_data, alphaWorld, input, output, world_move, chan_move, copy_width, CRYPTO_display->u.pd.value);
+				
+				if(format == PF_PixelFormat_ARGB128)
+				{
+					err = suites.PFIterate8Suite()->iterate_generic(copy_height, &merge_iter, Merge_Iterate<PF_PixelFloat, PF_FpShort>);
+				}
+				else if(format == PF_PixelFormat_ARGB64)
+				{
+					err = suites.PFIterate8Suite()->iterate_generic(copy_height, &merge_iter, Merge_Iterate<PF_Pixel16, A_u_short>);
+				}
+				else if(format == PF_PixelFormat_ARGB32)
+				{
+					err = suites.PFIterate8Suite()->iterate_generic(copy_height, &merge_iter, Merge_Iterate<PF_Pixel, A_u_char>);
+				}
 			}
 		}
 		else
@@ -1396,11 +1503,11 @@ SmartRender(
 	PF_EffectWorld *input, *output;
 	
 	PF_ParamDef CRYPTO_data,
-				CRYPTO_matte;
+				CRYPTO_display;
 
 	// zero-out parameters
 	AEFX_CLR_STRUCT(CRYPTO_data);
-	AEFX_CLR_STRUCT(CRYPTO_matte);
+	AEFX_CLR_STRUCT(CRYPTO_display);
 	
 	
 #define PF_CHECKOUT_PARAM_NOW( PARAM, DEST )	PF_CHECKOUT_PARAM(	in_data, (PARAM), in_data->current_time, in_data->time_step, in_data->time_scale, DEST )
@@ -1430,18 +1537,18 @@ SmartRender(
 
 
 	// checkout the required params
-	ERR(	PF_CHECKOUT_PARAM_NOW( CRYPTO_MATTE_ONLY,	&CRYPTO_matte )	);
+	ERR(	PF_CHECKOUT_PARAM_NOW( CRYPTO_DISPLAY,	&CRYPTO_display )	);
 
 	ERR(DoRender(	in_data, 
 					input, 
 					&CRYPTO_data,
-					&CRYPTO_matte,
+					&CRYPTO_display,
 					out_data, 
 					output));
 
 	// Always check in, no matter what the error condition!
 	ERR2(	PF_CHECKIN_PARAM(in_data, &CRYPTO_data )	);
-	ERR2(	PF_CHECKIN_PARAM(in_data, &CRYPTO_matte )	);
+	ERR2(	PF_CHECKIN_PARAM(in_data, &CRYPTO_display )	);
 
 
 	return err;
