@@ -673,7 +673,7 @@ ProEXRdoc_read::buildLayers(bool split_alpha)
 				if(manif_fileAttrib)
 					manifest.manif_file = manif_fileAttrib->value();
 				
-				cryptoNames[a.value()] = manifest;
+				cryptoNames[_in_file.partPrefix(i) + a.value()] = manifest;
 			}
 		}
 	}

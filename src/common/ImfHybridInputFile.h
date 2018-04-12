@@ -53,6 +53,8 @@ class IMF_EXPORT HybridInputFile : public GenericInputFile
 
 	const Header &  header(int n) const { return _multiPart.header(n); }
 	
+	std::string partPrefix(int n) const;
+	
 	int			    version () const { return _multiPart.version(); }
 	
 	bool		isComplete () const;

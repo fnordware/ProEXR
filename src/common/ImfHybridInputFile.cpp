@@ -52,6 +52,17 @@ HybridInputFile::HybridInputFile(IStream& is, bool renameFirstPart, int numThrea
 }
 
 
+string
+HybridInputFile::partPrefix(int n) const
+{
+	const Header &head = _multiPart.header(n);
+	
+	const bool rename = (_multiPart.parts() > 1) && (n > 0 || _renameFirstPart) && head.hasName();
+
+	return (rename ? head.name() + "." : "");
+}
+
+
 bool
 HybridInputFile::isComplete() const
 {
@@ -134,9 +145,7 @@ HybridInputFile::setup()
 
 			for(ChannelList::ConstIterator i = chans.begin(); i != chans.end(); ++i)
 			{
-				const bool rename = (_multiPart.parts() > 1) && (n > 0 || _renameFirstPart) && head.hasName();
-				
-				const string hybrid_name = (rename ? head.name() + "." + i.name() : i.name());
+				const string hybrid_name = (partPrefix(n) + i.name());
 				
 				_map[ hybrid_name ] = HybridChannel(n, i.name());
 				
