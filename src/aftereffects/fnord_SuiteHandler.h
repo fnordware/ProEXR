@@ -78,6 +78,8 @@ typedef		AEGP_ItemSuite7					AEGP_ItemSuite;
 typedef		AEGP_CompSuite6					AEGP_CompSuite;
 #define		kAEGPLayerSuiteVersion			kAEGPLayerSuiteVersion5
 typedef		AEGP_LayerSuite5				AEGP_LayerSuite;
+#define		kPFParamUtilsSuiteVersion		kPFParamUtilsSuiteVersion2
+typedef		PF_ParamUtilsSuite2				PF_ParamUtilsSuite;
 
 #else
 
@@ -115,6 +117,9 @@ typedef		AEGP_ItemSuite8					AEGP_ItemSuite;
 typedef		AEGP_CompSuite7					AEGP_CompSuite;
 #define		kAEGPLayerSuiteVersion			kAEGPLayerSuiteVersion6
 typedef		AEGP_LayerSuite6				AEGP_LayerSuite;
+#define		kPFParamUtilsSuiteVersion		kPFParamUtilsSuiteVersion3
+typedef		PF_ParamUtilsSuite3				PF_ParamUtilsSuite;
+
 
 // only available in >=10.0
 #include <adobesdk/DrawbotSuite.h>
@@ -217,6 +222,7 @@ private:
 		AEGP_RenderSuite			*render_suiteP;
 		AEGP_CompSuite				*comp_suiteP;
 		AEGP_LayerSuite				*layer_suiteP;
+		PF_ParamUtilsSuite			*pf_param_utils_suiteP;
 		AEGP_CameraSuite			*camera_suiteP;
 		AEGP_CollectionSuite		*collection_suiteP;
 		AEGP_StreamSuite			*stream_suiteP;
@@ -300,6 +306,7 @@ private:
 		AEGP_SUITE_RELEASE_BOILERPLATE(render_suiteP, kAEGPRenderSuite, kAEGPRenderSuiteVersion);
 		AEGP_SUITE_RELEASE_BOILERPLATE(comp_suiteP, kAEGPCompSuite, kAEGPCompSuiteVersion);
 		AEGP_SUITE_RELEASE_BOILERPLATE(layer_suiteP, kAEGPLayerSuite, kAEGPLayerSuiteVersion);
+		AEGP_SUITE_RELEASE_BOILERPLATE(pf_param_utils_suiteP, kPFParamUtilsSuite, kPFParamUtilsSuiteVersion);
 		AEGP_SUITE_RELEASE_BOILERPLATE(camera_suiteP, kAEGPCameraSuite, kAEGPCameraSuiteVersion);
 		AEGP_SUITE_RELEASE_BOILERPLATE(collection_suiteP, kAEGPCollectionSuite, kAEGPCollectionSuiteVersion);
 		AEGP_SUITE_RELEASE_BOILERPLATE(stream_suiteP, kAEGPStreamSuite, kAEGPStreamSuiteVersion);
@@ -374,6 +381,7 @@ public:
 	AEGP_SUITE_ACCESS_BOILERPLATE(RenderSuite, AEGP_RenderSuite, render_suiteP, kAEGPRenderSuite, kAEGPRenderSuiteVersion);
 	AEGP_SUITE_ACCESS_BOILERPLATE(CompSuite, AEGP_CompSuite, comp_suiteP, kAEGPCompSuite, kAEGPCompSuiteVersion);
 	AEGP_SUITE_ACCESS_BOILERPLATE(LayerSuite, AEGP_LayerSuite, layer_suiteP, kAEGPLayerSuite, kAEGPLayerSuiteVersion);
+	AEGP_SUITE_ACCESS_BOILERPLATE(PFParamUtilsSuite, PF_ParamUtilsSuite, pf_param_utils_suiteP, kPFParamUtilsSuite, kPFParamUtilsSuiteVersion);
 	AEGP_SUITE_ACCESS_BOILERPLATE(CameraSuite, AEGP_CameraSuite, camera_suiteP, kAEGPCameraSuite, kAEGPCameraSuiteVersion);
 	AEGP_SUITE_ACCESS_BOILERPLATE(CollectionSuite, AEGP_CollectionSuite, collection_suiteP, kAEGPCollectionSuite, kAEGPCollectionSuiteVersion);
 	AEGP_SUITE_ACCESS_BOILERPLATE(StreamSuite, AEGP_StreamSuite, stream_suiteP, kAEGPStreamSuite, kAEGPStreamSuiteVersion);

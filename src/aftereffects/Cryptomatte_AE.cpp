@@ -960,6 +960,12 @@ SequenceSetup (
 		// set defaults
 		sequence_data->context = NULL;
 		sequence_data->selectionChanged = FALSE;
+		sequence_data->sendingClickPoint = FALSE;
+		sequence_data->clickPoint.h = 0;
+		sequence_data->clickPoint.v = 0;
+		sequence_data->modifiers = PF_Mod_NONE;
+		sequence_data->sendingClickedItems = FALSE;
+		sequence_data->clickedItems = NULL;
 		
 		PF_UNLOCK_HANDLE(out_data->sequence_data);
 	}
@@ -975,6 +981,12 @@ SequenceSetup (
 		// set defaults
 		sequence_data->context = NULL;
 		sequence_data->selectionChanged = FALSE;
+		sequence_data->sendingClickPoint = FALSE;
+		sequence_data->clickPoint.h = 0;
+		sequence_data->clickPoint.v = 0;
+		sequence_data->modifiers = PF_Mod_NONE;
+		sequence_data->sendingClickedItems = FALSE;
+		sequence_data->clickedItems = NULL;
 		
 		PF_UNLOCK_HANDLE(in_data->sequence_data);
 	}
@@ -1499,57 +1511,123 @@ SmartRender(
 {
 	PF_Err			err		= PF_Err_NONE,
 					err2 	= PF_Err_NONE;
-					
-	PF_EffectWorld *input, *output;
-	
-	PF_ParamDef CRYPTO_data,
-				CRYPTO_display;
-
-	// zero-out parameters
-	AEFX_CLR_STRUCT(CRYPTO_data);
-	AEFX_CLR_STRUCT(CRYPTO_display);
 	
 	
-#define PF_CHECKOUT_PARAM_NOW( PARAM, DEST )	PF_CHECKOUT_PARAM(	in_data, (PARAM), in_data->current_time, in_data->time_step, in_data->time_scale, DEST )
-
-	// get our arb data and see if it requires the input buffer
-	err = PF_CHECKOUT_PARAM_NOW(CRYPTO_DATA, &CRYPTO_data);
+	assert(in_data->sequence_data != NULL);
 	
-	if(!err)
+	CryptomatteSequenceData *seq_data = (CryptomatteSequenceData *)PF_LOCK_HANDLE(in_data->sequence_data);
+	
+	const bool handleClick = (seq_data && seq_data->context != NULL && seq_data->sendingClickPoint);
+	
+	if(handleClick)
 	{
-		CryptomatteArbitraryData *arb_data = (CryptomatteArbitraryData *)PF_LOCK_HANDLE(CRYPTO_data.u.arb_d.value);
+		// Selecting step 2: Using the click coordinates, store the selected items, tell UI to re-draw
+		
+		if(seq_data->context != NULL)
+		{
+			CryptomatteContext *context = (CryptomatteContext *)seq_data->context;
+			
+			if(context->Valid())
+			{
+				PF_Point contextPoint;
+				
+				contextPoint.h = (seq_data->clickPoint.h * context->DownsampleX().num / context->DownsampleX().den);
+				contextPoint.v = (seq_data->clickPoint.h * context->DownsampleY().num / context->DownsampleY().den);
+				
+				seq_data->sendingClickPoint = FALSE;
+				seq_data->clickPoint.h = 0;
+				seq_data->clickPoint.v = 0;
+				
+				if(contextPoint.h > 0 && contextPoint.h < context->Width() &&
+					contextPoint.v > 0 && contextPoint.v < context->Height())
+				{
+					PF_ParamDef CRYPTO_data;
+					
+					AEFX_CLR_STRUCT(CRYPTO_data);
+					
+				#define PF_CHECKOUT_PARAM_NOW( PARAM, DEST )	PF_CHECKOUT_PARAM(	in_data, (PARAM), in_data->current_time, in_data->time_step, in_data->time_scale, DEST )
 
-		if(true)
-		{
-			err = extra->cb->checkout_layer_pixels(in_data->effect_ref, CRYPTO_INPUT, &input);
-		}
-		else
-		{
-			input = NULL;
+					// get our arb data and see if it requires the input buffer
+					err = PF_CHECKOUT_PARAM_NOW(CRYPTO_DATA, &CRYPTO_data);
+					
+					if(!err)
+					{
+						std::set<std::string> clickedItems = context->GetItems(contextPoint.h, contextPoint.v);
+						
+						// could be empty, but then we have to set an empty selection
+						seq_data->sendingClickedItems = TRUE;
+						seq_data->clickedItems = new std::set<std::string>(clickedItems);
+						
+						// how to update the param?
+						out_data->out_flags |= PF_OutFlag_REFRESH_UI;  // ??
+						
+						AEGP_SuiteHandler suites(in_data->pica_basicP);
+						
+						suites.PFParamUtilsSuite()->PF_UpdateParamUI(in_data->effect_ref, CRYPTO_DATA, &CRYPTO_data);
+					}
+					
+					ERR2(	PF_CHECKIN_PARAM(in_data, &CRYPTO_data )	);
+				}
+			}
 		}
 		
-		PF_UNLOCK_HANDLE(CRYPTO_data.u.arb_d.value);
+		PF_UNLOCK_HANDLE(in_data->sequence_data);
 	}
-	
-	
-	// always get the output buffer
-	ERR(	extra->cb->checkout_output(	in_data->effect_ref, &output)	);
+	else
+	{
+		PF_UNLOCK_HANDLE(in_data->sequence_data);
+		
+		
+		PF_EffectWorld *input, *output;
+		
+		PF_ParamDef CRYPTO_data,
+					CRYPTO_display;
+
+		// zero-out parameters
+		AEFX_CLR_STRUCT(CRYPTO_data);
+		AEFX_CLR_STRUCT(CRYPTO_display);
+		
+		
+	//#define PF_CHECKOUT_PARAM_NOW( PARAM, DEST )	PF_CHECKOUT_PARAM(	in_data, (PARAM), in_data->current_time, in_data->time_step, in_data->time_scale, DEST )
+
+		// get our arb data and see if it requires the input buffer
+		err = PF_CHECKOUT_PARAM_NOW(CRYPTO_DATA, &CRYPTO_data);
+		
+		if(!err)
+		{
+			CryptomatteArbitraryData *arb_data = (CryptomatteArbitraryData *)PF_LOCK_HANDLE(CRYPTO_data.u.arb_d.value);
+
+			if(true)
+			{
+				err = extra->cb->checkout_layer_pixels(in_data->effect_ref, CRYPTO_INPUT, &input);
+			}
+			else
+			{
+				input = NULL;
+			}
+			
+			PF_UNLOCK_HANDLE(CRYPTO_data.u.arb_d.value);
+		}
+		
+		
+		// always get the output buffer
+		ERR(	extra->cb->checkout_output(	in_data->effect_ref, &output)	);
 
 
-	// checkout the required params
-	ERR(	PF_CHECKOUT_PARAM_NOW( CRYPTO_DISPLAY,	&CRYPTO_display )	);
+		// checkout the required params
+		ERR(	PF_CHECKOUT_PARAM_NOW( CRYPTO_DISPLAY,	&CRYPTO_display )	);
 
-	ERR(DoRender(	in_data, 
-					input, 
-					&CRYPTO_data,
-					&CRYPTO_display,
-					out_data, 
-					output));
+		ERR(DoRender(	in_data, 
+						input, 
+						&CRYPTO_data,
+						&CRYPTO_display,
+						out_data, 
+						output));
 
-	// Always check in, no matter what the error condition!
-	ERR2(	PF_CHECKIN_PARAM(in_data, &CRYPTO_data )	);
-	ERR2(	PF_CHECKIN_PARAM(in_data, &CRYPTO_display )	);
-
+		// Always check in, no matter what the error condition!
+		ERR2(	PF_CHECKIN_PARAM(in_data, &CRYPTO_data )	);
+		ERR2(	PF_CHECKIN_PARAM(in_data, &CRYPTO_display )	);
+	}
 
 	return err;
 }
@@ -1650,6 +1728,9 @@ PluginMain (
 				break;
 			case PF_Cmd_SMART_RENDER:
 				err = SmartRender(in_data, out_data, (PF_SmartRenderExtra *)extra);
+				break;
+			case PF_Cmd_RENDER:
+				assert(FALSE);
 				break;
 			case PF_Cmd_EVENT:
 				err = HandleEvent(in_data, out_data, params, output, (PF_EventExtra	*)extra);

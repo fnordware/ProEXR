@@ -28,6 +28,111 @@ DrawEvent(
 	
 	AEGP_SuiteHandler suites(in_data->pica_basicP);
 	
+	// Selecting step 3: We have the selected items, now change the Param
+	
+	CryptomatteSequenceData *seq_data = (CryptomatteSequenceData *)PF_LOCK_HANDLE(in_data->sequence_data);
+	
+	if(seq_data && seq_data->sendingClickedItems && seq_data->clickedItems != NULL)
+	{
+		const std::set<std::string> *clickedItems = (const std::set<std::string> *)seq_data->clickedItems;
+		
+		if(params[CRYPTO_DATA]->u.arb_d.value != NULL)
+		{
+			CryptomatteArbitraryData *arb_data = (CryptomatteArbitraryData *)PF_LOCK_HANDLE(params[CRYPTO_DATA]->u.arb_d.value);
+				
+			std::set<std::string> newSelection;
+			
+		#define ALL_MODIFIERS (PF_Mod_CMD_CTRL_KEY | PF_Mod_SHIFT_KEY | PF_Mod_OPT_ALT_KEY | PF_Mod_MAC_CONTROL_KEY)
+
+			if((seq_data->modifiers & ALL_MODIFIERS) == 0) // select
+			{
+				for(std::set<std::string>::iterator i = clickedItems->begin(); i != clickedItems->end(); ++i)
+				{
+					std::string item = *i;
+					
+					if(item.find(" ") != std::string::npos)
+						item = "\"" + item + "\"";
+					
+					newSelection.insert(item);
+				}
+			}
+			else
+			{
+				std::vector<std::string> currenSelection;
+				CryptomatteContext::quotedTokenize(GetSelection(arb_data), currenSelection, ", ");
+				
+				for(std::vector<std::string>::const_iterator i = currenSelection.begin(); i != currenSelection.end(); ++i)
+				{
+					newSelection.insert(*i);
+				}
+					
+				if(seq_data->modifiers & PF_Mod_SHIFT_KEY) // add
+				{
+					for(std::set<std::string>::const_iterator i = clickedItems->begin(); i != clickedItems->end(); ++i)
+					{
+						std::string item = *i;
+						
+						if(item.find(" ") != std::string::npos)
+							item = "\"" + item + "\"";
+						
+						newSelection.insert(item);
+					}
+				}
+				else // remove
+				{
+					for(std::set<std::string>::const_iterator i = clickedItems->begin(); i != clickedItems->end(); ++i)
+					{
+						const std::string &item = *i;
+						
+						for(std::set<std::string>::iterator j = newSelection.begin(); j != newSelection.end(); ++j)
+						{
+							const std::string &currItem = *j;
+							
+							if(item == currItem || item == CryptomatteContext::deQuote(currItem))
+							{
+								newSelection.erase(j);
+								break;
+							}
+						}
+					}
+				}
+			}
+			
+			
+			std::string selectedString;
+			
+			for(std::set<std::string>::const_iterator i = newSelection.begin(); i != newSelection.end(); ++i)
+			{
+				if( !selectedString.empty() )
+					selectedString += ", ";
+				
+				selectedString += *i;
+			}
+			
+			PF_UNLOCK_HANDLE(params[CRYPTO_DATA]->u.arb_d.value);
+			
+			
+			SetArbSelection(in_data, &params[CRYPTO_DATA]->u.arb_d.value, selectedString);
+			
+			params[CRYPTO_DATA]->uu.change_flags = PF_ChangeFlag_CHANGED_VALUE;
+			
+			if(!(seq_data->modifiers & PF_Mod_CAPS_LOCK_KEY))
+				seq_data->selectionChanged = TRUE;
+		}
+		else
+			assert(FALSE); // don't expect ArbData to ever be NULL, but...
+		
+		
+		delete clickedItems;
+		
+		seq_data->clickedItems = NULL;
+		seq_data->sendingClickedItems = FALSE;
+		seq_data->modifiers = PF_Mod_NONE;
+		
+		PF_UNLOCK_HANDLE(in_data->sequence_data);
+	}
+	
+	
 	event_extra->evt_out_flags = 0;
 
 	if(!(event_extra->evt_in_flags & PF_EI_DONT_DRAW) && params[CRYPTO_DATA]->u.arb_d.value != NULL)
@@ -118,120 +223,39 @@ DoClick(
 	PF_LayerDef		*output,
 	PF_EventExtra	*event_extra)
 {
-	if(params[CRYPTO_DATA]->u.arb_d.value)
+	if(in_data->sequence_data)
 	{
-		CryptomatteArbitraryData *arb_data = (CryptomatteArbitraryData *)PF_LOCK_HANDLE(params[CRYPTO_DATA]->u.arb_d.value);
+		// Selecting Step 1: Store the click coordinates, tell comp to re-render
+		
+		// See the section on "Custom UI Implementation for Color Sampling, Using Keyframes" in the SDK guide
+	
+		//CryptomatteArbitraryData *arb_data = (CryptomatteArbitraryData *)PF_LOCK_HANDLE(params[CRYPTO_DATA]->u.arb_d.value);
 		CryptomatteSequenceData *seq_data = (CryptomatteSequenceData *)PF_LOCK_HANDLE(in_data->sequence_data);
 		
-		if(arb_data && seq_data && seq_data->context)
+		if(seq_data)
 		{
-			CryptomatteContext *context = (CryptomatteContext *)seq_data->context;
+			PF_Point mouse_downPt = *(reinterpret_cast<PF_Point*>(&event_extra->u.do_click.screen_point));
 			
-			if( context->Valid() )
-			{
-				PF_Point mouse_downPt = *(reinterpret_cast<PF_Point*>(&event_extra->u.do_click.screen_point));
-				
-				PF_FixedPoint mouse_downFixPt;
-				mouse_downFixPt.x = INT2FIX(mouse_downPt.h);
-				mouse_downFixPt.y = INT2FIX(mouse_downPt.v);
-				
-				event_extra->cbs.frame_to_source(event_extra->cbs.refcon, event_extra->contextH, &mouse_downFixPt);
-				
+			PF_FixedPoint mouse_downFixPt;
+			mouse_downFixPt.x = INT2FIX(mouse_downPt.h);
+			mouse_downFixPt.y = INT2FIX(mouse_downPt.v);
+			
+			event_extra->cbs.frame_to_source(event_extra->cbs.refcon, event_extra->contextH, &mouse_downFixPt);
+			
+			if((*event_extra->contextH)->w_type == PF_Window_COMP)
 				event_extra->cbs.comp_to_layer(event_extra->cbs.refcon, event_extra->contextH, in_data->current_time, in_data->time_scale, &mouse_downFixPt);
-				
-				mouse_downPt.h = FIX2INT(mouse_downFixPt.x * context->DownsampleX().num / context->DownsampleX().den);
-				mouse_downPt.v = FIX2INT(mouse_downFixPt.y * context->DownsampleY().num / context->DownsampleY().den);
-				
-				
-				if(mouse_downPt.h > 0 && mouse_downPt.h < context->Width() &&
-					mouse_downPt.v > 0 && mouse_downPt.v < context->Height())
-				{
-					std::set<std::string> clickedItems = context->GetItems(mouse_downPt.h, mouse_downPt.v);
-					
-					std::set<std::string> newSelection;
-					
-				#define ALL_MODIFIERS (PF_Mod_CMD_CTRL_KEY | PF_Mod_SHIFT_KEY | PF_Mod_OPT_ALT_KEY | PF_Mod_MAC_CONTROL_KEY)
-				
-					if((event_extra->u.do_click.modifiers & ALL_MODIFIERS) == 0) // select
-					{
-						for(std::set<std::string>::iterator i = clickedItems.begin(); i != clickedItems.end(); ++i)
-						{
-							std::string item = *i;
-							
-							if(item.find(" ") != std::string::npos)
-								item = "\"" + item + "\"";
-							
-							newSelection.insert(item);
-						}
-					}
-					else
-					{
-						std::vector<std::string> currenSelection;
-						CryptomatteContext::quotedTokenize(GetSelection(arb_data), currenSelection, ", ");
-						
-						for(std::vector<std::string>::const_iterator i = currenSelection.begin(); i != currenSelection.end(); ++i)
-						{
-							newSelection.insert(*i);
-						}
-							
-						if(event_extra->u.do_click.modifiers & PF_Mod_SHIFT_KEY) // add
-						{
-							for(std::set<std::string>::const_iterator i = clickedItems.begin(); i != clickedItems.end(); ++i)
-							{
-								std::string item = *i;
-								
-								if(item.find(" ") != std::string::npos)
-									item = "\"" + item + "\"";
-								
-								newSelection.insert(item);
-							}
-						}
-						else // remove
-						{
-							for(std::set<std::string>::const_iterator i = clickedItems.begin(); i != clickedItems.end(); ++i)
-							{
-								const std::string &item = *i;
-								
-								for(std::set<std::string>::iterator j = newSelection.begin(); j != newSelection.end(); ++j)
-								{
-									const std::string &currItem = *j;
-									
-									if(item == currItem || item == CryptomatteContext::deQuote(currItem))
-									{
-										newSelection.erase(j);
-										break;
-									}
-								}
-							}
-						}
-					}
-					
-					
-					std::string selectedString;
-					
-					for(std::set<std::string>::const_iterator i = newSelection.begin(); i != newSelection.end(); ++i)
-					{
-						if( !selectedString.empty() )
-							selectedString += ", ";
-						
-						selectedString += *i;
-					}
-					
-					
-					SetArbSelection(in_data, &params[CRYPTO_DATA]->u.arb_d.value, selectedString);
-					
-					params[CRYPTO_DATA]->uu.change_flags = PF_ChangeFlag_CHANGED_VALUE;
-					
-					if(!(event_extra->u.do_click.modifiers & PF_Mod_CAPS_LOCK_KEY))
-						seq_data->selectionChanged = TRUE;
-						
-					
-					event_extra->u.do_click.send_drag = TRUE;
-				}
-			}
+			
+			seq_data->clickPoint.h = FIX2INT(mouse_downFixPt.x);
+			seq_data->clickPoint.v = FIX2INT(mouse_downFixPt.y);
+			
+			seq_data->sendingClickPoint = TRUE;
+			
+			seq_data->modifiers = event_extra->u.do_click.modifiers;
+			
+			event_extra->evt_out_flags |= PF_EO_ALWAYS_UPDATE;
 		}
 		
-		PF_UNLOCK_HANDLE(params[CRYPTO_DATA]->u.arb_d.value);
+		//PF_UNLOCK_HANDLE(params[CRYPTO_DATA]->u.arb_d.value);
 		PF_UNLOCK_HANDLE(in_data->sequence_data);
 	}
 	
@@ -251,6 +275,8 @@ HandleEvent (
 	
 	if (!err) 
 	{
+		extra->evt_out_flags = PF_EO_NONE;
+		
 		switch(extra->e_type) 
 		{
 			case PF_Event_DRAW:
@@ -262,12 +288,12 @@ HandleEvent (
 				if((*extra->contextH)->w_type == PF_Window_EFFECT)
 				{
 					err = DoDialog(in_data, out_data, params, output);
-					extra->evt_out_flags = PF_EO_HANDLED_EVENT;
+					extra->evt_out_flags |= PF_EO_HANDLED_EVENT;
 				}
 				else if((*extra->contextH)->w_type != PF_Window_NONE)
 				{
 					err = DoClick(in_data, out_data, params, output, extra);
-					extra->evt_out_flags = PF_EO_HANDLED_EVENT;
+					extra->evt_out_flags |= PF_EO_HANDLED_EVENT;
 				}
 				break;
 				
@@ -295,7 +321,7 @@ HandleEvent (
 						extra->u.adjust_cursor.set_cursor = PF_Cursor_SCISSORS;
 				}
 				
-				extra->evt_out_flags = PF_EO_HANDLED_EVENT;
+				extra->evt_out_flags |= PF_EO_HANDLED_EVENT;
 				break;
 		}
 	}

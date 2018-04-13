@@ -45,8 +45,8 @@
 #define AUTHOR				"Brendan Bolles"
 #define COPYRIGHT			"(c) 2018 fnord"
 #define WEBSITE				"www.fnordware.com"
-#define	MAJOR_VERSION		1
-#define	MINOR_VERSION		9
+#define	MAJOR_VERSION		2
+#define	MINOR_VERSION		0
 #define	BUG_VERSION			0
 #define	STAGE_VERSION		PF_Stage_RELEASE
 #define	BUILD_VERSION		0
@@ -145,8 +145,13 @@ typedef struct {
 
 
 typedef struct {
-	void		*context;
-	A_Boolean	selectionChanged;
+	void			*context;
+	A_Boolean		selectionChanged;
+	A_Boolean		sendingClickPoint;
+	PF_Point		clickPoint;
+	PF_Modifiers	modifiers;
+	A_Boolean		sendingClickedItems;
+	void			*clickedItems; // std::set<std::string> *
 } CryptomatteSequenceData;
 
 //#define ARB_REFCON			(void*)0xDEADBEAF
