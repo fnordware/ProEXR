@@ -87,7 +87,7 @@ DrawEvent(
 			const float valuePos = (panel_left + (bot.FontSize() * 6));
 			const float valueSpace = (event_extra->effect_win.current_frame.right - valuePos);
 			
-			bot.SetColor(PF_App_Color_TEXT);
+			bot.SetColor(PF_App_Color_WHITE);
 			
 			bot.MoveTo(valuePos, panel_top + bot.FontSize());
 			bot.DrawString(GetLayer(arb_data), kDRAWBOT_TextAlignment_Default, kDRAWBOT_TextTruncation_EndEllipsis, valueSpace);

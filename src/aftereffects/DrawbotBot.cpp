@@ -231,7 +231,7 @@ void DrawbotBot::DrawString(
         do{
             *u++ = *c++;
             
-        }while(*c != '\0' && n++ < 255);
+        }while(*c != '\0' && ++n < 255);
         
         *u = '\0';
     }
