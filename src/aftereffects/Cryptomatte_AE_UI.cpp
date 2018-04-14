@@ -142,7 +142,7 @@ DrawEvent(
 							PF_UNLOCK_HANDLE(newArbH);
 							
 							
-							SetArbSelection(in_data, (PF_ArbitraryH *)&newArbH, selectedString);
+							SetArbSelection(in_data, &newArbH, selectedString);
 							
 							
 							AEGP_StreamValue2 val;
@@ -171,6 +171,9 @@ DrawEvent(
 					}
 					else
 						assert(FALSE);
+					
+					suites.EffectSuite()->AEGP_DisposeEffect(effectRefH);
+					
 					
 					// How we used to do it...
 					//SetArbSelection(in_data, &params[CRYPTO_DATA]->u.arb_d.value, selectedString);
