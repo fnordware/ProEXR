@@ -15,6 +15,8 @@
 
 #include "DrawbotBot.h"
 
+#include <assert.h>
+
 
 static PF_Err
 DrawEvent(	
@@ -46,7 +48,7 @@ DrawEvent(
 
 			if((seq_data->modifiers & ALL_MODIFIERS) == 0) // select
 			{
-				for(std::set<std::string>::iterator i = clickedItems->begin(); i != clickedItems->end(); ++i)
+				for(std::set<std::string>::const_iterator i = clickedItems->begin(); i != clickedItems->end(); ++i)
 				{
 					std::string item = *i;
 					

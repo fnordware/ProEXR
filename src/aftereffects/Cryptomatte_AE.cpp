@@ -452,7 +452,7 @@ CryptomatteContext::Width() const
 {
 #ifdef NDEBUG
 	if(_levels.size() > 0)
-		return _levels[0].Width();
+		return _levels[0]->Width();
 	else
 		return 0;
 #else
@@ -478,7 +478,7 @@ CryptomatteContext::Height() const
 {
 #ifdef NDEBUG
 	if(_levels.size() > 0)
-		return _levels[0].Height();
+		return _levels[0]->Height();
 	else
 		return 0;
 #else
