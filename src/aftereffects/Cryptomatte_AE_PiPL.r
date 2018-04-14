@@ -73,7 +73,7 @@ resource 'PiPL' (16000) {
 #define RESOURCE_FLAG 1
 #endif
 		AE_Effect_Global_OutFlags {
-			33588288 + RESOURCE_FLAG
+			33588304 + RESOURCE_FLAG
 		},
 		AE_Effect_Global_OutFlags_2 {
 			5128

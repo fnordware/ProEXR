@@ -191,6 +191,9 @@ typedef		AEGP_ColorSettingsSuite2		AEGP_ColorSettingsSuite;
 typedef		PF_AdvAppSuite1					PFAdvAppSuite;
 #define		kAEGPTextDocumentSuiteVersion	kAEGPTextDocumentSuiteVersion1
 typedef		AEGP_TextDocumentSuite1			AEGP_TextDocumentSuite;
+#define		kAEGPPFInterfaceSuiteVersion	kAEGPPFInterfaceSuiteVersion1
+typedef		AEGP_PFInterfaceSuite1			AEGP_PFInterfaceSuite;
+
 
 // Suite registration and handling object
 class AEGP_SuiteHandler {
@@ -241,6 +244,7 @@ private:
 		PFAdvAppSuite				*adv_app_suiteP;
 		AEGP_PersistentDataSuite	*persistent_data_suiteP;
 		AEGP_TextDocumentSuite		*text_document_suiteP;
+		AEGP_PFInterfaceSuite		*pfinterface_suiteP;
 
 	#if PF_AE_PLUG_IN_VERSION >= PF_AE100_PLUG_IN_VERSION
 		DB_DrawbotSuite				*db_drawbot_suiteP;
@@ -325,6 +329,7 @@ private:
 		AEGP_SUITE_RELEASE_BOILERPLATE(adv_app_suiteP, kPFAdvAppSuite, kPFAdvAppSuiteVersion);
 		AEGP_SUITE_RELEASE_BOILERPLATE(persistent_data_suiteP, kAEGPPersistentDataSuite, kAEGPPersistentDataSuiteVersion);
 		AEGP_SUITE_RELEASE_BOILERPLATE(text_document_suiteP, kAEGPTextDocumentSuite, kAEGPTextDocumentSuiteVersion);
+		AEGP_SUITE_RELEASE_BOILERPLATE(pfinterface_suiteP, kAEGPPFInterfaceSuite, kAEGPPFInterfaceSuiteVersion);
 
 	#if PF_AE_PLUG_IN_VERSION >= PF_AE100_PLUG_IN_VERSION
 		AEGP_SUITE_RELEASE_BOILERPLATE(db_drawbot_suiteP, kDRAWBOT_DrawSuite, kDRAWBOT_DrawbotSuite_Version);
@@ -400,6 +405,7 @@ public:
 	AEGP_SUITE_ACCESS_BOILERPLATE(AdvAppSuite, PFAdvAppSuite, adv_app_suiteP, kPFAdvAppSuite, kPFAdvAppSuiteVersion);
 	AEGP_SUITE_ACCESS_BOILERPLATE(PersistentDataSuite, AEGP_PersistentDataSuite, persistent_data_suiteP, kAEGPPersistentDataSuite, kAEGPPersistentDataSuiteVersion);
 	AEGP_SUITE_ACCESS_BOILERPLATE(TextDocumentSuite, AEGP_TextDocumentSuite, text_document_suiteP, kAEGPTextDocumentSuite, kAEGPTextDocumentSuiteVersion);
+	AEGP_SUITE_ACCESS_BOILERPLATE(PFInterfaceSuite, AEGP_PFInterfaceSuite, pfinterface_suiteP, kAEGPPFInterfaceSuite, kAEGPPFInterfaceSuiteVersion);
 	
 #if PF_AE_PLUG_IN_VERSION >= PF_AE100_PLUG_IN_VERSION
 	AEGP_SUITE_ACCESS_BOILERPLATE(DBDrawbotSuite, DB_DrawbotSuite, db_drawbot_suiteP, kDRAWBOT_DrawSuite, kDRAWBOT_DrawbotSuite_Version);

@@ -15,14 +15,7 @@
 
 #include "Cryptomatte_AE.h"
 
-//#include <ImfChannelList.h>
-
 #include <string>
-//#include <vector>
-//#include <map>
-//
-//typedef std::vector<std::string> ChannelVec;
-//typedef std::map<std::string, ChannelVec> LayerMap;
 
 bool Cryptomatte_Dialog(
 	std::string			&layer,

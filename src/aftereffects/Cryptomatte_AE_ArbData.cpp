@@ -83,7 +83,7 @@ GetManifest(const CryptomatteArbitraryData *arb)
 
 
 void
-SetArb(PF_InData *in_data, PF_ArbitraryH *arbH, std::string layer, std::string selection, std::string manifest)
+SetArb(PF_InData *in_data, PF_ArbitraryH *arbH, const std::string &l, const std::string &selection, const std::string &manifest)
 {
 	assert(sizeof(CryptomatteArbitraryData) == 108);
 	
@@ -108,6 +108,8 @@ SetArb(PF_InData *in_data, PF_ArbitraryH *arbH, std::string layer, std::string s
 	arb->magic[2] = 'y';
 	arb->magic[3] = '1';
 
+	std::string layer = l;
+	
 	if(layer.size() > MAX_LAYER_NAME_LEN)
 		layer.resize(MAX_LAYER_NAME_LEN);
 	
@@ -129,7 +131,7 @@ SetArb(PF_InData *in_data, PF_ArbitraryH *arbH, std::string layer, std::string s
 
 
 void
-SetArbSelection(PF_InData *in_data, PF_ArbitraryH *arbH, std::string selection)
+SetArbSelection(PF_InData *in_data, PF_ArbitraryH *arbH, const std::string &selection)
 {
 	CryptomatteArbitraryData *arb = (CryptomatteArbitraryData *)PF_LOCK_HANDLE(*arbH);
 	

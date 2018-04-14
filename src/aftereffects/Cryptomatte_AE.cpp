@@ -637,8 +637,6 @@ CryptomatteContext::Level::GetColor(int x, int y) const
 {
 	const float floatHash = _hash->Get(x, y);
 	
-	//const A_u_long *hash = (A_u_long *)&floatHash;
-	
 	const float coverage = _coverage->Get(x, y);
 	
 	
@@ -842,7 +840,8 @@ GlobalSetup (
 											STAGE_VERSION, 
 											BUILD_VERSION);
 
-	out_data->out_flags 	= 	PF_OutFlag_DEEP_COLOR_AWARE		|
+	out_data->out_flags 	= 	PF_OutFlag_SEQUENCE_DATA_NEEDS_FLATTENING	|
+								PF_OutFlag_DEEP_COLOR_AWARE		|
 								PF_OutFlag_PIX_INDEPENDENT		|
 								PF_OutFlag_CUSTOM_UI			|
 							#ifdef WIN_ENV
@@ -854,6 +853,42 @@ GlobalSetup (
 								PF_OutFlag2_SUPPORTS_SMART_RENDER	|
 								PF_OutFlag2_FLOAT_COLOR_AWARE;
 	
+	
+	
+	out_data->global_data = PF_NEW_HANDLE(sizeof(CryptomatteGlobalData));
+	
+	if(out_data->global_data)
+	{
+		CryptomatteGlobalData *global_data = (CryptomatteGlobalData *)PF_LOCK_HANDLE(out_data->global_data);
+		
+		if(global_data)
+		{
+			AEGP_SuiteHandler suites(in_data->pica_basicP);
+		
+			suites.UtilitySuite()->AEGP_RegisterWithAEGP(NULL, NAME, &global_data->pluginID);
+			
+			PF_UNLOCK_HANDLE(out_data->global_data);
+		}
+		else
+			assert(FALSE);
+	}
+	else
+		assert(FALSE);
+	
+	return PF_Err_NONE;
+}
+
+
+static PF_Err 
+GlobalSetdown (	
+	PF_InData		*in_data,
+	PF_OutData		*out_data,
+	PF_ParamDef		*params[],
+	PF_LayerDef		*output )
+{
+	if(out_data->global_data)
+		PF_DISPOSE_HANDLE(out_data->global_data);
+
 	return PF_Err_NONE;
 }
 
@@ -893,21 +928,6 @@ ParamsSetup (
 					DISPLAY_MENU_STR,
 					DISPLAY_ID);
 
-/*	AEFX_CLR_STRUCT(def);
-	def.flags = PF_ParamFlag_SUPERVISE | PF_ParamFlag_CANNOT_TIME_VARY;
-	def.ui_flags = PF_PUI_STD_CONTROL_ONLY;
-	PF_ADD_POPUP(	"Click Action",
-					ACTION_NUM_OPTIONS, //number of choices
-					ACTION_ADD, //default
-					ACTION_MENU_STR,
-					ACTION_ID);
-*/
-/*
-	AEFX_CLR_STRUCT(def);
-	PF_ADD_CHECKBOX("", "Matte Only",
-					FALSE, 0,
-					MATTE_ID);
-*/
 
 	out_data->num_params = CRYPTO_NUM_PARAMS;
 
@@ -1022,18 +1042,6 @@ SequenceSetdown (
 }
 
 
-/*
-static PF_Err
-UserChangedParam (
-	PF_InData		*in_data,
-	PF_OutData		*out_data,
-	PF_ParamDef		*params[],
-	PF_UserChangedParamExtra*	extra)
-{
-	return PF_Err_NONE;
-}
-*/
-
 static PF_Err 
 SequenceFlatten (
 	PF_InData		*in_data,
@@ -1050,6 +1058,13 @@ SequenceFlatten (
 		delete ctx;
 		
 		in_sequence_data->context = NULL;
+		
+		
+		std::set<std::string> *clickedItems = (std::set<std::string> *)in_sequence_data->clickedItems;
+		
+		delete clickedItems;
+		
+		in_sequence_data->clickedItems = NULL;
 		
 		PF_UNLOCK_HANDLE(in_data->sequence_data);
 	}
@@ -1141,29 +1156,6 @@ static inline A_u_char FloatToChan<A_u_char>(const float &val)
 {
 	return ((Clamp(val) * (float)PF_MAX_CHAN8) + 0.5f);
 }
-
-/*
-template <typename T>
-static inline float ChanToFloat(const T &val);
-
-template <>
-static inline float ChanToFloat<PF_FpShort>(const PF_FpShort &val)
-{
-	return val;
-}
-
-template <>
-static inline float ChanToFloat<A_u_short>(const A_u_short &val)
-{
-	return ((float)val / (float)PF_MAX_CHAN16);
-}
-
-template <>
-static inline float ChanToFloat<A_u_char>(const A_u_char &val)
-{
-	return ((float)val / (float)PF_MAX_CHAN8);
-}
-*/
 
 
 typedef struct MatteIterateData {
@@ -1327,9 +1319,6 @@ DoRender(
 	PF_EffectWorld alphaWorldData;
 	PF_EffectWorld *alphaWorld = NULL;
 	
-	//PF_EffectWorld tempAlphaWorldData;
-	//PF_EffectWorld *tempAlphaWorld = NULL;
-	
 	AEGP_SuiteHandler suites(in_data->pica_basicP);
 
 	try
@@ -1362,7 +1351,7 @@ DoRender(
 		if(context == NULL)
 		{
 			seq_data->context = context = new CryptomatteContext(arb_data);
-		
+			
 			context->LoadLevels(in_data);
 		}
 		else if(!seq_data->selectionChanged ||
@@ -1423,27 +1412,6 @@ DoRender(
 				err = suites.PFIterate8Suite()->iterate_generic(copy_height, &matte_iter, DrawMatte_Iterate<PF_Pixel, A_u_char>);
 			}
 			
-			/*
-			PF_EffectWorld *activeAlphaWorld = NULL;
-			
-			if(alphaWorld->width == output->width && alphaWorld->height == output->height)
-			{
-				activeAlphaWorld = alphaWorld;
-			}
-			else
-			{
-				tempAlphaWorld = &tempAlphaWorldData;
-				
-				err = suites.PFWorldSuite()->PF_NewWorld(in_data->effect_ref, output->width, output->height, TRUE, format, tempAlphaWorld);
-				
-				if(in_data->quality == PF_Quality_HI)
-					err = suites.PFWorldTransformSuite()->copy_hq(in_data->effect_ref, alphaWorld, tempAlphaWorld, NULL, NULL);
-				else
-					err = suites.PFWorldTransformSuite()->copy(in_data->effect_ref, alphaWorld, tempAlphaWorld, NULL, NULL);
-					
-				activeAlphaWorld = tempAlphaWorld;
-			}
-			*/
 			
 			if(CRYPTO_display->u.pd.value == DISPLAY_COLORS)
 			{
@@ -1487,8 +1455,6 @@ DoRender(
 		ae_err = PF_Err_BAD_CALLBACK_PARAM; 
 	}
 	
-	//if(tempAlphaWorld)
-	//	suites.PFWorldSuite()->PF_DisposeWorld(in_data->effect_ref, tempAlphaWorld);
 	
 	if(alphaWorld)
 		suites.PFWorldSuite()->PF_DisposeWorld(in_data->effect_ref, alphaWorld);
@@ -1507,11 +1473,11 @@ SmartRender(
 	PF_InData				*in_data,
 	PF_OutData				*out_data,
 	PF_SmartRenderExtra		*extra)
-
 {
 	PF_Err			err		= PF_Err_NONE,
 					err2 	= PF_Err_NONE;
 	
+	AEGP_SuiteHandler suites(in_data->pica_basicP);
 	
 	assert(in_data->sequence_data != NULL);
 	
@@ -1521,7 +1487,7 @@ SmartRender(
 	
 	if(handleClick)
 	{
-		// Selecting step 2: Using the click coordinates, store the selected items, tell UI to re-draw
+		// Selecting step 2: Using the click coordinates, store the selected items, tell UI to re-draw, cancel render
 		
 		if(seq_data->context != NULL)
 		{
@@ -1532,7 +1498,7 @@ SmartRender(
 				PF_Point contextPoint;
 				
 				contextPoint.h = (seq_data->clickPoint.h * context->DownsampleX().num / context->DownsampleX().den);
-				contextPoint.v = (seq_data->clickPoint.h * context->DownsampleY().num / context->DownsampleY().den);
+				contextPoint.v = (seq_data->clickPoint.v * context->DownsampleY().num / context->DownsampleY().den);
 				
 				seq_data->sendingClickPoint = FALSE;
 				seq_data->clickPoint.h = 0;
@@ -1558,11 +1524,6 @@ SmartRender(
 						seq_data->sendingClickedItems = TRUE;
 						seq_data->clickedItems = new std::set<std::string>(clickedItems);
 						
-						// how to update the param?
-						out_data->out_flags |= PF_OutFlag_REFRESH_UI;  // ??
-						
-						AEGP_SuiteHandler suites(in_data->pica_basicP);
-						
 						suites.PFParamUtilsSuite()->PF_UpdateParamUI(in_data->effect_ref, CRYPTO_DATA, &CRYPTO_data);
 					}
 					
@@ -1572,12 +1533,15 @@ SmartRender(
 		}
 		
 		PF_UNLOCK_HANDLE(in_data->sequence_data);
+		
+		//err = PF_Interrupt_CANCEL; // we would cancel the render, but then dragging wouldn't update
 	}
-	else
+	
+	if(!err)
 	{
 		PF_UNLOCK_HANDLE(in_data->sequence_data);
-		
-		
+			
+			
 		PF_EffectWorld *input, *output;
 		
 		PF_ParamDef CRYPTO_data,
@@ -1588,8 +1552,6 @@ SmartRender(
 		AEFX_CLR_STRUCT(CRYPTO_display);
 		
 		
-	//#define PF_CHECKOUT_PARAM_NOW( PARAM, DEST )	PF_CHECKOUT_PARAM(	in_data, (PARAM), in_data->current_time, in_data->time_step, in_data->time_scale, DEST )
-
 		// get our arb data and see if it requires the input buffer
 		err = PF_CHECKOUT_PARAM_NOW(CRYPTO_DATA, &CRYPTO_data);
 		
@@ -1609,7 +1571,6 @@ SmartRender(
 			PF_UNLOCK_HANDLE(CRYPTO_data.u.arb_d.value);
 		}
 		
-		
 		// always get the output buffer
 		ERR(	extra->cb->checkout_output(	in_data->effect_ref, &output)	);
 
@@ -1628,7 +1589,7 @@ SmartRender(
 		ERR2(	PF_CHECKIN_PARAM(in_data, &CRYPTO_data )	);
 		ERR2(	PF_CHECKIN_PARAM(in_data, &CRYPTO_display )	);
 	}
-
+	
 	return err;
 }
 
@@ -1680,7 +1641,6 @@ DoDialog(
 		}
 		
 		PF_UNLOCK_HANDLE(params[CRYPTO_DATA]->u.arb_d.value);
-		//PF_UNLOCK_HANDLE(in_data->sequence_data);
 	}
 	
 	return err;
@@ -1707,6 +1667,9 @@ PluginMain (
 			case PF_Cmd_GLOBAL_SETUP:
 				err = GlobalSetup(in_data,out_data,params,output);
 				break;
+			case PF_Cmd_GLOBAL_SETDOWN:
+				err = GlobalSetdown(in_data,out_data,params,output);
+				break;
 			case PF_Cmd_PARAMS_SETUP:
 				err = ParamsSetup(in_data,out_data,params,output);
 				break;
@@ -1720,9 +1683,6 @@ PluginMain (
 			case PF_Cmd_SEQUENCE_SETDOWN:
 				err = SequenceSetdown(in_data, out_data, params, output);
 				break;
-			//case PF_Cmd_USER_CHANGED_PARAM:
-			//	err = UserChangedParam(in_data, out_data, params, (PF_UserChangedParamExtra *)extra);
-			//	break;
 			case PF_Cmd_SMART_PRE_RENDER:
 				err = PreRender(in_data, out_data, (PF_PreRenderExtra *)extra);
 				break;

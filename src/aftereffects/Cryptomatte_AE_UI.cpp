@@ -28,11 +28,11 @@ DrawEvent(
 	
 	AEGP_SuiteHandler suites(in_data->pica_basicP);
 	
-	// Selecting step 3: We have the selected items, now change the Param
+	// Selecting step 3: We have the selected items, now change the Param with AEGP suites (!)
 	
 	CryptomatteSequenceData *seq_data = (CryptomatteSequenceData *)PF_LOCK_HANDLE(in_data->sequence_data);
 	
-	if(seq_data && seq_data->sendingClickedItems && seq_data->clickedItems != NULL)
+	if(seq_data && seq_data->sendingClickedItems && seq_data->clickedItems != NULL && in_data->global_data != NULL)
 	{
 		const std::set<std::string> *clickedItems = (const std::set<std::string> *)seq_data->clickedItems;
 		
@@ -109,15 +109,81 @@ DrawEvent(
 				selectedString += *i;
 			}
 			
-			PF_UNLOCK_HANDLE(params[CRYPTO_DATA]->u.arb_d.value);
 			
+			CryptomatteGlobalData *global_data = (CryptomatteGlobalData *)PF_LOCK_HANDLE(in_data->global_data);
 			
-			SetArbSelection(in_data, &params[CRYPTO_DATA]->u.arb_d.value, selectedString);
-			
-			params[CRYPTO_DATA]->uu.change_flags = PF_ChangeFlag_CHANGED_VALUE;
-			
-			if(!(seq_data->modifiers & PF_Mod_CAPS_LOCK_KEY))
-				seq_data->selectionChanged = TRUE;
+			if(global_data)
+			{
+				AEGP_EffectRefH effectRefH = NULL;
+				
+				suites.PFInterfaceSuite()->AEGP_GetNewEffectForEffect(global_data->pluginID, in_data->effect_ref, &effectRefH);
+				
+				if(effectRefH)
+				{
+					AEGP_StreamRefH streamRefH = NULL;
+					
+					suites.StreamSuite()->AEGP_GetNewEffectStreamByIndex(global_data->pluginID, effectRefH, CRYPTO_DATA, &streamRefH);
+					
+					if(streamRefH)
+					{
+						const size_t oldArbSize = PF_GET_HANDLE_SIZE(params[CRYPTO_DATA]->u.arb_d.value);
+						
+						PF_Handle newArbH = PF_NEW_HANDLE(oldArbSize);
+						
+						if(newArbH)
+						{
+							CryptomatteArbitraryData *oldArb = arb_data;
+							CryptomatteArbitraryData *newArb = (CryptomatteArbitraryData *)PF_LOCK_HANDLE(newArbH);
+							
+							memcpy(newArb, oldArb, oldArbSize);
+							
+							PF_UNLOCK_HANDLE(newArbH);
+							
+							
+							SetArbSelection(in_data, (PF_ArbitraryH *)&newArbH, selectedString);
+							
+							
+							AEGP_StreamValue2 val;
+							val.val.arbH = newArbH;
+							
+							A_long keyframes = 0;
+							suites.KeyframeSuite()->AEGP_GetStreamNumKFs(streamRefH, &keyframes);
+							
+							if(keyframes > 0)
+							{
+								A_Time frame_time;
+								suites.PFInterfaceSuite()->AEGP_ConvertEffectToCompTime(in_data->effect_ref, in_data->current_time, in_data->time_scale, &frame_time);
+								
+								AEGP_KeyframeIndex key_index;
+								suites.KeyframeSuite()->AEGP_InsertKeyframe(streamRefH, AEGP_LTimeMode_LayerTime, &frame_time, &key_index);
+								
+								suites.KeyframeSuite()->AEGP_SetKeyframeValue(streamRefH, key_index, &val);
+							}
+							else
+								suites.StreamSuite()->AEGP_SetStreamValue(global_data->pluginID, streamRefH, &val);
+						}
+						else
+							assert(FALSE);
+						
+						suites.StreamSuite()->AEGP_DisposeStream(streamRefH);
+					}
+					else
+						assert(FALSE);
+					
+					// How we used to do it...
+					//SetArbSelection(in_data, &params[CRYPTO_DATA]->u.arb_d.value, selectedString);
+					//params[CRYPTO_DATA]->uu.change_flags = PF_ChangeFlag_CHANGED_VALUE;
+					
+					if(!(seq_data->modifiers & PF_Mod_CAPS_LOCK_KEY))
+						seq_data->selectionChanged = TRUE;
+				}
+				
+				PF_UNLOCK_HANDLE(in_data->global_data);
+				
+				PF_UNLOCK_HANDLE(params[CRYPTO_DATA]->u.arb_d.value);
+			}
+			else
+				assert(FALSE);
 		}
 		else
 			assert(FALSE); // don't expect ArbData to ever be NULL, but...
@@ -151,31 +217,6 @@ DrawEvent(
 			const float labelSpace = bot.FontSize() * 1.4;
 			const float itemSpace = bot.FontSize() * 2.0;
 			
-			/*
-			bot.MoveTo(panel_left, panel_top + bot.FontSize());
-			bot.SetColor(PF_App_Color_TEXT_DISABLED);
-			bot.DrawString("Layer:", kDRAWBOT_TextAlignment_Default, kDRAWBOT_TextTruncation_EndEllipsis, panel_width);
-
-			bot.Move(0, labelSpace);
-			bot.SetColor(PF_App_Color_TEXT);
-			bot.DrawString(GetLayer(arb_data), kDRAWBOT_TextAlignment_Default, kDRAWBOT_TextTruncation_EndEllipsis, panel_width);
-			
-			bot.Move(0, itemSpace);
-			bot.SetColor(PF_App_Color_TEXT_DISABLED);
-			bot.DrawString("Selection:", kDRAWBOT_TextAlignment_Default, kDRAWBOT_TextTruncation_EndEllipsis, panel_width);
-
-			bot.Move(0, labelSpace);
-			bot.SetColor(PF_App_Color_TEXT);
-			bot.DrawString(GetSelection(arb_data), kDRAWBOT_TextAlignment_Default, kDRAWBOT_TextTruncation_EndEllipsis, panel_width);
-
-			bot.Move(0, itemSpace);
-			bot.SetColor(PF_App_Color_TEXT_DISABLED);
-			bot.DrawString("Manifest:", kDRAWBOT_TextAlignment_Default, kDRAWBOT_TextTruncation_EndEllipsis, panel_width);
-
-			bot.Move(0, labelSpace);
-			bot.SetColor(PF_App_Color_GRAY);
-			bot.DrawString(GetManifest(arb_data), kDRAWBOT_TextAlignment_Default, kDRAWBOT_TextTruncation_EndEllipsis, panel_width);
-			*/
 			
 			bot.SetColor(PF_App_Color_TEXT_DISABLED);
 			
@@ -252,7 +293,14 @@ DoClick(
 			
 			seq_data->modifiers = event_extra->u.do_click.modifiers;
 			
-			event_extra->evt_out_flags |= PF_EO_ALWAYS_UPDATE;
+			//event_extra->evt_out_flags |= PF_EO_ALWAYS_UPDATE;
+			
+			out_data->out_flags |= PF_OutFlag_FORCE_RERENDER;
+			
+			if(!(seq_data->modifiers & PF_Mod_CAPS_LOCK_KEY))
+				seq_data->selectionChanged = TRUE;
+			
+			event_extra->u.do_click.send_drag = TRUE; // drag not really working now
 		}
 		
 		//PF_UNLOCK_HANDLE(params[CRYPTO_DATA]->u.arb_d.value);
