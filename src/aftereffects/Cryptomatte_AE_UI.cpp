@@ -103,9 +103,8 @@ DoClick(
 		CryptomatteArbitraryData *arb_data = (CryptomatteArbitraryData *)PF_LOCK_HANDLE(params[CRYPTO_DATA]->u.arb_d.value);
 		CryptomatteSequenceData *seq_data = (CryptomatteSequenceData *)PF_LOCK_HANDLE(in_data->sequence_data);
 
-		const bool renderThreadMadness = (in_data->version.major > PF_AE135_PLUG_IN_VERSION || in_data->version.minor >= PF_AE135_PLUG_IN_SUBVERS);
-
-		if(renderThreadMadness && arb_data && seq_data)
+	#if AE135_RENDER_THREAD_MADNESS
+		if(arb_data && seq_data)
 		{
 			if(seq_data->context == NULL)
 			{
@@ -118,6 +117,7 @@ DoClick(
 				context->Update(arb_data);
 			}
 		}
+	#endif
 		
 		if(arb_data && seq_data && seq_data->context)
 		{
@@ -137,81 +137,77 @@ DoClick(
 			if((*event_extra->contextH)->w_type == PF_Window_COMP)
 				event_extra->cbs.comp_to_layer(event_extra->cbs.refcon, event_extra->contextH, in_data->current_time, in_data->time_scale, &mouse_downFixPt);
 			
-
-			if(renderThreadMadness)
+		#if AE135_RENDER_THREAD_MADNESS
+			if(params[CRYPTO_SELECTION_MODE]->u.bd.value)
 			{
-				if(params[CRYPTO_SELECTION_MODE]->u.bd.value)
+				mouse_downPt.h = FIX2INT(mouse_downFixPt.x);
+				mouse_downPt.v = FIX2INT(mouse_downFixPt.y);
+
+				AEGP_EffectRefH effectRefH = NULL;
+				
+				suites.PFInterfaceSuite()->AEGP_GetNewEffectForEffect(gAEGPPluginID, in_data->effect_ref, &effectRefH);
+
+				AEGP_LayerRenderOptionsH optionsH = NULL;
+				suites.LayerRenderOptionsSuite()->AEGP_NewFromDownstreamOfEffect(gAEGPPluginID,	effectRefH,	&optionsH);
+
+				suites.LayerRenderOptionsSuite()->AEGP_SetWorldType(optionsH, AEGP_WorldType_32);
+
+				suites.LayerRenderOptionsSuite()->AEGP_SetDownsampleFactor(optionsH, in_data->downsample_x.num, in_data->downsample_y.num);
+				
+				AEGP_FrameReceiptH frameReceiptH = NULL;
+				A_Err renderErr = suites.RenderSuite5()->AEGP_RenderAndCheckoutLayerFrame(optionsH,	NULL, NULL, &frameReceiptH);
+
+				if(renderErr == A_Err_NONE && frameReceiptH != NULL)
 				{
-					mouse_downPt.h = FIX2INT(mouse_downFixPt.x);
-					mouse_downPt.v = FIX2INT(mouse_downFixPt.y);
+					AEGP_WorldH worldH = NULL;
+					suites.RenderSuite5()->AEGP_GetReceiptWorld(frameReceiptH, &worldH);
 
-					AEGP_EffectRefH effectRefH = NULL;
-					
-					suites.PFInterfaceSuite()->AEGP_GetNewEffectForEffect(gAEGPPluginID, in_data->effect_ref, &effectRefH);
-
-					AEGP_LayerRenderOptionsH optionsH = NULL;
-					suites.LayerRenderOptionsSuite()->AEGP_NewFromDownstreamOfEffect(gAEGPPluginID,	effectRefH,	&optionsH);
-
-					suites.LayerRenderOptionsSuite()->AEGP_SetWorldType(optionsH, AEGP_WorldType_32);
-
-					suites.LayerRenderOptionsSuite()->AEGP_SetDownsampleFactor(optionsH, in_data->downsample_x.num, in_data->downsample_y.num);
-					
-					AEGP_FrameReceiptH frameReceiptH = NULL;
-					A_Err renderErr = suites.RenderSuite5()->AEGP_RenderAndCheckoutLayerFrame(optionsH,	NULL, NULL, &frameReceiptH);
-
-					if(renderErr == A_Err_NONE && frameReceiptH != NULL)
+					if(worldH != NULL)
 					{
-						AEGP_WorldH worldH = NULL;
-						suites.RenderSuite5()->AEGP_GetReceiptWorld(frameReceiptH, &worldH);
+						PF_EffectWorld effectWorld;
+						suites.AEGPWorldSuite()->AEGP_FillOutPFEffectWorld(worldH, &effectWorld);
 
-						if(worldH != NULL)
+						if(mouse_downPt.h >= 0 && mouse_downPt.h < effectWorld.width &&
+							mouse_downPt.v >= 0 && mouse_downPt.v < effectWorld.height)
 						{
-							PF_EffectWorld effectWorld;
-							suites.AEGPWorldSuite()->AEGP_FillOutPFEffectWorld(worldH, &effectWorld);
+							PF_PixelFormat format = PF_PixelFormat_INVALID;
+							suites.PFWorldSuite()->PF_GetPixelFormat(&effectWorld, &format);
+							assert(format == PF_PixelFormat_ARGB128);
 
-							if(mouse_downPt.h >= 0 && mouse_downPt.h < effectWorld.width &&
-								mouse_downPt.v >= 0 && mouse_downPt.v < effectWorld.height)
-							{
-								PF_PixelFormat format = PF_PixelFormat_INVALID;
-								suites.PFWorldSuite()->PF_GetPixelFormat(&effectWorld, &format);
-								assert(format == PF_PixelFormat_ARGB128);
+							PF_PixelFloat *row = (PF_PixelFloat *)((char *)effectWorld.data + (effectWorld.rowbytes * mouse_downPt.v));
 
-								PF_PixelFloat *row = (PF_PixelFloat *)((char *)effectWorld.data + (effectWorld.rowbytes * mouse_downPt.v));
+							clickedItems = context->GetItemsFromSelectionColor( row[mouse_downPt.h] );
 
-								clickedItems = context->GetItemsFromSelectionColor( row[mouse_downPt.h] );
-
-								validClick = true;
-							}
+							validClick = true;
 						}
-
-						suites.RenderSuite5()->AEGP_CheckinFrame(frameReceiptH);
 					}
 
-					suites.LayerRenderOptionsSuite()->AEGP_Dispose(optionsH);
-
-					suites.EffectSuite()->AEGP_DisposeEffect(effectRefH);
+					suites.RenderSuite5()->AEGP_CheckinFrame(frameReceiptH);
 				}
-				else
-					suites.AdvAppSuite()->PF_InfoDrawText("Cryptomatte plug-in not in", "selection mode");
+
+				suites.LayerRenderOptionsSuite()->AEGP_Dispose(optionsH);
+
+				suites.EffectSuite()->AEGP_DisposeEffect(effectRefH);
 			}
 			else
+				suites.AdvAppSuite()->PF_InfoDrawText("Cryptomatte plug-in not in", "selection mode");
+		#else
+			assert(!params[CRYPTO_SELECTION_MODE]->u.bd.value);
+
+			if( context->Valid() )
 			{
-				assert(!params[CRYPTO_SELECTION_MODE]->u.bd.value);
+				mouse_downPt.h = FIX2INT(mouse_downFixPt.x * context->DownsampleX().num / context->DownsampleX().den);
+				mouse_downPt.v = FIX2INT(mouse_downFixPt.y * context->DownsampleY().num / context->DownsampleY().den);
 
-				if( context->Valid() )
+				if(mouse_downPt.h > 0 && mouse_downPt.h < context->Width() &&
+					mouse_downPt.v > 0 && mouse_downPt.v < context->Height())
 				{
-					mouse_downPt.h = FIX2INT(mouse_downFixPt.x * context->DownsampleX().num / context->DownsampleX().den);
-					mouse_downPt.v = FIX2INT(mouse_downFixPt.y * context->DownsampleY().num / context->DownsampleY().den);
+					validClick = true;
 
-					if(mouse_downPt.h > 0 && mouse_downPt.h < context->Width() &&
-						mouse_downPt.v > 0 && mouse_downPt.v < context->Height())
-					{
-						validClick = true;
-
-						clickedItems = context->GetItems(mouse_downPt.h, mouse_downPt.v);
-					}
+					clickedItems = context->GetItems(mouse_downPt.h, mouse_downPt.v);
 				}
 			}
+		#endif // AE135_RENDER_THREAD_MADNESS
 
 			if(validClick)
 			{
@@ -323,13 +319,16 @@ DoClick(
 				
 				params[CRYPTO_DATA]->uu.change_flags = PF_ChangeFlag_CHANGED_VALUE;
 				
-				if(!(event_extra->u.do_click.modifiers & PF_Mod_CAPS_LOCK_KEY) && !renderThreadMadness)
+			#if !AE135_RENDER_THREAD_MADNESS
+				if(!(event_extra->u.do_click.modifiers & PF_Mod_CAPS_LOCK_KEY))
 					seq_data->selectionChanged = TRUE;
+			#endif
 
 				suites.AdvAppSuite()->PF_InfoDrawText(selectionInfo.c_str(), selectionInfoList.c_str());
 					
-				if(!renderThreadMadness)
+			#if !AE135_RENDER_THREAD_MADNESS
 					event_extra->u.do_click.send_drag = TRUE;
+			#endif
 			}
 		}
 		

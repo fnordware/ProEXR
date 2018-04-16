@@ -5,12 +5,18 @@ Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "Cryptomatte", "Cryptomatte.
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug_CS6|x64 = Debug_CS6|x64
 		Debug|x64 = Debug|x64
+		Release_CS6|x64 = Release_CS6|x64
 		Release|x64 = Release|x64
 	EndGlobalSection
 	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{2951D31D-CD92-445B-AF8B-8D8013115977}.Debug_CS6|x64.ActiveCfg = Debug_CS6|x64
+		{2951D31D-CD92-445B-AF8B-8D8013115977}.Debug_CS6|x64.Build.0 = Debug_CS6|x64
 		{2951D31D-CD92-445B-AF8B-8D8013115977}.Debug|x64.ActiveCfg = Debug|x64
 		{2951D31D-CD92-445B-AF8B-8D8013115977}.Debug|x64.Build.0 = Debug|x64
+		{2951D31D-CD92-445B-AF8B-8D8013115977}.Release_CS6|x64.ActiveCfg = Release_CS6|x64
+		{2951D31D-CD92-445B-AF8B-8D8013115977}.Release_CS6|x64.Build.0 = Release_CS6|x64
 		{2951D31D-CD92-445B-AF8B-8D8013115977}.Release|x64.ActiveCfg = Release|x64
 		{2951D31D-CD92-445B-AF8B-8D8013115977}.Release|x64.Build.0 = Release|x64
 	EndGlobalSection

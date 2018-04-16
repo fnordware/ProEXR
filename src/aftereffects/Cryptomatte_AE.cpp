@@ -500,7 +500,7 @@ CryptomatteContext::Width() const
 {
 #ifdef NDEBUG
 	if(_levels.size() > 0)
-		return _levels[0].Width();
+		return _levels[0]->Width();
 	else
 		return 0;
 #else
@@ -526,7 +526,7 @@ CryptomatteContext::Height() const
 {
 #ifdef NDEBUG
 	if(_levels.size() > 0)
-		return _levels[0].Height();
+		return _levels[0]->Height();
 	else
 		return 0;
 #else
@@ -972,11 +972,9 @@ ParamsSetup (
 	
 
 	AEFX_CLR_STRUCT(def);
-
-	const bool renderThreadMadness = (in_data->version.major > PF_AE135_PLUG_IN_VERSION || in_data->version.minor >= PF_AE135_PLUG_IN_SUBVERS);
-	if(!renderThreadMadness)
-		def.ui_flags = PF_PUI_INVISIBLE;
-
+#if !AE135_RENDER_THREAD_MADNESS
+	def.ui_flags = PF_PUI_INVISIBLE;
+#endif
 	PF_ADD_CHECKBOX("Selection Mode", "",
 						FALSE,
 						PF_ParamFlag_CANNOT_TIME_VARY,
@@ -1442,10 +1440,12 @@ DoRender(
 		{
 			context->Update(arb_data);
 
-			const bool renderThreadMadness = (in_data->version.major > PF_AE135_PLUG_IN_VERSION || in_data->version.minor >= PF_AE135_PLUG_IN_SUBVERS);
-			
 			// did the selection just change, so we don't have to reload the Cryptomatte levels?
-			const bool selectionJustChanged = (renderThreadMadness ? CRYPTO_selection->u.bd.value : seq_data->selectionChanged);
+		#if AE135_RENDER_THREAD_MADNESS
+			const bool selectionJustChanged = CRYPTO_selection->u.bd.value;
+		#else
+			const bool selectionJustChanged = seq_data->selectionChanged;
+		#endif
 
 			if(!selectionJustChanged ||
 				context->DownsampleX().num != in_data->downsample_x.num ||
