@@ -274,7 +274,8 @@ class CryptomatteContext
 		Level(PF_InData *in_data, PF_ChannelRef &four, bool secondHalf);
 		~Level();
 		
-		float GetCoverage(const std::set<A_u_long> &selection, int x, int y) const;
+		float GetCoverage(const std::set<A_u_long> &selection, int x, int y, bool &levelsEnd) const;
+		float GetCoverage(int x, int y) const;
 		
 		PF_PixelFloat GetColor(int x, int y) const;
 		

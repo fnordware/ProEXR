@@ -108,7 +108,7 @@ CryptomatteContext::Update(CryptomatteArbitraryData *arb)
 						unsigned int intValue = 0;
 						const int matched = sscanf(hexString.c_str(), "%x", &intValue);
 						
-						if(matched && intValue)
+						if(matched)
 						{
 							_manifest[name] = intValue;
 						}
@@ -146,7 +146,7 @@ CryptomatteContext::Update(CryptomatteArbitraryData *arb)
 						unsigned int intValue = 0;
 						const int matched = sscanf(val.c_str(), "%x", &intValue);
 						
-						if(matched && intValue)
+						if(matched)
 							_selection.insert(intValue);
 					}
 				}
@@ -278,10 +278,14 @@ CryptomatteContext::GetCoverage(int x, int y) const
 	{
 		const Level *level = *i;
 		
-		//if(level->GetHash(x, y) == 0)
-		//	break;
+		bool levelsEnd = false;
 		
-		coverage += level->GetCoverage(_selection, x, y);
+		const float level_coverage = level->GetCoverage(_selection, x, y, levelsEnd);
+		
+		if(levelsEnd)
+			break;
+		
+		coverage += level_coverage;
 	}
 	
 	return coverage;
@@ -367,11 +371,14 @@ CryptomatteContext::GetItems(int x, int y) const
 	{
 		const Level *level = *i;
 		
-		const A_u_long hash = level->GetHash(x, y);
+		const float coverage = level->GetCoverage(x, y);
 		
-		if(hash != 0)
+		if(coverage > 0.f)
 		{
-			items.insert( ItemForHash(hash) );
+			const A_u_long hash = level->GetHash(x, y);
+		
+			if(hash > 0)
+				items.insert( ItemForHash(hash) );
 		}
 	}
 	
@@ -663,12 +670,14 @@ CryptomatteContext::Level::~Level()
 
 
 float
-CryptomatteContext::Level::GetCoverage(const std::set<A_u_long> &selection, int x, int y) const
+CryptomatteContext::Level::GetCoverage(const std::set<A_u_long> &selection, int x, int y, bool &levelsEnd) const
 {
 	const float coverage = _coverage->Get(x, y);
 	
 	if(coverage > 0.f)
 	{
+		levelsEnd = false;
+		
 		const float floatHash = _hash->Get(x, y);
 		
 		const A_u_long *hash = (A_u_long *)&floatHash;
@@ -676,7 +685,18 @@ CryptomatteContext::Level::GetCoverage(const std::set<A_u_long> &selection, int 
 		return (selection.count(*hash) ? coverage : 0.f);
 	}
 	else
+	{
+		levelsEnd = true;
+		
 		return 0.f;
+	}
+}
+
+
+float
+CryptomatteContext::Level::GetCoverage(int x, int y) const
+{
+	return _coverage->Get(x, y);
 }
 
 
