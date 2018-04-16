@@ -972,9 +972,7 @@ ParamsSetup (
 	
 
 	AEFX_CLR_STRUCT(def);
-#if !AE135_RENDER_THREAD_MADNESS
 	def.ui_flags = PF_PUI_INVISIBLE;
-#endif
 	PF_ADD_CHECKBOX("Selection Mode", "",
 						FALSE,
 						PF_ParamFlag_CANNOT_TIME_VARY,
