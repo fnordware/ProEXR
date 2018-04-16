@@ -668,7 +668,7 @@ ProEXRdoc_read::buildLayers(bool split_alpha)
 				if(manifestAttrib)
 					manifest.manifest = manifestAttrib->value();
 					
-				const std::string manif_fileAttribName = attribName.substr(0, attribName.size() - 11) + "/manif_file";
+				const std::string manif_fileAttribName = attribName.substr(0, attribName.size() - 5) + "/manif_file";
 				const Imf::StringAttribute *manif_fileAttrib = head.findTypedAttribute<Imf::StringAttribute>(manif_fileAttribName.c_str());
 				if(manif_fileAttrib)
 					manifest.manif_file = manif_fileAttrib->value();

@@ -1765,7 +1765,7 @@ static A_Err BuildEXRcompsFromLayer(AEGP_LayerH layerH)
 							manifest.reserve(f.tellg());
 							f.seekg(0, std::ios::beg);
 							
-							manifest.assign(std::istreambuf_iterator<char>(f), std::istreambuf_iterator<char>(f));
+							manifest.assign(std::istreambuf_iterator<char>(f), std::istreambuf_iterator<char>());
 						}
 						
 						A_Handle handle = MakeCryptomatteHandle(suites, layer.name(), manifest);
