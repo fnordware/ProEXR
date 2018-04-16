@@ -2850,7 +2850,7 @@ GPCommandHook(
 			suites.PersistentDataSuite()->AEGP_SetLong(blobH, PREFS_SECTION, PREFS_AUTO_CACHE, 5);
 			
 			//suites.UtilitySuite()->AEGP_ReportInfo(S_mem_id, "Your OpenEXR Auto Cache Threshold has been set to 5. You're welcome!");
-			suites.UtilitySuite()->AEGP_ExecuteScript(S_mem_id, "alert(\"Your OpenEXR Auto Cache Threshold has been set to 5. You're welcome!\\n\\n(You might want to re-import existing footage though.)\")", FALSE, NULL, NULL);
+			//suites.UtilitySuite()->AEGP_ExecuteScript(S_mem_id, "alert(\"Your OpenEXR Auto Cache Threshold has been set to 5. You're welcome!\\n\\n(You might want to re-import existing footage though.)\")", FALSE, NULL, NULL);
 		}
 		
 		
