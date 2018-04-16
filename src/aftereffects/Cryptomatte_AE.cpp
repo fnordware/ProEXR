@@ -278,8 +278,8 @@ CryptomatteContext::GetCoverage(int x, int y) const
 	{
 		const Level *level = *i;
 		
-		if(level->GetHash(x, y) == 0)
-			break;
+		//if(level->GetHash(x, y) == 0)
+		//	break;
 		
 		coverage += level->GetCoverage(_selection, x, y);
 	}
@@ -302,8 +302,8 @@ CryptomatteContext::GetColor(int x, int y) const
 		
 		const PF_PixelFloat level_color = level->GetColor(x, y);
 		
-		if(level_color.red == 0.f && level_color.green == 0.f && level_color.blue == 0.f)
-			break;
+		//if(level_color.red == 0.f && level_color.green == 0.f && level_color.blue == 0.f)
+		//	break;
 		
 		color.red += level_color.red;
 		color.green += level_color.green;
