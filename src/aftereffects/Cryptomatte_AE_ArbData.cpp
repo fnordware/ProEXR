@@ -25,9 +25,10 @@
 static void 
 SwapArbData(CryptomatteArbitraryData *arb_data)
 {
-	arb_data->hash = SWAP_LONG(arb_data->hash);
-	arb_data->selection_size = SWAP_LONG(arb_data->selection_size);
 	arb_data->manifest_size = SWAP_LONG(arb_data->manifest_size);
+	arb_data->manifest_hash = SWAP_LONG(arb_data->manifest_hash);
+	arb_data->selection_size = SWAP_LONG(arb_data->selection_size);
+	arb_data->selection_size = SWAP_LONG(arb_data->selection_size);
 }
 
 
@@ -43,21 +44,17 @@ djb2(const A_u_char *data, size_t len)
 }
 
 
-void
-HashArb(CryptomatteArbitraryData *arb)
+static void
+HashManifest(CryptomatteArbitraryData *arb)
 {
-	const size_t len = sizeof(CryptomatteArbitraryData) + arb->selection_size + arb->manifest_size - 8 - 4;
+	arb->manifest_hash = djb2((A_u_char *)&arb->data[0], arb->manifest_size);
+}
 
-	#ifdef AE_BIG_ENDIAN
-		// really, you're compiling this for PPC?
-		SwapArbData(out_arb_data);
-	#endif
-	
-	arb->hash = djb2((A_u_char *)&arb->reserved[0], len);
-	
-	#ifdef AE_BIG_ENDIAN
-		SwapArbData(out_arb_data);
-	#endif
+
+static void
+HashSelection(CryptomatteArbitraryData *arb)
+{
+	arb->selection_hash = djb2((A_u_char *)&arb->data[arb->manifest_size], arb->selection_size);
 }
 
 
@@ -83,9 +80,9 @@ GetManifest(const CryptomatteArbitraryData *arb)
 
 
 void
-SetArb(PF_InData *in_data, PF_ArbitraryH *arbH, std::string layer, std::string selection, std::string manifest)
+SetArb(PF_InData *in_data, PF_ArbitraryH *arbH, const std::string &l, const std::string &selection, const std::string &manifest)
 {
-	assert(sizeof(CryptomatteArbitraryData) == 108);
+	assert(sizeof(CryptomatteArbitraryData) == 116);
 	
 	const size_t siz = sizeof(CryptomatteArbitraryData) + manifest.size() + selection.size();
 	
@@ -108,6 +105,8 @@ SetArb(PF_InData *in_data, PF_ArbitraryH *arbH, std::string layer, std::string s
 	arb->magic[2] = 'y';
 	arb->magic[3] = '1';
 
+	std::string layer = l;
+	
 	if(layer.size() > MAX_LAYER_NAME_LEN)
 		layer.resize(MAX_LAYER_NAME_LEN);
 	
@@ -122,14 +121,15 @@ SetArb(PF_InData *in_data, PF_ArbitraryH *arbH, std::string layer, std::string s
 	assert(manifest == GetManifest(arb));
 	assert(selection == GetSelection(arb));
 	
-	HashArb(arb);
+	HashManifest(arb);
+	HashSelection(arb);
 	
 	PF_UNLOCK_HANDLE(*arbH);
 }
 
 
 void
-SetArbSelection(PF_InData *in_data, PF_ArbitraryH *arbH, std::string selection)
+SetArbSelection(PF_InData *in_data, PF_ArbitraryH *arbH, const std::string &selection)
 {
 	CryptomatteArbitraryData *arb = (CryptomatteArbitraryData *)PF_LOCK_HANDLE(*arbH);
 	
@@ -150,7 +150,7 @@ SetArbSelection(PF_InData *in_data, PF_ArbitraryH *arbH, std::string selection)
 	
 	strncpy(&arb->data[arb->manifest_size], selection.c_str(), arb->selection_size);
 	
-	HashArb(arb);
+	HashSelection(arb);
 	
 	PF_UNLOCK_HANDLE(*arbH);
 }
@@ -215,9 +215,11 @@ ArbCopy(PF_InData *in_data, PF_OutData *out_data,
 			memcpy(out_arb_data, in_arb_data, siz);
 			
 		#ifndef NDEBUG
-			HashArb(out_arb_data);
+			HashManifest(out_arb_data);
+			HashSelection(out_arb_data);
 			
-			assert(out_arb_data->hash == in_arb_data->hash);
+			assert(out_arb_data->manifest_hash == in_arb_data->manifest_hash);
+			assert(out_arb_data->selection_hash == in_arb_data->selection_hash);
 		#endif
 			
 			PF_UNLOCK_HANDLE(src_arbH);
@@ -311,13 +313,16 @@ ArbUnFlatten(PF_InData *in_data, PF_OutData *out_data,
 		#endif
 		
 		#ifndef NDEBUG
-			const A_u_long old_hash = out_arb_data->hash;
+			const A_u_long old_manifest_hash = out_arb_data->manifest_hash;
+			const A_u_long old_selection_hash = out_arb_data->selection_hash;
 		#endif
 			
-			HashArb(out_arb_data);
+			HashManifest(out_arb_data);
+			HashSelection(out_arb_data);
 			
 		#ifndef NDEBUG
-			assert(old_hash == out_arb_data->hash);
+			assert(old_manifest_hash == out_arb_data->manifest_hash);
+			assert(old_selection_hash == out_arb_data->selection_hash);
 		#endif
 		
 			PF_UNLOCK_HANDLE(*arbPH);
@@ -378,9 +383,15 @@ ArbCompare(PF_InData *in_data, PF_OutData *out_data,
 	{
 		CryptomatteArbitraryData *a_data = (CryptomatteArbitraryData *)PF_LOCK_HANDLE(a_arbH),
 						*b_data = (CryptomatteArbitraryData *)PF_LOCK_HANDLE(b_arbH);
+
+		assert(!strncmp(a_data->magic, "cry1", 4) && !strncmp(b_data->magic, "cry1", 4));
 		
-		if(a_data->hash == b_data->hash)
+		if(!strncmp(GetLayer(a_data), GetLayer(b_data), MAX_LAYER_NAME_LEN + 1) && 
+			a_data->manifest_hash == b_data->manifest_hash &&
+			a_data->selection_hash == b_data->selection_hash)
+		{
 			*compareP = PF_ArbCompare_EQUAL;
+		}
 		else
 			*compareP = PF_ArbCompare_NOT_EQUAL;
 		

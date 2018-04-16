@@ -49,7 +49,7 @@
 			<Tool
 				Name="VCCLCompilerTool"
 				Optimization="0"
-				AdditionalIncludeDirectories="..\..\src\aftereffects;&quot;..\..\ext\Adobe After Effects CS6 Win SDK\Examples\Headers&quot;;&quot;..\..\ext\Adobe After Effects CS6 Win SDK\Examples\Headers\SP&quot;;&quot;..\..\ext\Adobe After Effects CS6 Win SDK\Examples\Headers\Win&quot;;&quot;..\..\ext\Adobe After Effects CS6 Win SDK\Examples\Resources&quot;;&quot;..\..\ext\Adobe After Effects CS6 Win SDK\Examples\Util&quot;;..\..\ext\picojson"
+				AdditionalIncludeDirectories="..\..\src\aftereffects;&quot;..\..\ext\Adobe After Effects CC 2015 Win SDK\Examples\Headers&quot;;&quot;..\..\ext\Adobe After Effects CC 2015 Win SDK\Examples\Headers\SP&quot;;&quot;..\..\ext\Adobe After Effects CC 2015 Win SDK\Examples\Headers\Win&quot;;&quot;..\..\ext\Adobe After Effects CC 2015 Win SDK\Examples\Resources&quot;;&quot;..\..\ext\Adobe After Effects CC 2015 Win SDK\Examples\Util&quot;;..\..\ext\picojson"
 				PreprocessorDefinitions="MSWindows;WIN32;_DEBUG;_WINDOWS"
 				RuntimeLibrary="3"
 				StructMemberAlignment="3"
@@ -149,7 +149,7 @@
 			<Tool
 				Name="VCCLCompilerTool"
 				Optimization="2"
-				AdditionalIncludeDirectories="..\..\src\aftereffects;&quot;..\..\ext\Adobe After Effects CS6 Win SDK\Examples\Headers&quot;;&quot;..\..\ext\Adobe After Effects CS6 Win SDK\Examples\Headers\SP&quot;;&quot;..\..\ext\Adobe After Effects CS6 Win SDK\Examples\Headers\Win&quot;;&quot;..\..\ext\Adobe After Effects CS6 Win SDK\Examples\Resources&quot;;&quot;..\..\ext\Adobe After Effects CS6 Win SDK\Examples\Util&quot;;..\..\ext\picojson"
+				AdditionalIncludeDirectories="..\..\src\aftereffects;&quot;..\..\ext\Adobe After Effects CC 2015 Win SDK\Examples\Headers&quot;;&quot;..\..\ext\Adobe After Effects CC 2015 Win SDK\Examples\Headers\SP&quot;;&quot;..\..\ext\Adobe After Effects CC 2015 Win SDK\Examples\Headers\Win&quot;;&quot;..\..\ext\Adobe After Effects CC 2015 Win SDK\Examples\Resources&quot;;&quot;..\..\ext\Adobe After Effects CC 2015 Win SDK\Examples\Util&quot;;..\..\ext\picojson"
 				PreprocessorDefinitions="MSWindows;WIN32;NDEBUG;_WINDOWS"
 				RuntimeLibrary="2"
 				StructMemberAlignment="3"
@@ -263,87 +263,87 @@
 				Name="AE"
 				>
 				<File
-					RelativePath="..\..\ext\Adobe After Effects CS6 Win SDK\Headers\A.h"
+					RelativePath="..\..\ext\Adobe After Effects CC 2015 Win SDK\Headers\A.h"
 					>
 				</File>
 				<File
-					RelativePath="..\..\ext\Adobe After Effects CS6 Win SDK\Headers\AE_AdvEffectSuites.h"
+					RelativePath="..\..\ext\Adobe After Effects CC 2015 Win SDK\Headers\AE_AdvEffectSuites.h"
 					>
 				</File>
 				<File
-					RelativePath="..\..\ext\Adobe After Effects CS6 Win SDK\Headers\AE_Effect.h"
+					RelativePath="..\..\ext\Adobe After Effects CC 2015 Win SDK\Headers\AE_Effect.h"
 					>
 				</File>
 				<File
-					RelativePath="..\..\ext\Adobe After Effects CS6 Win SDK\Headers\AE_EffectCB.h"
+					RelativePath="..\..\ext\Adobe After Effects CC 2015 Win SDK\Headers\AE_EffectCB.h"
 					>
 				</File>
 				<File
-					RelativePath="..\..\ext\Adobe After Effects CS6 Win SDK\Headers\AE_EffectCBSuites.h"
+					RelativePath="..\..\ext\Adobe After Effects CC 2015 Win SDK\Headers\AE_EffectCBSuites.h"
 					>
 				</File>
 				<File
-					RelativePath="..\..\ext\Adobe After Effects CS6 Win SDK\Headers\AE_EffectSuites.h"
+					RelativePath="..\..\ext\Adobe After Effects CC 2015 Win SDK\Headers\AE_EffectSuites.h"
 					>
 				</File>
 				<File
-					RelativePath="..\..\ext\Adobe After Effects CS6 Win SDK\Util\AE_EffectSuitesHelper.h"
+					RelativePath="..\..\ext\Adobe After Effects CC 2015 Win SDK\Util\AE_EffectSuitesHelper.h"
 					>
 				</File>
 				<File
-					RelativePath="..\..\ext\Adobe After Effects CS6 Win SDK\Headers\AE_EffectUI.h"
+					RelativePath="..\..\ext\Adobe After Effects CC 2015 Win SDK\Headers\AE_EffectUI.h"
 					>
 				</File>
 				<File
-					RelativePath="..\..\ext\Adobe After Effects CS6 Win SDK\Headers\AE_GeneralPlug.h"
+					RelativePath="..\..\ext\Adobe After Effects CC 2015 Win SDK\Headers\AE_GeneralPlug.h"
 					>
 				</File>
 				<File
-					RelativePath="..\..\ext\Adobe After Effects CS6 Win SDK\Headers\AE_GeneralPlugOld.h"
+					RelativePath="..\..\ext\Adobe After Effects CC 2015 Win SDK\Headers\AE_GeneralPlugOld.h"
 					>
 				</File>
 				<File
-					RelativePath="..\..\ext\Adobe After Effects CS6 Win SDK\Headers\AE_IO.h"
+					RelativePath="..\..\ext\Adobe After Effects CC 2015 Win SDK\Headers\AE_IO.h"
 					>
 				</File>
 				<File
-					RelativePath="..\..\ext\Adobe After Effects CS6 Win SDK\Headers\AE_Macros.h"
+					RelativePath="..\..\ext\Adobe After Effects CC 2015 Win SDK\Headers\AE_Macros.h"
 					>
 				</File>
 				<File
-					RelativePath="..\..\ext\Adobe After Effects CS6 Win SDK\Util\AEFX_ArbParseHelper.h"
+					RelativePath="..\..\ext\Adobe After Effects CC 2015 Win SDK\Util\AEFX_ArbParseHelper.h"
 					>
 				</File>
 				<File
-					RelativePath="..\..\ext\Adobe After Effects CS6 Win SDK\Util\AEGP_SuiteHandler.h"
+					RelativePath="..\..\ext\Adobe After Effects CC 2015 Win SDK\Util\AEGP_SuiteHandler.h"
 					>
 				</File>
 				<File
-					RelativePath="..\..\ext\Adobe After Effects CS6 Win SDK\Util\entry.h"
+					RelativePath="..\..\ext\Adobe After Effects CC 2015 Win SDK\Util\entry.h"
 					>
 				</File>
 				<File
-					RelativePath="..\..\ext\Adobe After Effects CS6 Win SDK\Headers\FIEL_Public.h"
+					RelativePath="..\..\ext\Adobe After Effects CC 2015 Win SDK\Headers\FIEL_Public.h"
 					>
 				</File>
 				<File
-					RelativePath="..\..\ext\Adobe After Effects CS6 Win SDK\Util\Param_Utils.h"
+					RelativePath="..\..\ext\Adobe After Effects CC 2015 Win SDK\Util\Param_Utils.h"
 					>
 				</File>
 				<File
-					RelativePath="..\..\ext\Adobe After Effects CS6 Win SDK\Headers\PF_Masks.h"
+					RelativePath="..\..\ext\Adobe After Effects CC 2015 Win SDK\Headers\PF_Masks.h"
 					>
 				</File>
 				<File
-					RelativePath="..\..\ext\Adobe After Effects CS6 Win SDK\Headers\PR_Public.h"
+					RelativePath="..\..\ext\Adobe After Effects CC 2015 Win SDK\Headers\PR_Public.h"
 					>
 				</File>
 				<File
-					RelativePath="..\..\ext\Adobe After Effects CS6 Win SDK\Headers\PT_Public.h"
+					RelativePath="..\..\ext\Adobe After Effects CC 2015 Win SDK\Headers\PT_Public.h"
 					>
 				</File>
 				<File
-					RelativePath="..\..\ext\Adobe After Effects CS6 Win SDK\Util\String_Utils.h"
+					RelativePath="..\..\ext\Adobe After Effects CC 2015 Win SDK\Util\String_Utils.h"
 					>
 				</File>
 			</Filter>
@@ -365,7 +365,7 @@
 					<Tool
 						Name="VCCustomBuildTool"
 						Description="Compiling the PiPL"
-						CommandLine="cl /I &quot;$(ProjectDir)..\..\ext\Adobe After Effects CS6 Win SDK\Examples\Headers&quot; /D USE_AE_EFFECT_VERS /EP &quot;..\..\src\aftereffects\$(InputName).r&quot; &gt; &quot;$(IntDir)&quot;\\&quot;$(InputName).rr&quot;&#x0D;&#x0A;&quot;$(ProjectDir)..\..\ext\Adobe After Effects CS6 Win SDK\Examples\Resources\PiPLTool&quot; &quot;$(IntDir)\$(InputName).rr&quot; &quot;$(IntDir)\$(InputName).rrc&quot;&#x0D;&#x0A;cl /D &quot;MSWindows&quot; /EP $(IntDir)\$(InputName).rrc &gt;               &quot;$(ProjectDir)&quot;\\&quot;$(InputName)&quot;.rc&#x0D;&#x0A;"
+						CommandLine="cl /I &quot;$(ProjectDir)..\..\ext\Adobe After Effects CC 2015 Win SDK\Examples\Headers&quot; /D USE_AE_EFFECT_VERS /EP &quot;..\..\src\aftereffects\$(InputName).r&quot; &gt; &quot;$(IntDir)&quot;\\&quot;$(InputName).rr&quot;&#x0D;&#x0A;&quot;$(ProjectDir)..\..\ext\Adobe After Effects CC 2015 Win SDK\Examples\Resources\PiPLTool&quot; &quot;$(IntDir)\$(InputName).rr&quot; &quot;$(IntDir)\$(InputName).rrc&quot;&#x0D;&#x0A;cl /D &quot;MSWindows&quot; /EP $(IntDir)\$(InputName).rrc &gt;               &quot;$(ProjectDir)&quot;\\&quot;$(InputName)&quot;.rc&#x0D;&#x0A;"
 						Outputs="$(ProjectDir)$(InputName).rc"
 					/>
 				</FileConfiguration>
@@ -375,7 +375,7 @@
 					<Tool
 						Name="VCCustomBuildTool"
 						Description="Compiling the PiPL"
-						CommandLine="cl /I &quot;$(ProjectDir)..\..\ext\Adobe After Effects CS6 Win SDK\Examples\Headers&quot; /D USE_AE_EFFECT_VERS /EP &quot;..\..\src\aftereffects\$(InputName).r&quot; &gt; &quot;$(IntDir)&quot;\\&quot;$(InputName).rr&quot;&#x0D;&#x0A;&quot;$(ProjectDir)..\..\ext\Adobe After Effects CS6 Win SDK\Examples\Resources\PiPLTool&quot; &quot;$(IntDir)\$(InputName).rr&quot; &quot;$(IntDir)\$(InputName).rrc&quot;&#x0D;&#x0A;cl /D &quot;MSWindows&quot; /EP $(IntDir)\$(InputName).rrc &gt;               &quot;$(ProjectDir)&quot;\\&quot;$(InputName)&quot;.rc&#x0D;&#x0A;"
+						CommandLine="cl /I &quot;$(ProjectDir)..\..\ext\Adobe After Effects CC 2015 Win SDK\Examples\Headers&quot; /D USE_AE_EFFECT_VERS /EP &quot;..\..\src\aftereffects\$(InputName).r&quot; &gt; &quot;$(IntDir)&quot;\\&quot;$(InputName).rr&quot;&#x0D;&#x0A;&quot;$(ProjectDir)..\..\ext\Adobe After Effects CC 2015 Win SDK\Examples\Resources\PiPLTool&quot; &quot;$(IntDir)\$(InputName).rr&quot; &quot;$(IntDir)\$(InputName).rrc&quot;&#x0D;&#x0A;cl /D &quot;MSWindows&quot; /EP $(IntDir)\$(InputName).rrc &gt;               &quot;$(ProjectDir)&quot;\\&quot;$(InputName)&quot;.rc&#x0D;&#x0A;"
 						Outputs="$(ProjectDir)$(InputName).rc"
 					/>
 				</FileConfiguration>

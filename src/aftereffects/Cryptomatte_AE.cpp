@@ -50,47 +50,17 @@ class ErrThrower : public std::exception
 
 
 CryptomatteContext::CryptomatteContext(CryptomatteArbitraryData *arb) :
-	_hash(0)
+	_manifestHash(0),
+	_selectionHash(0)
 {
 	if(arb == NULL)
 		throw CryptomatteException("no arb");
 	
-	_layer = GetLayer(arb);
-	
-	picojson::value manifestObj;
-	picojson::parse(manifestObj, GetManifest(arb));
-	
-	if( manifestObj.is<picojson::object>() )
-	{
-		const picojson::object &object = manifestObj.get<picojson::object>();
-		
-		for(picojson::object::const_iterator i = object.begin(); i != object.end(); ++i)
-		{
-			const std::string &name = i->first;
-			const picojson::value &value = i->second;
-			
-			if( value.is<std::string>() )
-			{
-				const std::string &hexString = value.get<std::string>();
-				
-				if(hexString.size() == 8)
-				{
-					unsigned int intValue = 0;
-					const int matched = sscanf(hexString.c_str(), "%x", &intValue);
-					
-					if(matched && intValue)
-					{
-						_manifest[name] = intValue;
-					}
-				}
-			}
-		}
-	}
-	
-	SetSelection(arb);
+	Update(arb);
 	
 	_downsampleX.num = _downsampleX.den = 0;
 	_downsampleY.num = _downsampleY.den = 0;
+	_currenTime = -1;
 }
 
 
@@ -106,14 +76,54 @@ CryptomatteContext::~CryptomatteContext()
 
 
 void
-CryptomatteContext::SetSelection(CryptomatteArbitraryData *arb)
+CryptomatteContext::Update(CryptomatteArbitraryData *arb)
 {
-	if(_hash != arb->hash)
+	if(_layer != GetLayer(arb))
+		_layer = GetLayer(arb);
+	
+	if(_manifestHash != arb->manifest_hash)
 	{
-		_hash = arb->hash;
+		_manifestHash = arb->manifest_hash;
+
+		_manifest.clear();
+
+		picojson::value manifestObj;
+		picojson::parse(manifestObj, GetManifest(arb));
 		
+		if( manifestObj.is<picojson::object>() )
+		{
+			const picojson::object &object = manifestObj.get<picojson::object>();
+			
+			for(picojson::object::const_iterator i = object.begin(); i != object.end(); ++i)
+			{
+				const std::string &name = i->first;
+				const picojson::value &value = i->second;
+				
+				if( value.is<std::string>() )
+				{
+					const std::string &hexString = value.get<std::string>();
+					
+					if(hexString.size() == 8)
+					{
+						unsigned int intValue = 0;
+						const int matched = sscanf(hexString.c_str(), "%x", &intValue);
+						
+						if(matched && intValue)
+						{
+							_manifest[name] = intValue;
+						}
+					}
+				}
+			}
+		}
+	}
+
+	if(_selectionHash != arb->selection_hash)
+	{
+		_selectionHash = arb->selection_hash;
+
 		_selection.clear();
-		
+
 		try
 		{
 			const std::string selectionString = GetSelection(arb);
@@ -255,6 +265,7 @@ CryptomatteContext::LoadLevels(PF_InData *in_data)
 	
 	_downsampleX = in_data->downsample_x;
 	_downsampleY = in_data->downsample_y;
+	_currenTime = in_data->current_time;
 }
 
 
@@ -299,7 +310,6 @@ CryptomatteContext::GetColor(int x, int y) const
 		color.blue += level_color.blue;
 	}
 	
-	
 	const float selectedCoverage = this->GetCoverage(x, y);
 	
 	if(selectedCoverage > 0.f)
@@ -309,7 +319,41 @@ CryptomatteContext::GetColor(int x, int y) const
 		color.blue	+= (selectedCoverage * (1.0f - color.blue));
 	}
 	
+	return color;
+}
+
+
+PF_PixelFloat
+CryptomatteContext::GetSelectionColor(int x, int y) const
+{
+	PF_PixelFloat color;
+
+	color.alpha = 1.f;
+
+	if(_levels.size() >= 1)
+	{
+		float *redf = &color.red;
+
+		A_u_long *red = (A_u_long *)redf;
+			
+		*red = _levels[0]->GetHash(x, y);
+	}
+	else
+		color.red = 0.f;
 	
+	color.green = this->GetCoverage(x, y);
+
+	if(_levels.size() >= 2)
+	{
+		float *bluef = &color.blue;
+
+		A_u_long *blue = (A_u_long *)bluef;
+			
+		*blue = _levels[1]->GetHash(x, y);
+	}
+	else
+		color.blue = 0.f;
+
 	return color;
 }
 
@@ -327,29 +371,33 @@ CryptomatteContext::GetItems(int x, int y) const
 		
 		if(hash != 0)
 		{
-			std::string item;
-			
-			for(std::map<std::string, A_u_long>::const_iterator j = _manifest.begin(); j != _manifest.end() && item.empty(); ++j)
-			{
-				const std::string &name = j->first;
-				const A_u_long &value = j->second;
-				
-				if(hash == value)
-					item = name;
-			}
-			
-			if( item.empty() )
-			{
-				char hexStr[9];
-				sprintf(hexStr, "%08x", hash);
-				
-				item = hexStr;
-			}
-			
-			items.insert(item);
+			items.insert( ItemForHash(hash) );
 		}
 	}
 	
+	return items;
+}
+
+
+std::set<std::string>
+CryptomatteContext::GetItemsFromSelectionColor(const PF_PixelFloat &pixel) const
+{
+	std::set<std::string> items;
+
+	A_u_long *red = (A_u_long *)&pixel.red;
+
+	if(*red != 0)
+	{
+		items.insert( ItemForHash(*red) );
+	}
+
+	A_u_long *blue = (A_u_long *)&pixel.blue;
+
+	if(*blue != 0)
+	{
+		items.insert( ItemForHash(*blue) );
+	}
+
 	return items;
 }
 
@@ -759,6 +807,32 @@ CryptomatteContext::Level::FloatBuffer::~FloatBuffer()
 }
 
 
+std::string
+CryptomatteContext::ItemForHash(const A_u_long &hash) const
+{
+	std::string item;
+	
+	for(std::map<std::string, A_u_long>::const_iterator j = _manifest.begin(); j != _manifest.end() && item.empty(); ++j)
+	{
+		const std::string &name = j->first;
+		const A_u_long &value = j->second;
+		
+		if(hash == value)
+			item = name;
+	}
+	
+	if( item.empty() )
+	{
+		char hexStr[9];
+		sprintf(hexStr, "%08x", hash);
+		
+		item = hexStr;
+	}
+
+	return item;
+}
+
+
 void
 CryptomatteContext::CalculateNextNames(std::string &nextHashName, std::string &nextCoverageName)
 {
@@ -827,6 +901,8 @@ About (
 }
 
 
+AEGP_PluginID gAEGPPluginID;
+
 static PF_Err 
 GlobalSetup (	
 	PF_InData		*in_data,
@@ -834,8 +910,6 @@ GlobalSetup (
 	PF_ParamDef		*params[],
 	PF_LayerDef		*output )
 {
-	//	We do very little here.
-		
 	out_data->my_version 	= 	PF_VERSION(	MAJOR_VERSION, 
 											MINOR_VERSION,
 											BUG_VERSION, 
@@ -854,6 +928,10 @@ GlobalSetup (
 								PF_OutFlag2_SUPPORTS_SMART_RENDER	|
 								PF_OutFlag2_FLOAT_COLOR_AWARE;
 	
+
+	AEGP_SuiteHandler suites(in_data->pica_basicP);
+	suites.UtilitySuite()->AEGP_RegisterWithAEGP(NULL, NAME, &gAEGPPluginID);
+
 	return PF_Err_NONE;
 }
 
@@ -871,27 +949,38 @@ ParamsSetup (
 
 	// readout
 	AEFX_CLR_STRUCT(def);
-	 // we can time_vary once we're willing to print and scan ArbData text
-	def.flags = PF_ParamFlag_CANNOT_TIME_VARY;
-	
 #define ARB_REFCON NULL // used by PF_ADD_ARBITRARY
 	
 	ArbNewDefault(in_data, out_data, ARB_REFCON, &def.u.arb_d.dephault);
 
-	PF_ADD_ARBITRARY("Settings",
+	PF_ADD_ARBITRARY2("Settings",
 						kUI_CONTROL_WIDTH,
 						kUI_CONTROL_HEIGHT,
+						0, //PF_ParamFlag_CANNOT_TIME_VARY, // is it a problem that I can't cut and paste keyframes?
 						PF_PUI_CONTROL,
 						def.u.arb_d.dephault,
 						ARBITRARY_DATA_ID,
 						ARB_REFCON);
 	
+
 	AEFX_CLR_STRUCT(def);
-	PF_ADD_POPUP(	"Output",
+	PF_ADD_POPUP("Output",
 					DISPLAY_NUM_OPTIONS, //number of choices
 					DISPLAY_COLORS, //default
 					DISPLAY_MENU_STR,
 					DISPLAY_ID);
+	
+
+	AEFX_CLR_STRUCT(def);
+
+	const bool renderThreadMadness = (in_data->version.major > PF_AE135_PLUG_IN_VERSION || in_data->version.minor >= PF_AE135_PLUG_IN_SUBVERS);
+	if(!renderThreadMadness)
+		def.ui_flags = PF_PUI_INVISIBLE;
+
+	PF_ADD_CHECKBOX("Selection Mode", "",
+						FALSE,
+						PF_ParamFlag_CANNOT_TIME_VARY,
+						SELECTION_MODE_ID);
 
 /*	AEFX_CLR_STRUCT(def);
 	def.flags = PF_ParamFlag_SUPERVISE | PF_ParamFlag_CANNOT_TIME_VARY;
@@ -1021,7 +1110,7 @@ UserChangedParam (
 	return PF_Err_NONE;
 }
 */
-
+/*
 static PF_Err 
 SequenceFlatten (
 	PF_InData		*in_data,
@@ -1044,7 +1133,7 @@ SequenceFlatten (
 
 	return PF_Err_NONE;
 }
-
+*/
 
 static PF_Boolean
 IsEmptyRect(const PF_LRect *r){
@@ -1162,15 +1251,17 @@ typedef struct MatteIterateData {
 	PF_Point			channelMove;
 	A_long				width;
 	int					display;
+	bool				selection;
 	
-	MatteIterateData(PF_InData *in, CryptomatteContext *c, PF_PixelPtr d, A_long rb, PF_Point ch, A_long w, int di) :
+	MatteIterateData(PF_InData *in, CryptomatteContext *c, PF_PixelPtr d, A_long rb, PF_Point ch, A_long w, int di, bool s) :
 		in_data(in),
 		context(c),
 		data(d),
 		rowbytes(rb),
 		channelMove(ch),
 		width(w),
-		display(di) {}
+		display(di),
+		selection(s) {}
 } MatteIterateData;
 
 
@@ -1188,7 +1279,21 @@ DrawMatte_Iterate(void *refconPV,
 	
 	PIXTYPE *pix = (PIXTYPE *)((char *)i_data->data + ((i + i_data->channelMove.v) * i_data->rowbytes) + (i_data->channelMove.h * sizeof(PIXTYPE)));
 	
-	if(i_data->display == DISPLAY_COLORS)
+	if(i_data->selection)
+	{
+		for(int x=0; x < i_data->width; x++)
+		{
+			const PF_PixelFloat color = i_data->context->GetSelectionColor(x + i_data->channelMove.h, i + i_data->channelMove.v);
+			
+			pix->alpha	= FloatToChan<CHANTYPE>(color.alpha);
+			pix->red	= FloatToChan<CHANTYPE>(color.red);
+			pix->green	= FloatToChan<CHANTYPE>(color.green);
+			pix->blue	= FloatToChan<CHANTYPE>(color.blue);
+			
+			pix++;
+		}
+	}
+	else if(i_data->display == DISPLAY_COLORS)
 	{
 		for(int x=0; x < i_data->width; x++)
 		{
@@ -1304,6 +1409,7 @@ DoRender(
 		PF_EffectWorld 	*input,
 		PF_ParamDef		*CRYPTO_data,
 		PF_ParamDef		*CRYPTO_display,
+		PF_ParamDef		*CRYPTO_selection,
 		PF_OutData		*out_data,
 		PF_EffectWorld	*output)
 {
@@ -1326,44 +1432,33 @@ DoRender(
 
 		CryptomatteContext *context = (CryptomatteContext *)seq_data->context;
 		
-		if(context != NULL)
-		{
-			if(context->Hash() != arb_data->hash)
-			{
-				if(seq_data->selectionChanged)
-				{
-					// only the selection changed, don't rebuild the whole thing
-					context->SetSelection(arb_data);
-				}
-				else
-				{
-					delete context;
-					
-					context = NULL;
-					
-					seq_data->context = NULL;
-				}
-			}
-		}
-		
-		
 		if(context == NULL)
 		{
 			seq_data->context = context = new CryptomatteContext(arb_data);
 		
 			context->LoadLevels(in_data);
 		}
-		else if(!seq_data->selectionChanged ||
+		else
+		{
+			context->Update(arb_data);
+
+			const bool renderThreadMadness = (in_data->version.major > PF_AE135_PLUG_IN_VERSION || in_data->version.minor >= PF_AE135_PLUG_IN_SUBVERS);
+			
+			// did the selection just change, so we don't have to reload the Cryptomatte levels?
+			const bool selectionJustChanged = (renderThreadMadness ? CRYPTO_selection->u.bd.value : seq_data->selectionChanged);
+
+			if(!selectionJustChanged ||
 				context->DownsampleX().num != in_data->downsample_x.num ||
 				context->DownsampleX().den != in_data->downsample_x.den ||
 				context->DownsampleY().num != in_data->downsample_y.num ||
 				context->DownsampleY().den != in_data->downsample_y.den)
-		{
-			// don't re-load levels if the selection JUST changed
-			// hopefully people don't switch frames in between the click and the render,
-			// say if caps lock was down
-			
-			context->LoadLevels(in_data);
+			{
+				// don't re-load levels if the selection JUST changed
+				// hopefully people don't switch frames in between the click and the render,
+				// say if caps lock was down
+				
+				context->LoadLevels(in_data);
+			}
 		}
 		
 		seq_data->selectionChanged = FALSE;
@@ -1396,7 +1491,7 @@ DoRender(
 			const int copy_height = MIN(output->height - world_move.v, alphaWorld->height - chan_move.v);
 
 
-			MatteIterateData matte_iter(in_data, context, alphaWorld->data, alphaWorld->rowbytes, chan_move, copy_width, CRYPTO_display->u.pd.value);
+			MatteIterateData matte_iter(in_data, context, alphaWorld->data, alphaWorld->rowbytes, chan_move, copy_width, CRYPTO_display->u.pd.value, CRYPTO_selection->u.bd.value);
 			
 			if(format == PF_PixelFormat_ARGB128)
 			{
@@ -1433,7 +1528,7 @@ DoRender(
 			}
 			*/
 			
-			if(CRYPTO_display->u.pd.value == DISPLAY_COLORS)
+			if(CRYPTO_display->u.pd.value == DISPLAY_COLORS || CRYPTO_selection->u.bd.value)
 			{
 				if(in_data->quality == PF_Quality_HI)
 					err = suites.PFWorldTransformSuite()->copy_hq(in_data->effect_ref, alphaWorld, output, NULL, NULL);
@@ -1503,17 +1598,20 @@ SmartRender(
 	PF_EffectWorld *input, *output;
 	
 	PF_ParamDef CRYPTO_data,
-				CRYPTO_display;
+				CRYPTO_display,
+				CRYPTO_selection;
 
 	// zero-out parameters
 	AEFX_CLR_STRUCT(CRYPTO_data);
 	AEFX_CLR_STRUCT(CRYPTO_display);
+	AEFX_CLR_STRUCT(CRYPTO_selection);
 	
 	
 #define PF_CHECKOUT_PARAM_NOW( PARAM, DEST )	PF_CHECKOUT_PARAM(	in_data, (PARAM), in_data->current_time, in_data->time_step, in_data->time_scale, DEST )
 
 	// get our arb data and see if it requires the input buffer
 	err = PF_CHECKOUT_PARAM_NOW(CRYPTO_DATA, &CRYPTO_data);
+	err = PF_CHECKOUT_PARAM_NOW(CRYPTO_SELECTION_MODE, &CRYPTO_selection);
 	
 	if(!err)
 	{
@@ -1543,12 +1641,14 @@ SmartRender(
 					input, 
 					&CRYPTO_data,
 					&CRYPTO_display,
+					&CRYPTO_selection,
 					out_data, 
 					output));
 
 	// Always check in, no matter what the error condition!
 	ERR2(	PF_CHECKIN_PARAM(in_data, &CRYPTO_data )	);
 	ERR2(	PF_CHECKIN_PARAM(in_data, &CRYPTO_display )	);
+	ERR2(	PF_CHECKIN_PARAM(in_data, &CRYPTO_selection )	);
 
 
 	return err;
@@ -1636,9 +1736,9 @@ PluginMain (
 			case PF_Cmd_SEQUENCE_RESETUP:
 				err = SequenceSetup(in_data, out_data, params, output);
 				break;
-			case PF_Cmd_SEQUENCE_FLATTEN:
-				err = SequenceFlatten(in_data, out_data, params, output);
-				break;
+			//case PF_Cmd_SEQUENCE_FLATTEN:
+			//	err = SequenceFlatten(in_data, out_data, params, output);
+			//	break;
 			case PF_Cmd_SEQUENCE_SETDOWN:
 				err = SequenceSetdown(in_data, out_data, params, output);
 				break;

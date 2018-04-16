@@ -120,11 +120,12 @@ typedef struct {
 
 typedef struct {
 	char		magic[4]; // "cry1"
-	A_u_long	hash; // djb2 hash of everything after this, for quick comparison
-	char		reserved[24]; // 32 bytes at this point
+	char		reserved[28]; // 32 bytes at this point
 	char		layer[MAX_LAYER_NAME_LEN + 1];
 	A_u_long	manifest_size; // including null character
+	A_u_long	manifest_hash;
 	A_u_long	selection_size;
+	A_u_long	selection_hash;
 	char		data[4]; // manifest string + selection string 
 } CryptomatteArbitraryData;
 
@@ -134,13 +135,16 @@ typedef struct {
 #define SWAP_LONG(a)		((a >> 24) | ((a >> 8) & 0xff00) | ((a << 8) & 0xff0000) | (a << 24))
 #endif
 
+
 static void 
 SwapArbData(CryptomatteArbitraryData *arb_data)
 {
-	arb_data->hash = SWAP_LONG(arb_data->hash);
-	arb_data->selection_size = SWAP_LONG(arb_data->selection_size);
 	arb_data->manifest_size = SWAP_LONG(arb_data->manifest_size);
+	arb_data->manifest_hash = SWAP_LONG(arb_data->manifest_hash);
+	arb_data->selection_size = SWAP_LONG(arb_data->selection_size);
+	arb_data->selection_size = SWAP_LONG(arb_data->selection_size);
 }
+
 
 static A_u_long
 djb2(const A_u_char *data, size_t len)
@@ -153,28 +157,47 @@ djb2(const A_u_char *data, size_t len)
 	return hash;
 }
 
-static void
-HashCryptoArb(CryptomatteArbitraryData *arb)
-{
-	const size_t len = sizeof(CryptomatteArbitraryData) + arb->selection_size + arb->manifest_size - 8 - 4;
 
-	#ifdef AE_BIG_ENDIAN
-		// really, you're compiling this for PPC?
-		SwapArbData(arb);
-	#endif
-	
-	arb->hash = djb2((A_u_char *)&arb->reserved[0], len);
-	
-	#ifdef AE_BIG_ENDIAN
-		SwapArbData(arb);
-	#endif
+static void
+HashManifest(CryptomatteArbitraryData *arb)
+{
+	arb->manifest_hash = djb2((A_u_char *)&arb->data[0], arb->manifest_size);
 }
+
+
+static void
+HashSelection(CryptomatteArbitraryData *arb)
+{
+	arb->selection_hash = djb2((A_u_char *)&arb->data[arb->manifest_size], arb->selection_size);
+}
+
+
+const char *
+GetLayer(const CryptomatteArbitraryData *arb)
+{
+	return arb->layer;
+}
+
+
+const char *
+GetSelection(const CryptomatteArbitraryData *arb)
+{
+	return &arb->data[arb->manifest_size];
+}
+
+
+const char *
+GetManifest(const CryptomatteArbitraryData *arb)
+{
+	return &arb->data[0];
+}
+
 
 static A_Handle MakeCryptomatteHandle(AEGP_SuiteHandler &suites, std::string layer, const std::string &manifest)
 {
 	const std::string selection("");
 	
-	assert(sizeof(CryptomatteArbitraryData) == 108);
+	assert(sizeof(CryptomatteArbitraryData) == 116);
 	
 	const size_t siz = sizeof(CryptomatteArbitraryData) + manifest.size() + selection.size();
 	
@@ -198,7 +221,8 @@ static A_Handle MakeCryptomatteHandle(AEGP_SuiteHandler &suites, std::string lay
 	strncpy(&arb->data[0], manifest.c_str(), arb->manifest_size);
 	strncpy(&arb->data[arb->manifest_size], selection.c_str(), arb->selection_size);
 	
-	HashCryptoArb(arb);
+	HashManifest(arb);
+	HashSelection(arb);
 	
 	#ifdef AE_BIG_ENDIAN
 		// really, you're compiling this for PPC?

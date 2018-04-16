@@ -36,6 +36,11 @@
 
 // Here's a SuiteHandler that can work in several different versions of AE.
 
+#ifndef PF_AE135_PLUG_IN_VERSION
+#define PF_AE135_PLUG_IN_VERSION	13
+#define PF_AE135_PLUG_IN_SUBVERS	9
+#endif
+
 #ifndef PF_AE105_PLUG_IN_VERSION
 #define PF_AE105_PLUG_IN_VERSION	13
 #define PF_AE105_PLUG_IN_SUBVERS	1
@@ -78,6 +83,8 @@ typedef		AEGP_ItemSuite7					AEGP_ItemSuite;
 typedef		AEGP_CompSuite6					AEGP_CompSuite;
 #define		kAEGPLayerSuiteVersion			kAEGPLayerSuiteVersion5
 typedef		AEGP_LayerSuite5				AEGP_LayerSuite;
+#define		kPFParamUtilsSuiteVersion		kPFParamUtilsSuiteVersion2
+typedef		PF_ParamUtilsSuite2				PF_ParamUtilsSuite;
 
 #else
 
@@ -115,6 +122,9 @@ typedef		AEGP_ItemSuite8					AEGP_ItemSuite;
 typedef		AEGP_CompSuite7					AEGP_CompSuite;
 #define		kAEGPLayerSuiteVersion			kAEGPLayerSuiteVersion6
 typedef		AEGP_LayerSuite6				AEGP_LayerSuite;
+#define		kPFParamUtilsSuiteVersion		kPFParamUtilsSuiteVersion3
+typedef		PF_ParamUtilsSuite3				PF_ParamUtilsSuite;
+
 
 // only available in >=10.0
 #include <adobesdk/DrawbotSuite.h>
@@ -134,6 +144,18 @@ typedef		PF_EffectCustomUISuite1			PF_EffectCustomUISuite;
 typedef		PF_EffectCustomUIOverlayThemeSuite1	PF_CustomUIThemeSuite;
 
 #endif
+
+#if PF_AE_PLUG_IN_VERSION == PF_AE135_PLUG_IN_VERSION && PF_AE_PLUG_IN_SUBVERS >= PF_AE135_PLUG_IN_SUBVERS
+#define AE135_RENDER_THREAD_MADNESS 1
+
+#define		kAEGPRenderAsyncManagerSuiteVersion	kAEGPRenderAsyncManagerSuiteVersion1
+typedef		AEGP_RenderAsyncManagerSuite1	AEGP_RenderAsyncManagerSuite;
+#define		kAEGPLayerRenderOptionsSuiteVersion	kAEGPLayerRenderOptionsSuiteVersion2
+typedef		AEGP_LayerRenderOptionsSuite2	AEGP_LayerRenderOptionsSuite;
+
+#endif // AE 13.5 (CC 2015)
+
+
 
 // Suites that aren't effected by the AE10 change
 #define		kAEGPCommandSuiteVersion		kAEGPCommandSuiteVersion1
@@ -186,6 +208,9 @@ typedef		AEGP_ColorSettingsSuite2		AEGP_ColorSettingsSuite;
 typedef		PF_AdvAppSuite1					PFAdvAppSuite;
 #define		kAEGPTextDocumentSuiteVersion	kAEGPTextDocumentSuiteVersion1
 typedef		AEGP_TextDocumentSuite1			AEGP_TextDocumentSuite;
+#define		kAEGPPFInterfaceSuiteVersion	kAEGPPFInterfaceSuiteVersion1
+typedef		AEGP_PFInterfaceSuite1			AEGP_PFInterfaceSuite;
+
 
 // Suite registration and handling object
 class AEGP_SuiteHandler {
@@ -217,6 +242,7 @@ private:
 		AEGP_RenderSuite			*render_suiteP;
 		AEGP_CompSuite				*comp_suiteP;
 		AEGP_LayerSuite				*layer_suiteP;
+		PF_ParamUtilsSuite			*pf_param_utils_suiteP;
 		AEGP_CameraSuite			*camera_suiteP;
 		AEGP_CollectionSuite		*collection_suiteP;
 		AEGP_StreamSuite			*stream_suiteP;
@@ -235,6 +261,7 @@ private:
 		PFAdvAppSuite				*adv_app_suiteP;
 		AEGP_PersistentDataSuite	*persistent_data_suiteP;
 		AEGP_TextDocumentSuite		*text_document_suiteP;
+		AEGP_PFInterfaceSuite		*pfinterface_suiteP;
 
 	#if PF_AE_PLUG_IN_VERSION >= PF_AE100_PLUG_IN_VERSION
 		DB_DrawbotSuite				*db_drawbot_suiteP;
@@ -250,6 +277,12 @@ private:
 		AEGP_ProjSuite6				*proj_suite6P;
 		AEGP_CompSuite8				*comp_suite8P;
 		#endif
+	#endif
+
+	#if AE135_RENDER_THREAD_MADNESS
+		AEGP_RenderAsyncManagerSuite	*render_async_manager_suiteP;
+		AEGP_LayerRenderOptionsSuite	*layer_render_options_suiteP;
+		AEGP_RenderSuite5				*render_suite5P;
 	#endif
 	};
 
@@ -300,6 +333,7 @@ private:
 		AEGP_SUITE_RELEASE_BOILERPLATE(render_suiteP, kAEGPRenderSuite, kAEGPRenderSuiteVersion);
 		AEGP_SUITE_RELEASE_BOILERPLATE(comp_suiteP, kAEGPCompSuite, kAEGPCompSuiteVersion);
 		AEGP_SUITE_RELEASE_BOILERPLATE(layer_suiteP, kAEGPLayerSuite, kAEGPLayerSuiteVersion);
+		AEGP_SUITE_RELEASE_BOILERPLATE(pf_param_utils_suiteP, kPFParamUtilsSuite, kPFParamUtilsSuiteVersion);
 		AEGP_SUITE_RELEASE_BOILERPLATE(camera_suiteP, kAEGPCameraSuite, kAEGPCameraSuiteVersion);
 		AEGP_SUITE_RELEASE_BOILERPLATE(collection_suiteP, kAEGPCollectionSuite, kAEGPCollectionSuiteVersion);
 		AEGP_SUITE_RELEASE_BOILERPLATE(stream_suiteP, kAEGPStreamSuite, kAEGPStreamSuiteVersion);
@@ -318,6 +352,7 @@ private:
 		AEGP_SUITE_RELEASE_BOILERPLATE(adv_app_suiteP, kPFAdvAppSuite, kPFAdvAppSuiteVersion);
 		AEGP_SUITE_RELEASE_BOILERPLATE(persistent_data_suiteP, kAEGPPersistentDataSuite, kAEGPPersistentDataSuiteVersion);
 		AEGP_SUITE_RELEASE_BOILERPLATE(text_document_suiteP, kAEGPTextDocumentSuite, kAEGPTextDocumentSuiteVersion);
+		AEGP_SUITE_RELEASE_BOILERPLATE(pfinterface_suiteP, kAEGPPFInterfaceSuite, kAEGPPFInterfaceSuiteVersion);
 
 	#if PF_AE_PLUG_IN_VERSION >= PF_AE100_PLUG_IN_VERSION
 		AEGP_SUITE_RELEASE_BOILERPLATE(db_drawbot_suiteP, kDRAWBOT_DrawSuite, kDRAWBOT_DrawbotSuite_Version);
@@ -331,6 +366,12 @@ private:
 		AEGP_SUITE_RELEASE_BOILERPLATE(proj_suite6P, kAEGPProjSuite, kAEGPProjSuiteVersion6);
 		AEGP_SUITE_RELEASE_BOILERPLATE(comp_suite8P, kAEGPCompSuite, kAEGPCompSuiteVersion8);
 		#endif
+	#endif
+
+	#if AE135_RENDER_THREAD_MADNESS
+		AEGP_SUITE_RELEASE_BOILERPLATE(render_async_manager_suiteP, kAEGPRenderAsyncManagerSuite, kAEGPRenderAsyncManagerSuiteVersion);
+		AEGP_SUITE_RELEASE_BOILERPLATE(layer_render_options_suiteP, kAEGPLayerRenderOptionsSuite, kAEGPLayerRenderOptionsSuiteVersion);
+		AEGP_SUITE_RELEASE_BOILERPLATE(render_suite5P, kAEGPRenderSuite, kAEGPRenderSuiteVersion5);
 	#endif
 	}
 
@@ -374,6 +415,7 @@ public:
 	AEGP_SUITE_ACCESS_BOILERPLATE(RenderSuite, AEGP_RenderSuite, render_suiteP, kAEGPRenderSuite, kAEGPRenderSuiteVersion);
 	AEGP_SUITE_ACCESS_BOILERPLATE(CompSuite, AEGP_CompSuite, comp_suiteP, kAEGPCompSuite, kAEGPCompSuiteVersion);
 	AEGP_SUITE_ACCESS_BOILERPLATE(LayerSuite, AEGP_LayerSuite, layer_suiteP, kAEGPLayerSuite, kAEGPLayerSuiteVersion);
+	AEGP_SUITE_ACCESS_BOILERPLATE(PFParamUtilsSuite, PF_ParamUtilsSuite, pf_param_utils_suiteP, kPFParamUtilsSuite, kPFParamUtilsSuiteVersion);
 	AEGP_SUITE_ACCESS_BOILERPLATE(CameraSuite, AEGP_CameraSuite, camera_suiteP, kAEGPCameraSuite, kAEGPCameraSuiteVersion);
 	AEGP_SUITE_ACCESS_BOILERPLATE(CollectionSuite, AEGP_CollectionSuite, collection_suiteP, kAEGPCollectionSuite, kAEGPCollectionSuiteVersion);
 	AEGP_SUITE_ACCESS_BOILERPLATE(StreamSuite, AEGP_StreamSuite, stream_suiteP, kAEGPStreamSuite, kAEGPStreamSuiteVersion);
@@ -392,6 +434,7 @@ public:
 	AEGP_SUITE_ACCESS_BOILERPLATE(AdvAppSuite, PFAdvAppSuite, adv_app_suiteP, kPFAdvAppSuite, kPFAdvAppSuiteVersion);
 	AEGP_SUITE_ACCESS_BOILERPLATE(PersistentDataSuite, AEGP_PersistentDataSuite, persistent_data_suiteP, kAEGPPersistentDataSuite, kAEGPPersistentDataSuiteVersion);
 	AEGP_SUITE_ACCESS_BOILERPLATE(TextDocumentSuite, AEGP_TextDocumentSuite, text_document_suiteP, kAEGPTextDocumentSuite, kAEGPTextDocumentSuiteVersion);
+	AEGP_SUITE_ACCESS_BOILERPLATE(PFInterfaceSuite, AEGP_PFInterfaceSuite, pfinterface_suiteP, kAEGPPFInterfaceSuite, kAEGPPFInterfaceSuiteVersion);
 	
 #if PF_AE_PLUG_IN_VERSION >= PF_AE100_PLUG_IN_VERSION
 	AEGP_SUITE_ACCESS_BOILERPLATE(DBDrawbotSuite, DB_DrawbotSuite, db_drawbot_suiteP, kDRAWBOT_DrawSuite, kDRAWBOT_DrawbotSuite_Version);
@@ -405,6 +448,12 @@ public:
 	AEGP_SUITE_ACCESS_BOILERPLATE(ProjSuite6, AEGP_ProjSuite6, proj_suite6P, kAEGPProjSuite, kAEGPProjSuiteVersion6);
 	AEGP_SUITE_ACCESS_BOILERPLATE(CompSuite8, AEGP_CompSuite8, comp_suite8P, kAEGPCompSuite, kAEGPCompSuiteVersion8);
 	#endif
+#endif
+
+#if AE135_RENDER_THREAD_MADNESS
+	AEGP_SUITE_ACCESS_BOILERPLATE(RenderAsyncManagerSuite, AEGP_RenderAsyncManagerSuite, render_async_manager_suiteP, kAEGPRenderAsyncManagerSuite, kAEGPRenderAsyncManagerSuiteVersion);
+	AEGP_SUITE_ACCESS_BOILERPLATE(LayerRenderOptionsSuite, AEGP_LayerRenderOptionsSuite, layer_render_options_suiteP, kAEGPLayerRenderOptionsSuite, kAEGPLayerRenderOptionsSuiteVersion);
+	AEGP_SUITE_ACCESS_BOILERPLATE(RenderSuite5, AEGP_RenderSuite5, render_suite5P, kAEGPRenderSuite, kAEGPRenderSuiteVersion5);
 #endif
 };
 

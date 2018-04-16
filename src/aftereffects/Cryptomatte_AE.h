@@ -45,8 +45,8 @@
 #define AUTHOR				"Brendan Bolles"
 #define COPYRIGHT			"(c) 2018 fnord"
 #define WEBSITE				"www.fnordware.com"
-#define	MAJOR_VERSION		1
-#define	MINOR_VERSION		9
+#define	MAJOR_VERSION		2
+#define	MINOR_VERSION		0
 #define	BUG_VERSION			0
 #define	STAGE_VERSION		PF_Stage_RELEASE
 #define	BUILD_VERSION		0
@@ -57,6 +57,7 @@ enum {
 	CRYPTO_DATA,
 	//CRYPTO_ACTION,
 	CRYPTO_DISPLAY,
+	CRYPTO_SELECTION_MODE,
 	
 	CRYPTO_NUM_PARAMS
 };
@@ -64,7 +65,8 @@ enum {
 enum {
 	ARBITRARY_DATA_ID = 1,
 	//ACTION_ID,
-	DISPLAY_ID
+	DISPLAY_ID,
+	SELECTION_MODE_ID
 };
 
 
@@ -135,11 +137,12 @@ typedef struct {
 
 typedef struct {
 	char		magic[4]; // "cry1"
-	A_u_long	hash; // djb2 hash of everything after this, for quick comparison
-	char		reserved[24]; // 32 bytes at this point
+	char		reserved[28]; // 32 bytes at this point
 	char		layer[MAX_LAYER_NAME_LEN + 1];
 	A_u_long	manifest_size; // including null character
+	A_u_long	manifest_hash;
 	A_u_long	selection_size;
+	A_u_long	selection_hash;
 	char		data[4]; // manifest string + selection string 
 } CryptomatteArbitraryData;
 
@@ -229,8 +232,8 @@ class CryptomatteContext
   public:
 	CryptomatteContext(CryptomatteArbitraryData *arb);
 	~CryptomatteContext();
-	
-	void SetSelection(CryptomatteArbitraryData *arb);
+
+	void Update(CryptomatteArbitraryData *arb);
 	
 	void LoadLevels(PF_InData *in_data);
 	
@@ -239,24 +242,26 @@ class CryptomatteContext
 	float GetCoverage(int x, int y) const;
 	
 	PF_PixelFloat GetColor(int x, int y) const;
+	PF_PixelFloat GetSelectionColor(int x, int y) const;
 	
 	std::set<std::string> GetItems(int x, int y) const;
+	std::set<std::string> GetItemsFromSelectionColor(const PF_PixelFloat &pixel) const;
 	
 	int Width() const;
 	int Height() const;
 	
 	const PF_RationalScale & DownsampleX() const { return _downsampleX; }
 	const PF_RationalScale & DownsampleY() const { return _downsampleY; }
+	A_long CurrentTime() const { return _currenTime; }
 	
-	
-	A_u_long Hash() const { return _hash; }
 	
 	static std::string searchReplace(const std::string &str, const std::string &search, const std::string &replace);
 	static std::string deQuote(const std::string &s);
 	static void quotedTokenize(const std::string &str, std::vector<std::string> &tokens, const std::string& delimiters = " ");
 
   private:
-	A_u_long _hash;
+	A_u_long _manifestHash;
+	A_u_long _selectionHash;
 	
 	std::string _layer;
 	std::map<std::string, A_u_long> _manifest;
@@ -304,7 +309,10 @@ class CryptomatteContext
 	
 	PF_RationalScale _downsampleX;
 	PF_RationalScale _downsampleY;
+	A_long _currenTime;
 	
+	std::string ItemForHash(const A_u_long &hash) const;
+
 	void CalculateNextNames(std::string &nextHashName, std::string &nextCoverageName);
 	void CalculateNext4Name(std::string &fourName);
 };
@@ -367,10 +375,10 @@ const char *
 GetManifest(const CryptomatteArbitraryData *arb);
 
 void
-SetArb(PF_InData *in_data, PF_ArbitraryH *arbH, std::string layer, std::string selection, std::string manifest);
+SetArb(PF_InData *in_data, PF_ArbitraryH *arbH, const std::string &layer, const std::string &selection, const std::string &manifest);
 
 void
-SetArbSelection(PF_InData *in_data, PF_ArbitraryH *arbH, std::string selection);
+SetArbSelection(PF_InData *in_data, PF_ArbitraryH *arbH, const std::string &selection);
 
 
 
