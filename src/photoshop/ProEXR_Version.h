@@ -23,14 +23,14 @@
 #ifndef __ProEXR_Version_H__
 #define __ProEXR_Version_H__
 
-#define ProEXR_Major_Version 1
-#define ProEXR_Minor_Version 9
-#define ProEXR_Version_String "1.9.3"
+#define ProEXR_Major_Version 2
+#define ProEXR_Minor_Version 0
+#define ProEXR_Version_String "2.0b"
 #define ProEXR_Build_Date __DATE__
-#define ProEXR_Build_Date_Manual "4 January 2017"
-#define ProEXR_Build_Complete_Manual "v1.9.3 - 4 January 2017"
-#define ProEXR_Copyright_Year "2007-2017"
-#define ProEXR_Build_Year "2017"
+#define ProEXR_Build_Date_Manual "16 April 2018"
+#define ProEXR_Build_Complete_Manual "v2.0 - 16 April 2018"
+#define ProEXR_Copyright_Year "2007-2018"
+#define ProEXR_Build_Year "2018"
 
 #define ProEXR_Category "OpenEXR"
 #define ProEXR_Priority 2
