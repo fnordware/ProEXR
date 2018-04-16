@@ -60,7 +60,7 @@ CryptomatteContext::CryptomatteContext(CryptomatteArbitraryData *arb) :
 	
 	_downsampleX.num = _downsampleX.den = 0;
 	_downsampleY.num = _downsampleY.den = 0;
-	_currenTime = -1;
+	_currentTime = -1;
 }
 
 
@@ -265,7 +265,7 @@ CryptomatteContext::LoadLevels(PF_InData *in_data)
 	
 	_downsampleX = in_data->downsample_x;
 	_downsampleY = in_data->downsample_y;
-	_currenTime = in_data->current_time;
+	_currentTime = in_data->current_time;
 }
 
 
@@ -1448,6 +1448,7 @@ DoRender(
 		#endif
 
 			if(!selectionJustChanged ||
+				context->CurrentTime() != in_data->current_time ||
 				context->DownsampleX().num != in_data->downsample_x.num ||
 				context->DownsampleX().den != in_data->downsample_x.den ||
 				context->DownsampleY().num != in_data->downsample_y.num ||

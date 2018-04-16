@@ -252,7 +252,7 @@ class CryptomatteContext
 	
 	const PF_RationalScale & DownsampleX() const { return _downsampleX; }
 	const PF_RationalScale & DownsampleY() const { return _downsampleY; }
-	A_long CurrentTime() const { return _currenTime; }
+	A_long CurrentTime() const { return _currentTime; }
 	
 	
 	static std::string searchReplace(const std::string &str, const std::string &search, const std::string &replace);
@@ -309,7 +309,7 @@ class CryptomatteContext
 	
 	PF_RationalScale _downsampleX;
 	PF_RationalScale _downsampleY;
-	A_long _currenTime;
+	A_long _currentTime;
 	
 	std::string ItemForHash(const A_u_long &hash) const;
 
