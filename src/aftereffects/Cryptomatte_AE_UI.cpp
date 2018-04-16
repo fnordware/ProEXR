@@ -340,7 +340,7 @@ DoClick(
 				suites.AdvAppSuite()->PF_InfoDrawText(selectionInfo.c_str(), selectionInfoList.c_str());
 					
 			#if !AE135_RENDER_THREAD_MADNESS
-					event_extra->u.do_click.send_drag = TRUE;
+				event_extra->u.do_click.send_drag = TRUE;
 			#endif
 			}
 		}
