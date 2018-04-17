@@ -32,10 +32,10 @@ SwapArbData(CryptomatteArbitraryData *arb_data)
 }
 
 
-static A_u_long
+static Hash
 djb2(const A_u_char *data, size_t len)
 {
-	A_u_long hash = 5381;
+	Hash hash = 5381;
 	
 	while(len--)
 		hash = ((hash << 5) + hash) + *data++; // hash * 33 + c
@@ -313,8 +313,8 @@ ArbUnFlatten(PF_InData *in_data, PF_OutData *out_data,
 		#endif
 		
 		#ifndef NDEBUG
-			const A_u_long old_manifest_hash = out_arb_data->manifest_hash;
-			const A_u_long old_selection_hash = out_arb_data->selection_hash;
+			const Hash old_manifest_hash = out_arb_data->manifest_hash;
+			const Hash old_selection_hash = out_arb_data->selection_hash;
 		#endif
 			
 			HashManifest(out_arb_data);
@@ -342,7 +342,7 @@ ArbInterpolate(PF_InData *in_data, PF_OutData *out_data,
 {
 	PF_Err 	err 	= PF_Err_NONE;
 	
-	assert(FALSE); // we shouldn't be doing this in EXtractoR - we said we didn't interpolate
+	assert(FALSE); // we shouldn't be doing this in Cryptomatte - we said we didn't interpolate
 	
 	if(left_arbH && right_arbH && interpPH)
 	{

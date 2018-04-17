@@ -338,7 +338,7 @@ CryptomatteContext::GetSelectionColor(int x, int y) const
 	{
 		float *redf = &color.red;
 
-		A_u_long *red = (A_u_long *)redf;
+		Hash *red = (Hash *)redf;
 			
 		*red = _levels[0]->GetHash(x, y);
 	}
@@ -351,7 +351,7 @@ CryptomatteContext::GetSelectionColor(int x, int y) const
 	{
 		float *bluef = &color.blue;
 
-		A_u_long *blue = (A_u_long *)bluef;
+		Hash *blue = (Hash *)bluef;
 			
 		*blue = _levels[1]->GetHash(x, y);
 	}
@@ -375,7 +375,7 @@ CryptomatteContext::GetItems(int x, int y) const
 		
 		if(coverage > 0.f)
 		{
-			const A_u_long hash = level->GetHash(x, y);
+			const Hash hash = level->GetHash(x, y);
 		
 			if(hash > 0)
 				items.insert( ItemForHash(hash) );
@@ -391,14 +391,14 @@ CryptomatteContext::GetItemsFromSelectionColor(const PF_PixelFloat &pixel) const
 {
 	std::set<std::string> items;
 
-	A_u_long *red = (A_u_long *)&pixel.red;
+	Hash *red = (Hash *)&pixel.red;
 
 	if(*red != 0)
 	{
 		items.insert( ItemForHash(*red) );
 	}
 
-	A_u_long *blue = (A_u_long *)&pixel.blue;
+	Hash *blue = (Hash *)&pixel.blue;
 
 	if(*blue != 0)
 	{
@@ -670,7 +670,7 @@ CryptomatteContext::Level::~Level()
 
 
 float
-CryptomatteContext::Level::GetCoverage(const std::set<A_u_long> &selection, int x, int y, bool &levelsEnd) const
+CryptomatteContext::Level::GetCoverage(const std::set<Hash> &selection, int x, int y, bool &levelsEnd) const
 {
 	const float coverage = _coverage->Get(x, y);
 	
@@ -680,13 +680,13 @@ CryptomatteContext::Level::GetCoverage(const std::set<A_u_long> &selection, int 
 		
 		const float floatHash = _hash->Get(x, y);
 		
-		const A_u_long *hash = (A_u_long *)&floatHash;
+		const Hash *hash = (Hash *)&floatHash;
 		
 		return (selection.count(*hash) ? coverage : 0.f);
 	}
 	else
 	{
-		levelsEnd = true;
+		levelsEnd = true; // because there was 0.0 coverage for all hashes, not just the selection
 		
 		return 0.f;
 	}
@@ -712,6 +712,7 @@ CryptomatteContext::Level::GetColor(int x, int y) const
 	
 	PF_PixelFloat color;
 	
+	// this method copied from the Nuke plug-in
 	color.red	= coverage * fmodf(frexpf(fabsf(floatHash), &exp) * 1, 0.25);
 	color.green	= coverage * fmodf(frexpf(fabsf(floatHash), &exp) * 4, 0.25);
 	color.blue	= coverage * fmodf(frexpf(fabsf(floatHash), &exp) * 16, 0.25);
@@ -722,12 +723,12 @@ CryptomatteContext::Level::GetColor(int x, int y) const
 }
 
 
-A_u_long
+Hash
 CryptomatteContext::Level::GetHash(int x, int y) const
 {
 	const float floatHash = _hash->Get(x, y);
 	
-	const A_u_long *hash = (A_u_long *)&floatHash;
+	const Hash *hash = (Hash *)&floatHash;
 	
 	return *hash;
 }
@@ -826,14 +827,14 @@ CryptomatteContext::Level::FloatBuffer::~FloatBuffer()
 
 
 std::string
-CryptomatteContext::ItemForHash(const A_u_long &hash) const
+CryptomatteContext::ItemForHash(const Hash &hash) const
 {
 	std::string item;
 	
-	for(std::map<std::string, A_u_long>::const_iterator j = _manifest.begin(); j != _manifest.end() && item.empty(); ++j)
+	for(std::map<std::string, Hash>::const_iterator j = _manifest.begin(); j != _manifest.end() && item.empty(); ++j)
 	{
 		const std::string &name = j->first;
-		const A_u_long &value = j->second;
+		const Hash &value = j->second;
 		
 		if(hash == value)
 			item = name;
@@ -852,7 +853,7 @@ CryptomatteContext::ItemForHash(const A_u_long &hash) const
 
 
 void
-CryptomatteContext::CalculateNextNames(std::string &nextHashName, std::string &nextCoverageName)
+CryptomatteContext::CalculateNextNames(std::string &nextHashName, std::string &nextCoverageName) const
 {
 	const int layerNum = (_levels.size() / 2);
 	const bool useBA = (_levels.size() % 2);
@@ -879,7 +880,7 @@ CryptomatteContext::CalculateNextNames(std::string &nextHashName, std::string &n
 
 
 void
-CryptomatteContext::CalculateNext4Name(std::string &fourName)
+CryptomatteContext::CalculateNext4Name(std::string &fourName) const
 {
 	const int layerNum = (_levels.size() / 2);
 	
@@ -991,7 +992,7 @@ ParamsSetup (
 
 	AEFX_CLR_STRUCT(def);
 	def.ui_flags = PF_PUI_INVISIBLE;
-	PF_ADD_CHECKBOX("Selection Mode", "",
+	PF_ADD_CHECKBOX("Selection Mode", "fnord!", // nobody will see this anyway
 						FALSE,
 						PF_ParamFlag_CANNOT_TIME_VARY,
 						SELECTION_MODE_ID);

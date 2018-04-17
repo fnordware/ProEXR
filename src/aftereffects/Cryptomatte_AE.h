@@ -78,6 +78,9 @@ enum {
 #define DISPLAY_MENU_STR "Colors|Matted RGBA|Matte Only"
 
 
+typedef uint32_t Hash;
+
+
 #define MAX_LAYER_NAME_LEN 63 // same as PF_CHANNEL_NAME_LEN
 
 typedef struct {
@@ -85,9 +88,9 @@ typedef struct {
 	char		reserved[28]; // 32 bytes at this point
 	char		layer[MAX_LAYER_NAME_LEN + 1];
 	A_u_long	manifest_size; // including null character
-	A_u_long	manifest_hash;
+	Hash		manifest_hash;
 	A_u_long	selection_size;
-	A_u_long	selection_hash;
+	Hash		selection_hash;
 	char		data[4]; // manifest string + selection string 
 } CryptomatteArbitraryData;
 
@@ -146,7 +149,7 @@ class CryptomatteContext
 	
 	const PF_RationalScale & DownsampleX() const { return _downsampleX; }
 	const PF_RationalScale & DownsampleY() const { return _downsampleY; }
-	A_long CurrentTime() const { return _currentTime; }
+	const A_long & CurrentTime() const { return _currentTime; }
 	
 	
 	static std::string searchReplace(const std::string &str, const std::string &search, const std::string &replace);
@@ -154,12 +157,12 @@ class CryptomatteContext
 	static void quotedTokenize(const std::string &str, std::vector<std::string> &tokens, const std::string& delimiters = " ");
 
   private:
-	A_u_long _manifestHash;
-	A_u_long _selectionHash;
+	Hash _manifestHash;
+	Hash _selectionHash;
 	
 	std::string _layer;
-	std::map<std::string, A_u_long> _manifest;
-	std::set<A_u_long> _selection;
+	std::map<std::string, Hash> _manifest;
+	std::set<Hash> _selection;
 	
 	class Level
 	{
@@ -168,12 +171,12 @@ class CryptomatteContext
 		Level(PF_InData *in_data, PF_ChannelRef &four, bool secondHalf);
 		~Level();
 		
-		float GetCoverage(const std::set<A_u_long> &selection, int x, int y, bool &levelsEnd) const;
+		float GetCoverage(const std::set<Hash> &selection, int x, int y, bool &levelsEnd) const;
 		float GetCoverage(int x, int y) const;
 		
 		PF_PixelFloat GetColor(int x, int y) const;
 		
-		A_u_long GetHash(int x, int y) const;
+		Hash GetHash(int x, int y) const;
 		
 		inline int Width() const { return (_hash ? _hash->Width() : 0); }
 		inline int Height() const { return (_hash ? _hash->Height() : 0); }
@@ -185,10 +188,10 @@ class CryptomatteContext
 			FloatBuffer(PF_InData *in_data, char *origin, int width, int height, ptrdiff_t xStride, ptrdiff_t yStride);
 			~FloatBuffer();
 			
-			inline float Get(int x, int y) const { return *((float *)_buf + (_width * y) + x); }
+			inline const float & Get(int x, int y) const { return *((float *)_buf + (_width * y) + x); }
 			
-			inline int Width() const { return _width; }
-			inline int Height() const { return _height; }
+			inline const int & Width() const { return _width; }
+			inline const int & Height() const { return _height; }
 		
 		  private:
 			char *_buf;
@@ -206,10 +209,10 @@ class CryptomatteContext
 	PF_RationalScale _downsampleY;
 	A_long _currentTime;
 	
-	std::string ItemForHash(const A_u_long &hash) const;
+	std::string ItemForHash(const Hash &hash) const;
 
-	void CalculateNextNames(std::string &nextHashName, std::string &nextCoverageName);
-	void CalculateNext4Name(std::string &fourName);
+	void CalculateNextNames(std::string &nextHashName, std::string &nextCoverageName) const;
+	void CalculateNext4Name(std::string &fourName) const;
 };
 
 extern "C" {
