@@ -49,6 +49,10 @@ class ErrThrower : public std::exception
 };
 
 
+#ifndef NDEBUG
+static int gNumContexts = 0;
+#endif
+
 CryptomatteContext::CryptomatteContext(CryptomatteArbitraryData *arb) :
 	_manifestHash(0),
 	_selectionHash(0)
@@ -61,6 +65,10 @@ CryptomatteContext::CryptomatteContext(CryptomatteArbitraryData *arb) :
 	_downsampleX.num = _downsampleX.den = 0;
 	_downsampleY.num = _downsampleY.den = 0;
 	_currentTime = -1;
+
+#ifndef NDEBUG
+	gNumContexts++;
+#endif
 }
 
 
@@ -72,6 +80,10 @@ CryptomatteContext::~CryptomatteContext()
 		
 		delete level;
 	}
+
+#ifndef NDEBUG
+	gNumContexts--;
+#endif
 }
 
 
@@ -955,6 +967,21 @@ GlobalSetup (
 }
 
 
+static PF_Err 
+GlobalSetdown (	
+	PF_InData		*in_data,
+	PF_OutData		*out_data,
+	PF_ParamDef		*params[],
+	PF_LayerDef		*output )
+{
+#ifndef NDEBUG
+	assert(gNumContexts == 0);
+#endif
+
+	return PF_Err_NONE;
+}
+
+
 static PF_Err
 ParamsSetup (
 	PF_InData		*in_data,
@@ -1099,7 +1126,6 @@ SequenceSetdown (
 }
 
 
-/*
 static PF_Err 
 SequenceFlatten (
 	PF_InData		*in_data,
@@ -1122,7 +1148,7 @@ SequenceFlatten (
 
 	return PF_Err_NONE;
 }
-*/
+
 
 static PF_Boolean
 IsEmptyRect(const PF_LRect *r){
@@ -1664,6 +1690,9 @@ PluginMain (
 			case PF_Cmd_GLOBAL_SETUP:
 				err = GlobalSetup(in_data,out_data,params,output);
 				break;
+			case PF_Cmd_GLOBAL_SETDOWN:
+				err = GlobalSetdown(in_data,out_data,params,output);
+				break;				
 			case PF_Cmd_PARAMS_SETUP:
 				err = ParamsSetup(in_data,out_data,params,output);
 				break;
@@ -1671,9 +1700,9 @@ PluginMain (
 			case PF_Cmd_SEQUENCE_RESETUP:
 				err = SequenceSetup(in_data, out_data, params, output);
 				break;
-			//case PF_Cmd_SEQUENCE_FLATTEN:
-			//	err = SequenceFlatten(in_data, out_data, params, output);
-			//	break;
+			case PF_Cmd_SEQUENCE_FLATTEN:
+				err = SequenceFlatten(in_data, out_data, params, output);
+				break;
 			case PF_Cmd_SEQUENCE_SETDOWN:
 				err = SequenceSetdown(in_data, out_data, params, output);
 				break;
