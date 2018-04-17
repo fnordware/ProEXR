@@ -55,7 +55,6 @@
 enum {
 	CRYPTO_INPUT = 0,
 	CRYPTO_DATA,
-	//CRYPTO_ACTION,
 	CRYPTO_DISPLAY,
 	CRYPTO_SELECTION_MODE,
 	
@@ -64,7 +63,6 @@ enum {
 
 enum {
 	ARBITRARY_DATA_ID = 1,
-	//ACTION_ID,
 	DISPLAY_ID,
 	SELECTION_MODE_ID
 };
@@ -79,59 +77,6 @@ enum {
 
 #define DISPLAY_MENU_STR "Colors|Matted RGBA|Matte Only"
 
-/*
-enum {
-	ACTION_SELECT = 1,
-	ACTION_ADD,
-	ACTION_REMOVE,
-	ACTION_NUM_OPTIONS = ACTION_REMOVE
-};
-#define ACTION_MENU_STR	"Select|Add|Remove"
-*/
-
-/*
-enum {
-	STATUS_UNKNOWN = 0,
-	STATUS_NORMAL,
-	STATUS_INDEX_CHANGE,
-	STATUS_NOT_FOUND,
-	STATUS_NO_CHANNELS,
-	STATUS_ERROR
-};
-typedef A_char	Status;
-
-typedef struct {
-	Status			status;
-	A_long			index; // in case of STATUS_INDEX_CHANGE
-} ChannelStatus;
-
-typedef struct {
-	ChannelStatus	red;
-	ChannelStatus	green;
-	ChannelStatus	blue;
-	ChannelStatus	alpha;
-	ChannelStatus	compound;
-} ExtractStatus;
-
-
-enum {
-	DO_EXTRACT = 1,
-	DO_COPY,
-	DO_FULL_ON,
-	DO_FULL_OFF,
-	DO_NOTHING
-};
-typedef A_char	ExtractAction;
-
-typedef struct {
-	ExtractAction	action;
-	A_long			index; // 0-based index in the file
-	char			reserved[27]; // total of 32 bytes up to here
-	A_char			name[MAX_CHANNEL_NAME_LEN+1];
-} ChannelData;
-
-#define CURRENT_ARB_VERSION 1
-*/
 
 #define MAX_LAYER_NAME_LEN 63 // same as PF_CHANNEL_NAME_LEN
 
@@ -152,56 +97,6 @@ typedef struct {
 	A_Boolean	selectionChanged;
 } CryptomatteSequenceData;
 
-//#define ARB_REFCON			(void*)0xDEADBEAF
-
-/*
-// UI drawing constants
-#define kUI_ARROW_MARGIN	20
-#define kUI_RIGHT_MARGIN	5
-#define kUI_TOP_MOVEDOWN	11
-#define kUI_BOTTOM_MOVEUP	0
-
-
-#ifdef MAC_ENV
-#define kUI_CONTROL_DOWN	10
-#define kUI_CONTROL_UP		10
-#else
-	#if PF_AE_PLUG_IN_VERSION >= PF_AE100_PLUG_IN_VERSION
-	#define kUI_CONTROL_DOWN	10
-	#define kUI_CONTROL_UP		10
-	#else
-	#define kUI_CONTROL_DOWN	0
-	#define kUI_CONTROL_UP		0
-	#endif
-#endif
-#define kUI_CONTROL_STEP	15
-
-
-#define kUI_CONTROL_RIGHT	8
-#define kUI_CONTROL_PROP_PADDING	16
-
-#if PF_AE_PLUG_IN_VERSION >= PF_AE100_PLUG_IN_VERSION
-#define kUI_TITLE_COLOR_SCALEDOWN	0.15
-#else
-#define kUI_TITLE_COLOR_SCALEDOWN	0.3
-#endif
-
-#define TITLE_COMP(COMP)	(65535 * kUI_TITLE_COLOR_SCALEDOWN) + ((COMP) * (1 - kUI_TITLE_COLOR_SCALEDOWN) )
-
-#define DOWN_PLACE(NUM, OR)	(OR) + kUI_CONTROL_DOWN + (kUI_CONTROL_STEP * (NUM))
-#define RIGHT_STATUS(OR)	(OR) + kUI_CONTROL_RIGHT
-#define RIGHT_PROP(OR)		(OR) + kUI_CONTROL_RIGHT + kUI_CONTROL_PROP_PADDING
-
-
-enum { //Info elements
-	INFO_RED = 0,
-	INFO_GREEN,
-	INFO_BLUE,
-	INFO_ALPHA,
-	
-	INFO_TOTAL_ITEMS
-};
-*/
 
 #define kUI_CONTROL_HEIGHT	70
 #define kUI_CONTROL_WIDTH	0
@@ -209,7 +104,6 @@ enum { //Info elements
 #ifdef __cplusplus
 
 #include <string>
-//#include <list>
 #include <vector>
 #include <set>
 #include <map>
@@ -380,8 +274,6 @@ SetArb(PF_InData *in_data, PF_ArbitraryH *arbH, const std::string &layer, const 
 
 void
 SetArbSelection(PF_InData *in_data, PF_ArbitraryH *arbH, const std::string &selection);
-
-
 
 
 #if defined(MAC_ENV) && PF_AE_PLUG_IN_VERSION >= PF_AE100_PLUG_IN_VERSION

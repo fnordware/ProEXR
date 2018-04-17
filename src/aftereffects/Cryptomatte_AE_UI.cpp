@@ -96,6 +96,19 @@ DoClick(
 	PF_LayerDef		*output,
 	PF_EventExtra	*event_extra)
 {
+	// When the user clicks, we change the selection in our arbitrary data.
+	//
+	// After Effects CC 2015 drastically changed how this is done.  For versions before CC 2015,
+	// during render we would load all the CryptoMatte layers and store them in buffers, accessible
+	// when the user clicked.  We just get the pixel position, and see what objects are in the buffers
+	// at those locations.
+	//
+	// For CC 2015 and later, things you put in sequence data during no render longer find their way back to the
+	// UI thread.  AE does provide calls for getting pixel buffers, including the rendered result.  But we
+	// don't want regular ARGB pixels, we want auxiliary channels.  So what we do is render a special
+	// selection mode (turned on via a hidden check box, then turned off after we get the buffer) that has
+	// a couple hashes in the RGB channels.  This is otherwise known as AE135_RENDER_THREAD_MADNESS.
+	
 	if(params[CRYPTO_DATA]->u.arb_d.value)
 	{
 		AEGP_SuiteHandler suites(in_data->pica_basicP);

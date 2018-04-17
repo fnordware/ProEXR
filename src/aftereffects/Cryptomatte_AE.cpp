@@ -705,8 +705,6 @@ CryptomatteContext::Level::GetColor(int x, int y) const
 {
 	const float floatHash = _hash->Get(x, y);
 	
-	//const A_u_long *hash = (A_u_long *)&floatHash;
-	
 	const float coverage = _coverage->Get(x, y);
 	
 	
@@ -998,21 +996,6 @@ ParamsSetup (
 						PF_ParamFlag_CANNOT_TIME_VARY,
 						SELECTION_MODE_ID);
 
-/*	AEFX_CLR_STRUCT(def);
-	def.flags = PF_ParamFlag_SUPERVISE | PF_ParamFlag_CANNOT_TIME_VARY;
-	def.ui_flags = PF_PUI_STD_CONTROL_ONLY;
-	PF_ADD_POPUP(	"Click Action",
-					ACTION_NUM_OPTIONS, //number of choices
-					ACTION_ADD, //default
-					ACTION_MENU_STR,
-					ACTION_ID);
-*/
-/*
-	AEFX_CLR_STRUCT(def);
-	PF_ADD_CHECKBOX("", "Matte Only",
-					FALSE, 0,
-					MATTE_ID);
-*/
 
 	out_data->num_params = CRYPTO_NUM_PARAMS;
 
@@ -1070,7 +1053,7 @@ SequenceSetup (
 	}
 	else // reset pre-existing sequence data
 	{
-		assert(PF_GET_HANDLE_SIZE(in_data->sequence_data) == sizeof(CryptomatteSequenceData));
+		if(PF_GET_HANDLE_SIZE(in_data->sequence_data) != sizeof(CryptomatteSequenceData))
 		{
 			PF_RESIZE_HANDLE(sizeof(CryptomatteSequenceData), &in_data->sequence_data);
 		}
@@ -1115,17 +1098,6 @@ SequenceSetdown (
 }
 
 
-/*
-static PF_Err
-UserChangedParam (
-	PF_InData		*in_data,
-	PF_OutData		*out_data,
-	PF_ParamDef		*params[],
-	PF_UserChangedParamExtra*	extra)
-{
-	return PF_Err_NONE;
-}
-*/
 /*
 static PF_Err 
 SequenceFlatten (
@@ -1186,7 +1158,7 @@ PreRender(
 	PF_RenderRequest req = extra->input->output_request;
 	PF_CheckoutResult in_result;
 	
-	//req.preserve_rgb_of_zero_alpha = TRUE;
+	req.preserve_rgb_of_zero_alpha = TRUE;
 
 	ERR(extra->cb->checkout_layer(	in_data->effect_ref,
 									CRYPTO_INPUT,
@@ -1234,29 +1206,6 @@ static inline A_u_char FloatToChan<A_u_char>(const float &val)
 {
 	return ((Clamp(val) * (float)PF_MAX_CHAN8) + 0.5f);
 }
-
-/*
-template <typename T>
-static inline float ChanToFloat(const T &val);
-
-template <>
-static inline float ChanToFloat<PF_FpShort>(const PF_FpShort &val)
-{
-	return val;
-}
-
-template <>
-static inline float ChanToFloat<A_u_short>(const A_u_short &val)
-{
-	return ((float)val / (float)PF_MAX_CHAN16);
-}
-
-template <>
-static inline float ChanToFloat<A_u_char>(const A_u_char &val)
-{
-	return ((float)val / (float)PF_MAX_CHAN8);
-}
-*/
 
 
 typedef struct MatteIterateData {
@@ -1377,7 +1326,6 @@ Merge_Iterate(void *refconPV,
 	PF_InData *in_data = i_data->in_data;
 	
 	PIXTYPE *alpha = (PIXTYPE *)((char *)i_data->alpha->data + ((i + i_data->channelMove.v) * i_data->alpha->rowbytes) + (i_data->channelMove.h * sizeof(PIXTYPE)));
-	PIXTYPE *input = (PIXTYPE *)((char *)i_data->input->data + ((i + i_data->worldMove.v) * i_data->input->rowbytes) + (i_data->worldMove.h * sizeof(PIXTYPE)));
 	PIXTYPE *output = (PIXTYPE *)((char *)i_data->output->data + ((i + i_data->worldMove.v) * i_data->output->rowbytes) + (i_data->worldMove.h * sizeof(PIXTYPE)));
 	
 	if(i_data->display == DISPLAY_MATTE_ONLY)
@@ -1395,6 +1343,8 @@ Merge_Iterate(void *refconPV,
 	}
 	else
 	{
+		PIXTYPE *input = (PIXTYPE *)((char *)i_data->input->data + ((i + i_data->worldMove.v) * i_data->input->rowbytes) + (i_data->worldMove.h * sizeof(PIXTYPE)));
+
 		for(int x=0; x < i_data->width; x++)
 		{
 			output->alpha = alpha->alpha;
@@ -1436,9 +1386,6 @@ DoRender(
 
 	PF_EffectWorld alphaWorldData;
 	PF_EffectWorld *alphaWorld = NULL;
-	
-	//PF_EffectWorld tempAlphaWorldData;
-	//PF_EffectWorld *tempAlphaWorld = NULL;
 	
 	AEGP_SuiteHandler suites(in_data->pica_basicP);
 
@@ -1525,27 +1472,6 @@ DoRender(
 				err = suites.PFIterate8Suite()->iterate_generic(copy_height, &matte_iter, DrawMatte_Iterate<PF_Pixel, A_u_char>);
 			}
 			
-			/*
-			PF_EffectWorld *activeAlphaWorld = NULL;
-			
-			if(alphaWorld->width == output->width && alphaWorld->height == output->height)
-			{
-				activeAlphaWorld = alphaWorld;
-			}
-			else
-			{
-				tempAlphaWorld = &tempAlphaWorldData;
-				
-				err = suites.PFWorldSuite()->PF_NewWorld(in_data->effect_ref, output->width, output->height, TRUE, format, tempAlphaWorld);
-				
-				if(in_data->quality == PF_Quality_HI)
-					err = suites.PFWorldTransformSuite()->copy_hq(in_data->effect_ref, alphaWorld, tempAlphaWorld, NULL, NULL);
-				else
-					err = suites.PFWorldTransformSuite()->copy(in_data->effect_ref, alphaWorld, tempAlphaWorld, NULL, NULL);
-					
-				activeAlphaWorld = tempAlphaWorld;
-			}
-			*/
 			
 			if(CRYPTO_display->u.pd.value == DISPLAY_COLORS || CRYPTO_selection->u.bd.value)
 			{
@@ -1589,9 +1515,6 @@ DoRender(
 		ae_err = PF_Err_BAD_CALLBACK_PARAM; 
 	}
 	
-	//if(tempAlphaWorld)
-	//	suites.PFWorldSuite()->PF_DisposeWorld(in_data->effect_ref, tempAlphaWorld);
-	
 	if(alphaWorld)
 		suites.PFWorldSuite()->PF_DisposeWorld(in_data->effect_ref, alphaWorld);
 	
@@ -1629,23 +1552,18 @@ SmartRender(
 #define PF_CHECKOUT_PARAM_NOW( PARAM, DEST )	PF_CHECKOUT_PARAM(	in_data, (PARAM), in_data->current_time, in_data->time_step, in_data->time_scale, DEST )
 
 	// get our arb data and see if it requires the input buffer
-	err = PF_CHECKOUT_PARAM_NOW(CRYPTO_DATA, &CRYPTO_data);
-	err = PF_CHECKOUT_PARAM_NOW(CRYPTO_SELECTION_MODE, &CRYPTO_selection);
-	
-	if(!err)
-	{
-		CryptomatteArbitraryData *arb_data = (CryptomatteArbitraryData *)PF_LOCK_HANDLE(CRYPTO_data.u.arb_d.value);
+	ERR( PF_CHECKOUT_PARAM_NOW(CRYPTO_DATA, &CRYPTO_data) );
+	ERR( PF_CHECKOUT_PARAM_NOW(CRYPTO_SELECTION_MODE, &CRYPTO_selection) );
+	ERR( PF_CHECKOUT_PARAM_NOW(CRYPTO_DISPLAY, &CRYPTO_display) );
 
-		if(true)
-		{
-			err = extra->cb->checkout_layer_pixels(in_data->effect_ref, CRYPTO_INPUT, &input);
-		}
-		else
-		{
-			input = NULL;
-		}
-		
-		PF_UNLOCK_HANDLE(CRYPTO_data.u.arb_d.value);
+	
+	if(!err && CRYPTO_display.u.pd.value == DISPLAY_MATTED_RGBA)
+	{
+		err = extra->cb->checkout_layer_pixels(in_data->effect_ref, CRYPTO_INPUT, &input);
+	}
+	else
+	{
+		input = NULL;
 	}
 	
 	
@@ -1654,8 +1572,6 @@ SmartRender(
 
 
 	// checkout the required params
-	ERR(	PF_CHECKOUT_PARAM_NOW( CRYPTO_DISPLAY,	&CRYPTO_display )	);
-
 	ERR(DoRender(	in_data, 
 					input, 
 					&CRYPTO_data,
@@ -1721,7 +1637,6 @@ DoDialog(
 		}
 		
 		PF_UNLOCK_HANDLE(params[CRYPTO_DATA]->u.arb_d.value);
-		//PF_UNLOCK_HANDLE(in_data->sequence_data);
 	}
 	
 	return err;
@@ -1761,9 +1676,6 @@ PluginMain (
 			case PF_Cmd_SEQUENCE_SETDOWN:
 				err = SequenceSetdown(in_data, out_data, params, output);
 				break;
-			//case PF_Cmd_USER_CHANGED_PARAM:
-			//	err = UserChangedParam(in_data, out_data, params, (PF_UserChangedParamExtra *)extra);
-			//	break;
 			case PF_Cmd_SMART_PRE_RENDER:
 				err = PreRender(in_data, out_data, (PF_PreRenderExtra *)extra);
 				break;
