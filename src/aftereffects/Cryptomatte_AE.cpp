@@ -1616,8 +1616,9 @@ SmartRender(
 	ERR( PF_CHECKOUT_PARAM_NOW(CRYPTO_DISPLAY, &CRYPTO_display) );
 
 	
-	if(!err && CRYPTO_display.u.pd.value == DISPLAY_MATTED_RGBA)
+	if(!err)
 	{
+		// always get the input because we don't know if something will go wrong
 		err = extra->cb->checkout_layer_pixels(in_data->effect_ref, CRYPTO_INPUT, &input);
 	}
 	else
