@@ -258,7 +258,7 @@ DoClick(
 
 						selectionInfoList += item;
 						
-						if(item.find(" ") != std::string::npos)
+						if(item.find(" ") != std::string::npos || item.find(",") != std::string::npos)
 							item = "\"" + item + "\"";
 						
 						newSelection.insert(item);
@@ -290,7 +290,7 @@ DoClick(
 
 							selectionInfoList += item;
 							
-							if(item.find(" ") != std::string::npos)
+							if(item.find(" ") != std::string::npos || item.find(",") != std::string::npos)
 								item = "\"" + item + "\"";
 							
 							newSelection.insert(item);

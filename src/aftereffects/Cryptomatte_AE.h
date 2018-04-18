@@ -210,9 +210,18 @@ class CryptomatteContext
 	A_long _currentTime;
 	
 	std::string ItemForHash(const Hash &hash) const;
+	
+	enum NamingStyle {
+		NAMING_RGBA,
+		NAMING_rgba,
+		NAMING_redgreenbluealpha,
+		
+		NAMING_BEGIN = NAMING_RGBA,
+		NAMING_END = NAMING_redgreenbluealpha
+	};
 
-	void CalculateNextNames(std::string &nextHashName, std::string &nextCoverageName) const;
-	void CalculateNext4Name(std::string &fourName) const;
+	void CalculateNextNames(std::string &nextHashName, std::string &nextCoverageName, NamingStyle style) const;
+	void CalculateNext4Name(std::string &fourName, NamingStyle style) const;
 };
 
 extern "C" {

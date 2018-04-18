@@ -194,80 +194,87 @@ CryptomatteContext::LoadLevels(PF_InData *in_data)
 		if(num_channels > 0)
 		{
 			// first we try to find 4-channel names
-			std::string nextFourName;
-			CalculateNext4Name(nextFourName);
-			
-			PF_ChannelRef four;
-			
-			for(int i=0; i < num_channels; i++)
+			for(int s = NAMING_BEGIN; s <= NAMING_END; s++)
 			{
-				PF_Boolean found;
-				PF_ChannelRef channelRef;
-				PF_ChannelDesc channelDesc;
+				std::string nextFourName;
+				CalculateNext4Name(nextFourName, (NamingStyle)s);
 				
-				cs->PF_GetLayerChannelIndexedRefAndDesc(in_data->effect_ref,
-														CRYPTO_INPUT,
-														i,
-														&found,
-														&channelRef,
-														&channelDesc);
-														
-				if(found && channelDesc.channel_type && channelDesc.data_type == PF_DataType_FLOAT &&
-					channelDesc.dimension == 4 && channelDesc.name == nextFourName)
+				PF_ChannelRef four;
+				
+				for(int i=0; i < num_channels; i++)
 				{
-					_levels.push_back(new Level(in_data, four, false) );
-					_levels.push_back(new Level(in_data, four, true) );
+					PF_Boolean found;
+					PF_ChannelRef channelRef;
+					PF_ChannelDesc channelDesc;
 					
-					CalculateNext4Name(nextFourName);
-					
-					i = 0; // start over
+					cs->PF_GetLayerChannelIndexedRefAndDesc(in_data->effect_ref,
+															CRYPTO_INPUT,
+															i,
+															&found,
+															&channelRef,
+															&channelDesc);
+															
+					if(found && channelDesc.channel_type && channelDesc.data_type == PF_DataType_FLOAT &&
+						channelDesc.dimension == 4 && channelDesc.name == nextFourName)
+					{
+						_levels.push_back(new Level(in_data, four, false) );
+						_levels.push_back(new Level(in_data, four, true) );
+						
+						CalculateNext4Name(nextFourName, (NamingStyle)s);
+						
+						i = 0; // start over
+						s = NAMING_BEGIN;
+					}
 				}
 			}
 			
 			
-			std::string nextHashName, nextCoverageName;
-			CalculateNextNames(nextHashName, nextCoverageName);
-			
-			PF_ChannelRef hash, coverage;
-			bool foundHash = false, foundCoverage = false;
-			
-			for(int i=0; i < num_channels; i++)
+			for(int s = NAMING_BEGIN; s <= NAMING_END; s++)
 			{
-				PF_Boolean found;
-				PF_ChannelRef channelRef;
-				PF_ChannelDesc channelDesc;
+				std::string nextHashName, nextCoverageName;
+				CalculateNextNames(nextHashName, nextCoverageName, (NamingStyle)s);
 				
-				cs->PF_GetLayerChannelIndexedRefAndDesc(in_data->effect_ref,
-														CRYPTO_INPUT,
-														i,
-														&found,
-														&channelRef,
-														&channelDesc);
-														
-				if(found && channelDesc.channel_type && channelDesc.data_type == PF_DataType_FLOAT && channelDesc.dimension == 1)
+				PF_ChannelRef hash, coverage;
+				bool foundHash = false, foundCoverage = false;
+				
+				for(int i=0; i < num_channels; i++)
 				{
-					if(channelDesc.name == nextHashName || channelDesc.name == nextCoverageName)
+					PF_Boolean found;
+					PF_ChannelRef channelRef;
+					PF_ChannelDesc channelDesc;
+					
+					cs->PF_GetLayerChannelIndexedRefAndDesc(in_data->effect_ref,
+															CRYPTO_INPUT,
+															i,
+															&found,
+															&channelRef,
+															&channelDesc);
+															
+					if(found && channelDesc.channel_type && channelDesc.data_type == PF_DataType_FLOAT && channelDesc.dimension == 1)
 					{
-						if(channelDesc.name == nextHashName)
+						if(channelDesc.name == nextHashName || channelDesc.name == nextCoverageName)
 						{
-							hash = channelRef;
-							foundHash = true;
-						}
-						else
-						{
-							coverage = channelRef;
-							foundCoverage = true;
-						}
-						
-						if(foundHash && foundCoverage)
-						{
-							_levels.push_back(new Level(in_data, hash, coverage) );
+							if(channelDesc.name == nextHashName)
+							{
+								hash = channelRef;
+								foundHash = true;
+							}
+							else
+							{
+								coverage = channelRef;
+								foundCoverage = true;
+							}
 							
-							CalculateNextNames(nextHashName, nextCoverageName);
-							foundHash = false;
-							foundCoverage = false;
-							
-							i = 0; // start over
+							if(foundHash && foundCoverage)
+							{
+								_levels.push_back(new Level(in_data, hash, coverage) );
+								
+								CalculateNextNames(nextHashName, nextCoverageName, (NamingStyle)s);
+								foundHash = false;
+								foundCoverage = false;
+								
+								i = 0; // start over
+							}
 						}
 					}
 				}
@@ -865,7 +872,7 @@ CryptomatteContext::ItemForHash(const Hash &hash) const
 
 
 void
-CryptomatteContext::CalculateNextNames(std::string &nextHashName, std::string &nextCoverageName) const
+CryptomatteContext::CalculateNextNames(std::string &nextHashName, std::string &nextCoverageName, NamingStyle style) const
 {
 	const int layerNum = (_levels.size() / 2);
 	const bool useBA = (_levels.size() % 2);
@@ -875,15 +882,44 @@ CryptomatteContext::CalculateNextNames(std::string &nextHashName, std::string &n
 	ss1 << _layer << std::setw(2) << std::setfill('0') << layerNum << ".";
 	ss2 << _layer << std::setw(2) << std::setfill('0') << layerNum << ".";
 	
-	if(useBA)
+	if(style == NAMING_rgba)
 	{
-		ss1 << "blue";
-		ss2 << "alpha";
+		if(useBA)
+		{
+			ss1 << "b";
+			ss2 << "a";
+		}
+		else
+		{
+			ss1 << "r";
+			ss2 << "g";
+		}
+	}
+	else if(style == NAMING_redgreenbluealpha)
+	{
+		if(useBA)
+		{
+			ss1 << "blue";
+			ss2 << "alpha";
+		}
+		else
+		{
+			ss1 << "red";
+			ss2 << "green";
+		}
 	}
 	else
 	{
-		ss1 << "red";
-		ss2 << "green";
+		if(useBA)
+		{
+			ss1 << "B";
+			ss2 << "A";
+		}
+		else
+		{
+			ss1 << "R";
+			ss2 << "G";
+		}
 	}
 	
 	nextHashName = ss1.str();
@@ -892,17 +928,36 @@ CryptomatteContext::CalculateNextNames(std::string &nextHashName, std::string &n
 
 
 void
-CryptomatteContext::CalculateNext4Name(std::string &fourName) const
+CryptomatteContext::CalculateNext4Name(std::string &fourName, NamingStyle style) const
 {
 	const int layerNum = (_levels.size() / 2);
 	
 	std::stringstream ss;
 	
-	ss <<
-		_layer << std::setw(2) << std::setfill('0') << layerNum << ".alpha" << "|" <<
-		_layer << std::setw(2) << std::setfill('0') << layerNum << ".red" << "|" <<
-		_layer << std::setw(2) << std::setfill('0') << layerNum << ".green" << "|" <<
-		_layer << std::setw(2) << std::setfill('0') << layerNum << ".blue";
+	if(style == NAMING_rgba)
+	{
+		ss <<
+			_layer << std::setw(2) << std::setfill('0') << layerNum << ".a" << "|" <<
+			_layer << std::setw(2) << std::setfill('0') << layerNum << ".r" << "|" <<
+			_layer << std::setw(2) << std::setfill('0') << layerNum << ".g" << "|" <<
+			_layer << std::setw(2) << std::setfill('0') << layerNum << ".b";
+	}
+	else if(style == NAMING_redgreenbluealpha)
+	{
+		ss <<
+			_layer << std::setw(2) << std::setfill('0') << layerNum << ".alpha" << "|" <<
+			_layer << std::setw(2) << std::setfill('0') << layerNum << ".red" << "|" <<
+			_layer << std::setw(2) << std::setfill('0') << layerNum << ".green" << "|" <<
+			_layer << std::setw(2) << std::setfill('0') << layerNum << ".blue";
+	}
+	else
+	{
+		ss <<
+			_layer << std::setw(2) << std::setfill('0') << layerNum << ".A" << "|" <<
+			_layer << std::setw(2) << std::setfill('0') << layerNum << ".R" << "|" <<
+			_layer << std::setw(2) << std::setfill('0') << layerNum << ".G" << "|" <<
+			_layer << std::setw(2) << std::setfill('0') << layerNum << ".B";
+	}
 	
 	fourName = ss.str();
 }
