@@ -957,6 +957,9 @@ GlobalSetup (
 
 	out_data->out_flags2 	=	PF_OutFlag2_PARAM_GROUP_START_COLLAPSED_FLAG |
 								PF_OutFlag2_SUPPORTS_SMART_RENDER	|
+							#if AE135_RENDER_THREAD_MADNESS
+								PF_OutFlag2_SUPPORTS_GET_FLATTENED_SEQUENCE_DATA |
+							#endif
 								PF_OutFlag2_FLOAT_COLOR_AWARE;
 	
 
@@ -1144,6 +1147,35 @@ SequenceFlatten (
 		in_sequence_data->context = NULL;
 		
 		PF_UNLOCK_HANDLE(in_data->sequence_data);
+	}
+
+	return PF_Err_NONE;
+}
+
+
+static PF_Err 
+GetFlattenedSequenceData(	
+	PF_InData		*in_data,
+	PF_OutData		*out_data,
+	PF_ParamDef		*params[],
+	PF_LayerDef		*output )
+{
+	if(in_data->sequence_data)
+	{
+		CryptomatteSequenceData *in_sequence_data = (CryptomatteSequenceData *)PF_LOCK_HANDLE(in_data->sequence_data);
+
+		out_data->sequence_data = PF_NEW_HANDLE(sizeof(CryptomatteSequenceData));
+
+		CryptomatteSequenceData *out_sequence_data = (CryptomatteSequenceData *)PF_LOCK_HANDLE(out_data->sequence_data);
+		
+		assert(in_sequence_data->selectionChanged == FALSE); // not using selectionChanged in the version that uses this call
+
+		out_sequence_data->selectionChanged = in_sequence_data->selectionChanged;
+
+		out_sequence_data->context = NULL;
+
+		PF_UNLOCK_HANDLE(in_data->sequence_data);
+		PF_UNLOCK_HANDLE(out_data->sequence_data);
 	}
 
 	return PF_Err_NONE;
@@ -1703,6 +1735,11 @@ PluginMain (
 			case PF_Cmd_SEQUENCE_FLATTEN:
 				err = SequenceFlatten(in_data, out_data, params, output);
 				break;
+		#if AE135_RENDER_THREAD_MADNESS
+			case PF_Cmd_GET_FLATTENED_SEQUENCE_DATA:
+				err = GetFlattenedSequenceData(in_data, out_data, params, output);
+				break;
+		#endif
 			case PF_Cmd_SEQUENCE_SETDOWN:
 				err = SequenceSetdown(in_data, out_data, params, output);
 				break;

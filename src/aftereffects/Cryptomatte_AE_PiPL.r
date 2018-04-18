@@ -75,8 +75,13 @@ resource 'PiPL' (16000) {
 		AE_Effect_Global_OutFlags {
 			33588288 + RESOURCE_FLAG
 		},
+#if PF_PLUG_IN_VERSION > 13 || PF_PLUG_IN_SUBVERS >= 9
+#define GET_FLATTEN_FLAG 8388608
+#else
+#define GET_FLATTEN_FLAG 0
+#endif
 		AE_Effect_Global_OutFlags_2 {
-			5128
+			5128 + GET_FLATTEN_FLAG
 		},
 		/* [11] */
 		AE_Effect_Match_Name {
