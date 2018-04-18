@@ -118,14 +118,16 @@ typedef struct {
 #define MAX_LAYER_NAME_LEN 63 // same as PF_CHANNEL_NAME_LEN
 #endif
 
+typedef uint32_t Hash;
+
 typedef struct {
 	char		magic[4]; // "cry1"
 	char		reserved[28]; // 32 bytes at this point
 	char		layer[MAX_LAYER_NAME_LEN + 1];
 	A_u_long	manifest_size; // including null character
-	A_u_long	manifest_hash;
+	Hash		manifest_hash;
 	A_u_long	selection_size;
-	A_u_long	selection_hash;
+	Hash		selection_hash;
 	char		data[4]; // manifest string + selection string 
 } CryptomatteArbitraryData;
 
@@ -146,10 +148,10 @@ SwapArbData(CryptomatteArbitraryData *arb_data)
 }
 
 
-static A_u_long
+static Hash
 djb2(const A_u_char *data, size_t len)
 {
-	A_u_long hash = 5381;
+	Hash hash = 5381;
 	
 	while(len--)
 		hash = ((hash << 5) + hash) + *data++; // hash * 33 + c
