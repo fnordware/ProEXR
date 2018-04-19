@@ -223,7 +223,6 @@ CryptomatteContext::LoadLevels(PF_InData *in_data)
 						CalculateNext4Name(nextFourName, (NamingStyle)s);
 						
 						i = 0; // start over
-						s = NAMING_BEGIN;
 					}
 				}
 			}
