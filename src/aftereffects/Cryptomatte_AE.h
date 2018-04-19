@@ -160,9 +160,14 @@ class CryptomatteContext
 	Hash _manifestHash;
 	Hash _selectionHash;
 	
+	typedef float FloatHash;
+	
 	std::string _layer;
 	std::map<std::string, Hash> _manifest;
-	std::set<Hash> _selection;
+	std::set<FloatHash> _float_selection; // stored as FloatHash for fast ==
+	
+	static FloatHash HashToFloatHash(const Hash &hash);
+	static Hash FloatHashToHash(const FloatHash &floatHash);
 	
 	class Level
 	{
@@ -171,12 +176,12 @@ class CryptomatteContext
 		Level(PF_InData *in_data, PF_ChannelRef &four, bool secondHalf);
 		~Level();
 		
-		float GetCoverage(const std::set<Hash> &selection, int x, int y, bool &levelsEnd) const;
+		float GetCoverage(const std::set<FloatHash> &selection, int x, int y, bool &levelsEnd) const;
 		float GetCoverage(int x, int y) const;
 		
 		PF_PixelFloat GetColor(int x, int y) const;
 		
-		Hash GetHash(int x, int y) const;
+		FloatHash GetHash(int x, int y) const;
 		
 		inline int Width() const { return (_hash ? _hash->Width() : 0); }
 		inline int Height() const { return (_hash ? _hash->Height() : 0); }

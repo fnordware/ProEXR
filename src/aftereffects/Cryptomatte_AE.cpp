@@ -134,7 +134,7 @@ CryptomatteContext::Update(CryptomatteArbitraryData *arb)
 	{
 		_selectionHash = arb->selection_hash;
 
-		_selection.clear();
+		_float_selection.clear();
 
 		try
 		{
@@ -151,7 +151,10 @@ CryptomatteContext::Update(CryptomatteArbitraryData *arb)
 					
 					if( _manifest.count(val) )
 					{
-						_selection.insert(_manifest[val]);
+						const Hash &hash = _manifest[val];
+						
+						_float_selection.insert( HashToFloatHash(hash) );
+						
 					}
 					else if(val.size() == 8)
 					{
@@ -159,7 +162,12 @@ CryptomatteContext::Update(CryptomatteArbitraryData *arb)
 						const int matched = sscanf(val.c_str(), "%x", &intValue);
 						
 						if(matched)
-							_selection.insert(intValue);
+						{
+							const Hash hash = intValue;
+							
+							_float_selection.insert( HashToFloatHash(hash) );
+						
+						}
 					}
 				}
 			}
@@ -298,7 +306,7 @@ CryptomatteContext::GetCoverage(int x, int y) const
 		
 		bool levelsEnd = false;
 		
-		const float level_coverage = level->GetCoverage(_selection, x, y, levelsEnd);
+		const float level_coverage = level->GetCoverage(_float_selection, x, y, levelsEnd);
 		
 		if(levelsEnd)
 			break;
@@ -354,11 +362,7 @@ CryptomatteContext::GetSelectionColor(int x, int y) const
 
 	if(_levels.size() >= 1)
 	{
-		float *redf = &color.red;
-
-		Hash *red = (Hash *)redf;
-			
-		*red = _levels[0]->GetHash(x, y);
+		color.red = _levels[0]->GetHash(x, y);
 	}
 	else
 		color.red = 0.f;
@@ -367,11 +371,7 @@ CryptomatteContext::GetSelectionColor(int x, int y) const
 
 	if(_levels.size() >= 2)
 	{
-		float *bluef = &color.blue;
-
-		Hash *blue = (Hash *)bluef;
-			
-		*blue = _levels[1]->GetHash(x, y);
+		color.blue = _levels[1]->GetHash(x, y);
 	}
 	else
 		color.blue = 0.f;
@@ -393,7 +393,9 @@ CryptomatteContext::GetItems(int x, int y) const
 		
 		if(coverage > 0.f)
 		{
-			const Hash hash = level->GetHash(x, y);
+			const FloatHash floatHash = level->GetHash(x, y);
+			
+			const Hash hash = FloatHashToHash(floatHash);
 		
 			if(hash > 0)
 				items.insert( ItemForHash(hash) );
@@ -409,18 +411,18 @@ CryptomatteContext::GetItemsFromSelectionColor(const PF_PixelFloat &pixel) const
 {
 	std::set<std::string> items;
 
-	Hash *red = (Hash *)&pixel.red;
+	Hash red = FloatHashToHash(pixel.red);
 
-	if(*red != 0)
+	if(red != 0)
 	{
-		items.insert( ItemForHash(*red) );
+		items.insert( ItemForHash(red) );
 	}
 
-	Hash *blue = (Hash *)&pixel.blue;
+	Hash blue = FloatHashToHash(pixel.blue);
 
-	if(*blue != 0)
+	if(blue != 0)
 	{
-		items.insert( ItemForHash(*blue) );
+		items.insert( ItemForHash(blue) );
 	}
 
 	return items;
@@ -572,6 +574,28 @@ CryptomatteContext::Height() const
 }
 
 
+CryptomatteContext::FloatHash
+CryptomatteContext::HashToFloatHash(const Hash &hash)
+{
+	FloatHash result;
+	
+	memcpy(&result, &hash, 4);
+	
+	return result;
+}
+
+
+Hash
+CryptomatteContext::FloatHashToHash(const FloatHash &floatHash)
+{
+	Hash result;
+	
+	memcpy(&result, &floatHash, 4);
+	
+	return result;
+}
+
+
 CryptomatteContext::Level::Level(PF_InData *in_data, PF_ChannelRef &hash, PF_ChannelRef &coverage) :
 	_hash(NULL),
 	_coverage(NULL)
@@ -688,7 +712,7 @@ CryptomatteContext::Level::~Level()
 
 
 float
-CryptomatteContext::Level::GetCoverage(const std::set<Hash> &selection, int x, int y, bool &levelsEnd) const
+CryptomatteContext::Level::GetCoverage(const std::set<FloatHash> &selection, int x, int y, bool &levelsEnd) const
 {
 	const float coverage = _coverage->Get(x, y);
 	
@@ -696,11 +720,9 @@ CryptomatteContext::Level::GetCoverage(const std::set<Hash> &selection, int x, i
 	{
 		levelsEnd = false;
 		
-		const float floatHash = _hash->Get(x, y);
+		const FloatHash floatHash = _hash->Get(x, y);
 		
-		const Hash *hash = (Hash *)&floatHash;
-		
-		return (selection.count(*hash) ? coverage : 0.f);
+		return (selection.count(floatHash) ? coverage : 0.f);
 	}
 	else
 	{
@@ -741,14 +763,10 @@ CryptomatteContext::Level::GetColor(int x, int y) const
 }
 
 
-Hash
+CryptomatteContext::FloatHash
 CryptomatteContext::Level::GetHash(int x, int y) const
 {
-	const float floatHash = _hash->Get(x, y);
-	
-	const Hash *hash = (Hash *)&floatHash;
-	
-	return *hash;
+	return _hash->Get(x, y);
 }
 
 
