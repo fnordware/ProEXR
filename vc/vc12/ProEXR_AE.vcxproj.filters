@@ -1,0 +1,200 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <ItemGroup>
+    <Filter Include="Headers">
+      <UniqueIdentifier>{aa3fddb4-2d9f-4a9b-8068-e07515540a21}</UniqueIdentifier>
+      <Extensions>h;hpp;hxx;hm;inl;fi;fd</Extensions>
+    </Filter>
+    <Filter Include="Headers\Windows">
+      <UniqueIdentifier>{7426e4c5-28a9-4a7a-ba14-b83d513b0622}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Headers\AE">
+      <UniqueIdentifier>{f7c41da0-5b50-47ef-8961-926953a600ad}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Resources">
+      <UniqueIdentifier>{3587113d-d12f-4ded-951a-d813f2e25911}</UniqueIdentifier>
+      <Extensions>r;rc;ico;cur;bmp;dlg;rc2;rct;bin;cnt;rtf;gif;jpg;jpeg;jpe</Extensions>
+    </Filter>
+    <Filter Include="Supporting Code">
+      <UniqueIdentifier>{a56c5f67-e785-43db-af75-9e16011e1a5e}</UniqueIdentifier>
+    </Filter>
+  </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="resource.h">
+      <Filter>Headers\Windows</Filter>
+    </ClInclude>
+    <ClInclude Include="..\ProEXR_AE.h">
+      <Filter>Headers</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\ext\Adobe After Effects CC 2015 Win SDK\Examples\Headers\A.h">
+      <Filter>Headers</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\ext\Adobe After Effects CC 2015 Win SDK\Examples\Headers\AE_AdvEffectSuites.h">
+      <Filter>Headers</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\ext\Adobe After Effects CC 2015 Win SDK\Examples\Headers\AE_Effect.h">
+      <Filter>Headers</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\ext\Adobe After Effects CC 2015 Win SDK\Examples\Headers\AE_EffectCB.h">
+      <Filter>Headers</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\ext\Adobe After Effects CC 2015 Win SDK\Examples\Headers\AE_EffectCBSuites.h">
+      <Filter>Headers</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\ext\Adobe After Effects CC 2015 Win SDK\Examples\Headers\AE_EffectSuites.h">
+      <Filter>Headers</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\ext\Adobe After Effects CC 2015 Win SDK\Examples\Util\AE_EffectSuitesHelper.h">
+      <Filter>Headers</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\ext\Adobe After Effects CC 2015 Win SDK\Examples\Headers\AE_EffectUI.h">
+      <Filter>Headers</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\ext\Adobe After Effects CC 2015 Win SDK\Examples\Headers\AE_GeneralPlug.h">
+      <Filter>Headers</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\ext\Adobe After Effects CC 2015 Win SDK\Examples\Headers\AE_GeneralPlugOld.h">
+      <Filter>Headers</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\ext\Adobe After Effects CC 2015 Win SDK\Examples\Headers\AE_Hook.h">
+      <Filter>Headers</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\ext\Adobe After Effects CC 2015 Win SDK\Examples\Headers\AE_IO.h">
+      <Filter>Headers</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\ext\Adobe After Effects CC 2015 Win SDK\Examples\Headers\AE_Macros.h">
+      <Filter>Headers</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\ext\Adobe After Effects CC 2015 Win SDK\Examples\Util\AEGP_SuiteHandler.h">
+      <Filter>Headers</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\ext\Adobe After Effects CC 2015 Win SDK\Examples\Util\entry.h">
+      <Filter>Headers</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\ext\Adobe After Effects CC 2015 Win SDK\Examples\Headers\FIEL_Public.h">
+      <Filter>Headers</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\ext\Adobe After Effects CC 2015 Win SDK\Examples\Headers\PF_Masks.h">
+      <Filter>Headers</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\ext\Adobe After Effects CC 2015 Win SDK\Examples\Headers\PR_Public.h">
+      <Filter>Headers</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\ext\Adobe After Effects CC 2015 Win SDK\Examples\Headers\PT_Public.h">
+      <Filter>Headers</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\src\aftereffects\ProEXR_AE.h">
+      <Filter>Headers</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\src\aftereffects\ProEXR_AE_Dialogs.h">
+      <Filter>Headers</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\src\aftereffects\ProEXR_AE_FrameSeq.h">
+      <Filter>Headers</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\src\aftereffects\ProEXR_AE_GUI.h">
+      <Filter>Headers</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\src\aftereffects\ProEXR_AEIO.h">
+      <Filter>Headers</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\src\aftereffects\ProEXR_Comp_Creator.h">
+      <Filter>Headers</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\src\aftereffects\ProEXRdoc_AE.h">
+      <Filter>Headers</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\src\aftereffects\VRimg.h">
+      <Filter>Headers</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\src\aftereffects\VRimg_AEIO.h">
+      <Filter>Headers</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\src\aftereffects\VRimg_ChannelCache.h">
+      <Filter>Headers</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\src\aftereffects\VRimg_FrameSeq.h">
+      <Filter>Headers</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\src\aftereffects\fnord_SuiteHandler.h">
+      <Filter>Headers</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\src\aftereffects\OpenEXR_PlatformIO.h">
+      <Filter>Headers</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\src\common\VRimg\VRimgHeader.h">
+      <Filter>Headers</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\src\common\VRimg\VRimgInputFile.h">
+      <Filter>Headers</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\src\common\VRimg\VRimgVersion.h">
+      <Filter>Headers</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\src\common\VRimg\VRimgXdr.h">
+      <Filter>Headers</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\src\common\iccProfileAttribute.h">
+      <Filter>Headers</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\src\common\ImfHybridInputFile.h">
+      <Filter>Headers</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\src\common\ProEXR_UTF.h">
+      <Filter>Headers</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\src\common\ProEXRdoc.h">
+      <Filter>Headers</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\src\common\ProEXRdoc_PS.h">
+      <Filter>Headers</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\src\aftereffects\OpenEXR_ChannelMap.h">
+      <Filter>Headers</Filter>
+    </ClInclude>
+  </ItemGroup>
+  <ItemGroup>
+    <CustomBuild Include="..\..\src\aftereffects\ProEXR_AE_PiPL.r">
+      <Filter>Resources</Filter>
+    </CustomBuild>
+  </ItemGroup>
+  <ItemGroup>
+    <ResourceCompile Include="ProEXR_AE_PiPL.rc">
+      <Filter>Resources</Filter>
+    </ResourceCompile>
+    <ResourceCompile Include="..\..\src\aftereffects\win\ProEXR_AE_Dialogs.rc">
+      <Filter>Resources</Filter>
+    </ResourceCompile>
+  </ItemGroup>
+  <ItemGroup>
+    <ClCompile Include="..\..\src\aftereffects\ProEXR_AE.cpp" />
+    <ClCompile Include="..\..\src\aftereffects\ProEXR_AE_FrameSeq.cpp" />
+    <ClCompile Include="..\..\src\aftereffects\ProEXR_AE_FrameSeq_Color.cpp" />
+    <ClCompile Include="..\..\src\aftereffects\ProEXR_AE_GUI.cpp" />
+    <ClCompile Include="..\..\src\aftereffects\ProEXR_AEIO.cpp" />
+    <ClCompile Include="..\..\src\aftereffects\ProEXR_Comp_Creator.cpp" />
+    <ClCompile Include="..\..\src\aftereffects\ProEXRdoc_AE.cpp" />
+    <ClCompile Include="..\..\src\aftereffects\VRimg.cpp" />
+    <ClCompile Include="..\..\src\aftereffects\VRimg_AEIO.cpp" />
+    <ClCompile Include="..\..\src\aftereffects\VRimg_ChannelCache.cpp" />
+    <ClCompile Include="..\..\src\aftereffects\VRimg_FrameSeq.cpp" />
+    <ClCompile Include="..\..\src\aftereffects\fnord_MissingSuiteError.cpp" />
+    <ClCompile Include="..\..\src\aftereffects\fnord_SuiteHandler.cpp" />
+    <ClCompile Include="..\..\src\aftereffects\OpenEXR_PlatformIO.cpp" />
+    <ClCompile Include="..\..\src\common\VRimg\VRimgHeader.cpp" />
+    <ClCompile Include="..\..\src\common\VRimg\VRimgInputFile.cpp" />
+    <ClCompile Include="..\..\src\common\VRimg\VRimgVersion.cpp" />
+    <ClCompile Include="..\..\src\common\iccProfileAttribute.cpp" />
+    <ClCompile Include="..\..\src\common\ImfHybridInputFile.cpp" />
+    <ClCompile Include="..\..\src\common\ProEXR_UTF.cpp" />
+    <ClCompile Include="..\..\src\common\ProEXRdoc.cpp" />
+    <ClCompile Include="..\..\src\common\ProEXRdoc_PS.cpp" />
+    <ClCompile Include="..\..\src\aftereffects\OpenEXR_ChannelMap.cpp" />
+    <ClCompile Include="..\..\src\aftereffects\win\ProEXR_AE_Dialogs_Win.cpp" />
+  </ItemGroup>
+  <ItemGroup>
+    <Image Include="..\..\src\aftereffects\win\ProEXR_banner.bmp">
+      <Filter>Resources</Filter>
+    </Image>
+  </ItemGroup>
+</Project>
