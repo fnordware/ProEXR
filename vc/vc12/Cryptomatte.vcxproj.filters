@@ -1,0 +1,62 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <ItemGroup>
+    <Filter Include="Resources">
+      <UniqueIdentifier>{bc829ddc-e10a-44e9-a682-762976a9178a}</UniqueIdentifier>
+      <Extensions>ico;cur;bmp;dlg;rc2;rct;bin;cnt;rtf;gif;jpg;jpeg;jpe</Extensions>
+    </Filter>
+    <Filter Include="Headers">
+      <UniqueIdentifier>{0fcd407c-c148-4d8a-b089-6042ae6d126a}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Headers\AE">
+      <UniqueIdentifier>{6ef20dd9-d18b-497b-82c8-b95e515ad358}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Supporting code">
+      <UniqueIdentifier>{471de6da-d274-4ca6-a4fe-7ebc4308749c}</UniqueIdentifier>
+    </Filter>
+  </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="..\..\src\aftereffects\Cryptomatte_AE.h" />
+    <ClInclude Include="..\..\src\aftereffects\Cryptomatte_AE_Dialog.h" />
+    <ClInclude Include="..\..\src\aftereffects\DrawbotBot.h" />
+    <ClInclude Include="..\..\src\aftereffects\fnord_SuiteHandler.h" />
+    <ClInclude Include="..\..\ext\Adobe After Effects CC 2017 Win SDK\Examples\Headers\A.h" />
+    <ClInclude Include="..\..\ext\Adobe After Effects CC 2017 Win SDK\Examples\Headers\AE_Effect.h" />
+    <ClInclude Include="..\..\ext\Adobe After Effects CC 2017 Win SDK\Examples\Headers\AE_EffectCB.h" />
+    <ClInclude Include="..\..\ext\Adobe After Effects CC 2017 Win SDK\Examples\Headers\AE_EffectCBSuites.h" />
+    <ClInclude Include="..\..\ext\Adobe After Effects CC 2017 Win SDK\Examples\Headers\AE_EffectSuites.h" />
+    <ClInclude Include="..\..\ext\Adobe After Effects CC 2017 Win SDK\Examples\Util\AE_EffectSuitesHelper.h" />
+    <ClInclude Include="..\..\ext\Adobe After Effects CC 2017 Win SDK\Examples\Headers\AE_EffectUI.h" />
+    <ClInclude Include="..\..\ext\Adobe After Effects CC 2017 Win SDK\Examples\Headers\AE_GeneralPlug.h" />
+    <ClInclude Include="..\..\ext\Adobe After Effects CC 2017 Win SDK\Examples\Headers\AE_GeneralPlugOld.h" />
+    <ClInclude Include="..\..\ext\Adobe After Effects CC 2017 Win SDK\Examples\Headers\AE_IO.h" />
+    <ClInclude Include="..\..\ext\Adobe After Effects CC 2017 Win SDK\Examples\Headers\AE_Macros.h" />
+    <ClInclude Include="..\..\ext\Adobe After Effects CC 2017 Win SDK\Examples\Util\AEFX_ChannelDepthTpl.h" />
+    <ClInclude Include="..\..\ext\Adobe After Effects CC 2017 Win SDK\Examples\Util\entry.h" />
+    <ClInclude Include="..\..\ext\Adobe After Effects CC 2017 Win SDK\Examples\Headers\FIEL_Public.h" />
+    <ClInclude Include="..\..\ext\Adobe After Effects CC 2017 Win SDK\Examples\Util\Param_Utils.h" />
+    <ClInclude Include="..\..\ext\Adobe After Effects CC 2017 Win SDK\Examples\Headers\PF_Masks.h" />
+  </ItemGroup>
+  <ItemGroup>
+    <CustomBuild Include="..\..\src\aftereffects\Cryptomatte_AE_PiPL.r">
+      <Filter>Resources</Filter>
+    </CustomBuild>
+  </ItemGroup>
+  <ItemGroup>
+    <ClCompile Include="..\..\src\aftereffects\Cryptomatte_AE.cpp" />
+    <ClCompile Include="..\..\src\aftereffects\Cryptomatte_AE_ArbData.cpp" />
+    <ClCompile Include="..\..\src\aftereffects\Cryptomatte_AE_UI.cpp" />
+    <ClCompile Include="..\..\src\aftereffects\DrawbotBot.cpp" />
+    <ClCompile Include="..\..\src\aftereffects\win\Cryptomatte_AE_Dialog_Win.cpp" />
+    <ClCompile Include="..\..\src\aftereffects\fnord_MissingSuiteError.cpp" />
+    <ClCompile Include="..\..\src\aftereffects\fnord_SuiteHandler.cpp" />
+  </ItemGroup>
+  <ItemGroup>
+    <ResourceCompile Include="..\..\src\aftereffects\win\Cryptomatte_AE.rc">
+      <Filter>Resources</Filter>
+    </ResourceCompile>
+    <ResourceCompile Include="Cryptomatte_AE_PiPL.rc">
+      <Filter>Resources</Filter>
+    </ResourceCompile>
+  </ItemGroup>
+</Project>
