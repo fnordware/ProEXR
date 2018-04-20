@@ -12,6 +12,8 @@
 
 #include "Cryptomatte_AE_Dialog.h"
 
+#include "MurmurHash3.h"
+
 #include "picojson.h"
 
 #include <assert.h>
@@ -48,6 +50,30 @@ class ErrThrower : public std::exception
 	A_Err _err;
 };
 
+
+bool
+GetHashIfLiteral(const std::string &name, Hash &result)
+{
+	// returns true if a literal value, and writes the hash to result. 
+	if(name.size() == 10)
+	{
+		unsigned long intValue = 0;
+		const int matched = sscanf(name.c_str(), "<%x>", &intValue);
+		if (matched) {
+			result = intValue;
+			return true;
+		}
+	}
+	return false;
+}
+
+std::string
+HashToLiteralStr(Hash hash)
+{
+	char hexStr[9];
+	sprintf(hexStr, "<%08x>", hash);
+	return std::string(hexStr);
+}
 
 #ifndef NDEBUG
 static int gNumContexts = 0;
@@ -113,18 +139,9 @@ CryptomatteContext::Update(CryptomatteArbitraryData *arb)
 				
 				if( value.is<std::string>() )
 				{
-					const std::string &hexString = value.get<std::string>();
-					
-					if(hexString.size() == 8)
-					{
-						unsigned int intValue = 0;
-						const int matched = sscanf(hexString.c_str(), "%x", &intValue);
-						
-						if(matched)
-						{
-							_manifest[name] = intValue;
-						}
-					}
+					Hash literal_val;
+					if(GetHashIfLiteral(value.get<std::string>(), literal_val))
+						_manifest[name] = literal_val;
 				}
 			}
 		}
@@ -133,22 +150,23 @@ CryptomatteContext::Update(CryptomatteArbitraryData *arb)
 	if(_selectionHash != arb->selection_hash)
 	{
 		_selectionHash = arb->selection_hash;
+		_selection = GetSelection(arb);
 
 		_float_selection.clear();
 
 		try
-		{
-			const std::string selectionString = GetSelection(arb);
-			
-			if(!selectionString.empty())
+		{			
+			if(!_selection.empty())
 			{
 				std::vector<std::string> tokens;
-				quotedTokenize(selectionString, tokens, ", ");
+				quotedTokenize(_selection, tokens, ", ");
 				
 				for(std::vector<std::string>::const_iterator i = tokens.begin(); i != tokens.end(); ++i)
 				{
 					const std::string val = deQuote(*i);
-					
+
+					Hash literal_val;
+
 					if( _manifest.count(val) )
 					{
 						const Hash &hash = _manifest[val];
@@ -156,18 +174,13 @@ CryptomatteContext::Update(CryptomatteArbitraryData *arb)
 						_float_selection.insert( HashToFloatHash(hash) );
 						
 					}
-					else if(val.size() == 8)
+					else if(GetHashIfLiteral(val, literal_val))
 					{
-						unsigned int intValue = 0;
-						const int matched = sscanf(val.c_str(), "%x", &intValue);
-						
-						if(matched)
-						{
-							const Hash hash = intValue;
-							
-							_float_selection.insert( HashToFloatHash(hash) );
-						
-						}
+						_float_selection.insert(HashToFloatHash(literal_val));
+					}
+					else if(val.size())
+					{	
+						_float_selection.insert(HashToFloatHash(HashName(val)));
 					}
 				}
 			}
@@ -595,6 +608,20 @@ CryptomatteContext::FloatHashToHash(const FloatHash &floatHash)
 	return result;
 }
 
+Hash
+CryptomatteContext::HashName(const std::string &name)
+{
+	Hash hash;
+	MurmurHash3_x86_32(name.c_str(), name.length(), 0, &hash);
+
+	// if all exponent bits are 0 (subnormals, +zero, -zero) set exponent to 1
+	// if all exponent bits are 1 (NaNs, +inf, -inf) set exponent to 254
+	Hash exponent = hash >> 23 & 255; // extract exponent (8 bits)
+	if(exponent == 0 || exponent == 255)
+		hash ^= 1 << 23; // toggle bit
+
+	return hash;
+}
 
 CryptomatteContext::Level::Level(PF_InData *in_data, PF_ChannelRef &hash, PF_ChannelRef &coverage) :
 	_hash(NULL),
@@ -861,32 +888,41 @@ CryptomatteContext::Level::FloatBuffer::~FloatBuffer()
 		free(_buf);
 }
 
-
 std::string
 CryptomatteContext::ItemForHash(const Hash &hash) const
 {
-	std::string item;
-	
-	for(std::map<std::string, Hash>::const_iterator j = _manifest.begin(); j != _manifest.end() && item.empty(); ++j)
+	// first check the selection
+	if(_selection.length())
+	{
+		std::vector<std::string> tokens;
+		quotedTokenize(_selection, tokens, ", ");
+
+		for(std::vector<std::string>::const_iterator i = tokens.begin(); i != tokens.end(); ++i)
+		{
+			const std::string val = deQuote(*i);
+
+			Hash literalHash;
+			if(GetHashIfLiteral(val, literalHash) && literalHash == hash)
+				return val;
+
+			if(HashName(val) == hash)
+				return val;
+		}
+	}
+
+	// then check the manifest
+	for(std::map<std::string, Hash>::const_iterator j = _manifest.begin(); j != _manifest.end(); ++j)
 	{
 		const std::string &name = j->first;
 		const Hash &value = j->second;
-		
+
 		if(hash == value)
-			item = name;
-	}
-	
-	if( item.empty() )
-	{
-		char hexStr[9];
-		sprintf(hexStr, "%08x", hash);
-		
-		item = hexStr;
+			return name;
 	}
 
-	return item;
+	// finally, use a hex code
+	return HashToLiteralStr(hash);
 }
-
 
 void
 CryptomatteContext::CalculateNextNames(std::string &nextHashName, std::string &nextCoverageName, NamingStyle style) const

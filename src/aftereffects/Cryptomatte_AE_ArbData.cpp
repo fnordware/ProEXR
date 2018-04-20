@@ -12,6 +12,7 @@
 //
 
 #include "Cryptomatte_AE.h"
+#include "MurmurHash3.h"
 
 #ifndef __MACH__
 #include <assert.h>
@@ -32,29 +33,17 @@ SwapArbData(CryptomatteArbitraryData *arb_data)
 }
 
 
-static Hash
-djb2(const A_u_char *data, size_t len)
-{
-	Hash hash = 5381;
-	
-	while(len--)
-		hash = ((hash << 5) + hash) + *data++; // hash * 33 + c
-	
-	return hash;
-}
-
-
 static void
 HashManifest(CryptomatteArbitraryData *arb)
 {
-	arb->manifest_hash = djb2((A_u_char *)&arb->data[0], arb->manifest_size);
+	MurmurHash3_x86_32(&arb->data[0], arb->manifest_size, 0, &arb->manifest_hash);;
 }
 
 
 static void
 HashSelection(CryptomatteArbitraryData *arb)
 {
-	arb->selection_hash = djb2((A_u_char *)&arb->data[arb->manifest_size], arb->selection_size);
+	MurmurHash3_x86_32(&arb->data[arb->manifest_size], arb->selection_size, 0, &arb->selection_hash);
 }
 
 
