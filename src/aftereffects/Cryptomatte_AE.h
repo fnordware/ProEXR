@@ -163,12 +163,14 @@ class CryptomatteContext
 	typedef float FloatHash;
 	
 	std::string _layer;
+	std::string _selection;
 	std::map<std::string, Hash> _manifest;
 	std::set<FloatHash> _float_selection; // stored as FloatHash for fast ==
 	
 	static FloatHash HashToFloatHash(const Hash &hash);
 	static Hash FloatHashToHash(const FloatHash &floatHash);
-	
+	static Hash HashName(const std::string &name);
+
 	class Level
 	{
 	  public:
