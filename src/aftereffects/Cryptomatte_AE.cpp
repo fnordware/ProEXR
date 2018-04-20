@@ -55,10 +55,10 @@ bool
 GetHashIfLiteral(const std::string &name, Hash &result)
 {
 	// returns true if a literal value, and writes the hash to result. 
-	if(name.size() == 8)
+	if(name.size() == 10)
 	{
 		unsigned long intValue = 0;
-		const int matched = sscanf(name.c_str(), "%x", &intValue);
+		const int matched = sscanf(name.c_str(), "<%x>", &intValue);
 		if (matched) {
 			result = intValue;
 			return true;
@@ -71,7 +71,7 @@ std::string
 HashToLiteralStr(Hash hash)
 {
 	char hexStr[9];
-	sprintf(hexStr, "%08x", hash);
+	sprintf(hexStr, "<%08x>", hash);
 	return std::string(hexStr);
 }
 
@@ -900,14 +900,11 @@ CryptomatteContext::ItemForHash(const Hash &hash) const
 		for(std::vector<std::string>::const_iterator i = tokens.begin(); i != tokens.end(); ++i)
 		{
 			const std::string val = deQuote(*i);
-			if(val.length() == 8)
-			{
-				// to do: replace with better literal number detection.
-				unsigned int intValue = 0;
-				const int matched = sscanf(val.c_str(), "%x", &intValue);
-				if(matched && intValue == hash)
-					return val;
-			}
+
+			Hash literalHash;
+			if(GetHashIfLiteral(val, literalHash) && literalHash == hash)
+				return val;
+
 			if(HashName(val) == hash)
 				return val;
 		}
