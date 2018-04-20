@@ -33,18 +33,6 @@ SwapArbData(CryptomatteArbitraryData *arb_data)
 }
 
 
-static Hash
-djb2(const A_u_char *data, size_t len)
-{
-	Hash hash = 5381;
-	
-	while(len--)
-		hash = ((hash << 5) + hash) + *data++; // hash * 33 + c
-	
-	return hash;
-}
-
-
 static void
 HashManifest(CryptomatteArbitraryData *arb)
 {
