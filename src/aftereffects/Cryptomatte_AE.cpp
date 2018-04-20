@@ -51,6 +51,30 @@ class ErrThrower : public std::exception
 };
 
 
+bool
+GetHashIfLiteral(const std::string &name, Hash &result)
+{
+	// returns true if a literal value, and writes the hash to result. 
+	if(name.size() == 8)
+	{
+		unsigned long intValue = 0;
+		const int matched = sscanf(name.c_str(), "%x", &intValue);
+		if (matched) {
+			result = intValue;
+			return true;
+		}
+	}
+	return false;
+}
+
+std::string
+HashToLiteralStr(Hash hash)
+{
+	char hexStr[9];
+	sprintf(hexStr, "%08x", hash);
+	return std::string(hexStr);
+}
+
 #ifndef NDEBUG
 static int gNumContexts = 0;
 #endif
@@ -115,18 +139,9 @@ CryptomatteContext::Update(CryptomatteArbitraryData *arb)
 				
 				if( value.is<std::string>() )
 				{
-					const std::string &hexString = value.get<std::string>();
-					
-					if(hexString.size() == 8)
-					{
-						unsigned int intValue = 0;
-						const int matched = sscanf(hexString.c_str(), "%x", &intValue);
-						
-						if(matched)
-						{
-							_manifest[name] = intValue;
-						}
-					}
+					Hash literal_val;
+					if(GetHashIfLiteral(value.get<std::string>(), literal_val))
+						_manifest[name] = literal_val;
 				}
 			}
 		}
@@ -149,7 +164,9 @@ CryptomatteContext::Update(CryptomatteArbitraryData *arb)
 				for(std::vector<std::string>::const_iterator i = tokens.begin(); i != tokens.end(); ++i)
 				{
 					const std::string val = deQuote(*i);
-					
+
+					Hash literal_val;
+
 					if( _manifest.count(val) )
 					{
 						const Hash &hash = _manifest[val];
@@ -157,18 +174,9 @@ CryptomatteContext::Update(CryptomatteArbitraryData *arb)
 						_float_selection.insert( HashToFloatHash(hash) );
 						
 					}
-					else if(val.size() == 8)
+					else if(GetHashIfLiteral(val, literal_val))
 					{
-						unsigned int intValue = 0;
-						const int matched = sscanf(val.c_str(), "%x", &intValue);
-						
-						if(matched)
-						{
-							const Hash hash = intValue;
-							
-							_float_selection.insert( HashToFloatHash(hash) );
-						
-						}
+						_float_selection.insert(HashToFloatHash(literal_val));
 					}
 					else if(val.size())
 					{	
@@ -916,9 +924,7 @@ CryptomatteContext::ItemForHash(const Hash &hash) const
 	}
 
 	// finally, use a hex code
-	char hexStr[9];
-	sprintf(hexStr, "%08x", hash);
-	return hexStr;
+	return HashToLiteralStr(hash);
 }
 
 void
