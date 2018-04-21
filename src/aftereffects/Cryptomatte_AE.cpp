@@ -626,7 +626,7 @@ CryptomatteContext::GetHashIfLiteral(const std::string &name, Hash &result)
 std::string
 CryptomatteContext::HashToLiteralStr(Hash hash)
 {
-	char hexStr[9];
+	char hexStr[11];
 	
 	sprintf(hexStr, "<%08x>", hash);
 	
