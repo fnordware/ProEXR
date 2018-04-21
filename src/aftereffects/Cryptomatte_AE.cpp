@@ -140,7 +140,7 @@ CryptomatteContext::Update(CryptomatteArbitraryData *arb)
 				if( value.is<std::string>() )
 				{
 					Hash literal_val;
-					if(GetHashIfLiteral(value.get<std::string>(), literal_val))
+					if(GetHashIfLiteral("<" + value.get<std::string>() + ">", literal_val))
 						_manifest[name] = literal_val;
 				}
 			}
