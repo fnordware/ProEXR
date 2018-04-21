@@ -7,6 +7,7 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		2A2B8888208BC77200A9FCA5 /* MurmurHash3.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 2A2B884B208BC77200A9FCA5 /* MurmurHash3.cpp */; };
 		2A4DF4381E1B8D8F009B6F29 /* fnord_MissingSuiteError.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 2A4DF3A81E1B8D8F009B6F29 /* fnord_MissingSuiteError.cpp */; };
 		2A4DF4391E1B8D8F009B6F29 /* fnord_SuiteHandler.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 2A4DF3A91E1B8D8F009B6F29 /* fnord_SuiteHandler.cpp */; };
 		2A4DF43A1E1B8D8F009B6F29 /* ProEXR_AE_Dialogs_Cocoa.mm in Sources */ = {isa = PBXBuildFile; fileRef = 2A4DF3AC1E1B8D8F009B6F29 /* ProEXR_AE_Dialogs_Cocoa.mm */; };
@@ -134,6 +135,8 @@
 /* End PBXContainerItemProxy section */
 
 /* Begin PBXFileReference section */
+		2A2B884B208BC77200A9FCA5 /* MurmurHash3.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = MurmurHash3.cpp; sourceTree = "<group>"; };
+		2A2B884C208BC77200A9FCA5 /* MurmurHash3.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = MurmurHash3.h; sourceTree = "<group>"; };
 		2A4DF3A81E1B8D8F009B6F29 /* fnord_MissingSuiteError.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = fnord_MissingSuiteError.cpp; sourceTree = "<group>"; };
 		2A4DF3A91E1B8D8F009B6F29 /* fnord_SuiteHandler.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = fnord_SuiteHandler.cpp; sourceTree = "<group>"; };
 		2A4DF3AA1E1B8D8F009B6F29 /* fnord_SuiteHandler.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = fnord_SuiteHandler.h; sourceTree = "<group>"; };
@@ -254,6 +257,24 @@
 /* End PBXFrameworksBuildPhase section */
 
 /* Begin PBXGroup section */
+		2A2B8809208BC77200A9FCA5 /* smhasher */ = {
+			isa = PBXGroup;
+			children = (
+				2A2B8833208BC77200A9FCA5 /* src */,
+			);
+			name = smhasher;
+			path = ../../ext/smhasher;
+			sourceTree = SOURCE_ROOT;
+		};
+		2A2B8833208BC77200A9FCA5 /* src */ = {
+			isa = PBXGroup;
+			children = (
+				2A2B884C208BC77200A9FCA5 /* MurmurHash3.h */,
+				2A2B884B208BC77200A9FCA5 /* MurmurHash3.cpp */,
+			);
+			path = src;
+			sourceTree = "<group>";
+		};
 		2A4DF3A31E1B8D8F009B6F29 /* src */ = {
 			isa = PBXGroup;
 			children = (
@@ -436,6 +457,7 @@
 			isa = PBXGroup;
 			children = (
 				2A4DF3A31E1B8D8F009B6F29 /* src */,
+				2A2B8809208BC77200A9FCA5 /* smhasher */,
 				2A4DF6A71E1B96F7009B6F29 /* OpenEXR.xcodeproj */,
 				2A4DF6AA1E1B96F7009B6F29 /* OpenEXRConfig.h */,
 				2A4DF6971E1B96DF009B6F29 /* IlmBase.xcodeproj */,
@@ -641,6 +663,7 @@
 				2A4DF6081E1B9566009B6F29 /* OpenEXR_ChannelMap.cpp in Sources */,
 				2A4DF6111E1B95B2009B6F29 /* ProEXRdoc_AE.cpp in Sources */,
 				2A4DF7021E1B97A6009B6F29 /* ProEXR_AE_FrameSeq_Color.cpp in Sources */,
+				2A2B8888208BC77200A9FCA5 /* MurmurHash3.cpp in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

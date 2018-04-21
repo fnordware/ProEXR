@@ -7,6 +7,8 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		2A2B8789208BC46700A9FCA5 /* MurmurHash3.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 2A2B8787208BC46700A9FCA5 /* MurmurHash3.cpp */; };
+		2A2B878A208BC46700A9FCA5 /* MurmurHash3.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 2A2B8787208BC46700A9FCA5 /* MurmurHash3.cpp */; };
 		2A3BAA7110C0F40600AD32F2 /* Cocoa.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 2A3BAA7010C0F40600AD32F2 /* Cocoa.framework */; };
 		2A3C79B72071B9E60026DA3D /* Cryptomatte_AE_ArbData.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 2A3C79B12071B9E60026DA3D /* Cryptomatte_AE_ArbData.cpp */; };
 		2A3C79B82071B9E60026DA3D /* Cryptomatte_AE_PiPL.r in Rez */ = {isa = PBXBuildFile; fileRef = 2A3C79B32071B9E60026DA3D /* Cryptomatte_AE_PiPL.r */; };
@@ -32,6 +34,8 @@
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
+		2A2B8787208BC46700A9FCA5 /* MurmurHash3.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = MurmurHash3.cpp; path = ../../ext/smhasher/src/MurmurHash3.cpp; sourceTree = SOURCE_ROOT; };
+		2A2B8788208BC46700A9FCA5 /* MurmurHash3.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = MurmurHash3.h; path = ../../ext/smhasher/src/MurmurHash3.h; sourceTree = SOURCE_ROOT; };
 		2A3BAA7010C0F40600AD32F2 /* Cocoa.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Cocoa.framework; path = /System/Library/Frameworks/Cocoa.framework; sourceTree = "<absolute>"; };
 		2A3C79B12071B9E60026DA3D /* Cryptomatte_AE_ArbData.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = Cryptomatte_AE_ArbData.cpp; path = ../../src/aftereffects/Cryptomatte_AE_ArbData.cpp; sourceTree = SOURCE_ROOT; };
 		2A3C79B22071B9E60026DA3D /* Cryptomatte_AE_Dialog.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = Cryptomatte_AE_Dialog.h; path = ../../src/aftereffects/Cryptomatte_AE_Dialog.h; sourceTree = SOURCE_ROOT; };
@@ -92,6 +96,8 @@
 				2A3C7AA62072F37F0026DA3D /* fnord_SuiteHandler.cpp */,
 				2A3C7AA52072F37F0026DA3D /* fnord_MissingSuiteError.cpp */,
 				2A3C7B8720751C710026DA3D /* picojson.h */,
+				2A2B8788208BC46700A9FCA5 /* MurmurHash3.h */,
+				2A2B8787208BC46700A9FCA5 /* MurmurHash3.cpp */,
 				C4E6188C095A3C800012CA3F /* Products */,
 				2A3BAA7010C0F40600AD32F2 /* Cocoa.framework */,
 			);
@@ -223,6 +229,7 @@
 				2A4877E62084B1D700A88487 /* fnord_SuiteHandler.cpp in Sources */,
 				2A4877E72084B1D700A88487 /* Cryptomatte_Dialog_Cocoa.mm in Sources */,
 				2A4877E82084B1D700A88487 /* Cryptomatte_AE_Dialog_Controller.m in Sources */,
+				2A2B8789208BC46700A9FCA5 /* MurmurHash3.cpp in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -238,6 +245,7 @@
 				2A3C7AA92072F37F0026DA3D /* fnord_SuiteHandler.cpp in Sources */,
 				2A3C7AD62072FA270026DA3D /* Cryptomatte_Dialog_Cocoa.mm in Sources */,
 				2A3C7AD72072FA270026DA3D /* Cryptomatte_AE_Dialog_Controller.m in Sources */,
+				2A2B878A208BC46700A9FCA5 /* MurmurHash3.cpp in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

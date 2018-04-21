@@ -13,9 +13,9 @@
 
 #include "Cryptomatte_AE.h"
 
-#ifndef __MACH__
+#include "MurmurHash3.h"
+
 #include <assert.h>
-#endif
 
 
 #ifndef SWAP_LONG
@@ -32,29 +32,17 @@ SwapArbData(CryptomatteArbitraryData *arb_data)
 }
 
 
-static Hash
-djb2(const A_u_char *data, size_t len)
-{
-	Hash hash = 5381;
-	
-	while(len--)
-		hash = ((hash << 5) + hash) + *data++; // hash * 33 + c
-	
-	return hash;
-}
-
-
 static void
 HashManifest(CryptomatteArbitraryData *arb)
 {
-	arb->manifest_hash = djb2((A_u_char *)&arb->data[0], arb->manifest_size);
+	MurmurHash3_x86_32(&arb->data[0], arb->manifest_size, 0, &arb->manifest_hash);
 }
 
 
 static void
 HashSelection(CryptomatteArbitraryData *arb)
 {
-	arb->selection_hash = djb2((A_u_char *)&arb->data[arb->manifest_size], arb->selection_size);
+	MurmurHash3_x86_32(&arb->data[arb->manifest_size], arb->selection_size, 0, &arb->selection_hash);
 }
 
 
@@ -308,7 +296,7 @@ ArbUnFlatten(PF_InData *in_data, PF_OutData *out_data,
 			memcpy(out_arb_data, in_arb_data, buf_sizeLu);
 			
 		#ifdef AE_BIG_ENDIAN
-			// swap bytes back to platform style
+			// swap bytes back to PPC style (?)
 			SwapArbData(out_arb_data);
 		#endif
 		
