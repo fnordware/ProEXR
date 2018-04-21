@@ -51,30 +51,6 @@ class ErrThrower : public std::exception
 };
 
 
-bool
-GetHashIfLiteral(const std::string &name, Hash &result)
-{
-	// returns true if a literal value, and writes the hash to result. 
-	if(name.size() == 10)
-	{
-		unsigned long intValue = 0;
-		const int matched = sscanf(name.c_str(), "<%x>", &intValue);
-		if (matched) {
-			result = intValue;
-			return true;
-		}
-	}
-	return false;
-}
-
-std::string
-HashToLiteralStr(Hash hash)
-{
-	char hexStr[9];
-	sprintf(hexStr, "<%08x>", hash);
-	return std::string(hexStr);
-}
-
 #ifndef NDEBUG
 static int gNumContexts = 0;
 #endif
@@ -608,6 +584,7 @@ CryptomatteContext::FloatHashToHash(const FloatHash &floatHash)
 	return result;
 }
 
+
 Hash
 CryptomatteContext::HashName(const std::string &name)
 {
@@ -622,6 +599,39 @@ CryptomatteContext::HashName(const std::string &name)
 
 	return hash;
 }
+
+
+bool
+CryptomatteContext::GetHashIfLiteral(const std::string &name, Hash &result)
+{
+	// returns true if a literal value, and writes the hash to result. 
+	if(name.size() == 10)
+	{
+		unsigned int intValue = 0;
+		
+		const int matched = sscanf(name.c_str(), "<%x>", &intValue);
+		
+		if(matched)
+		{
+			result = intValue;
+			return true;
+		}
+	}
+	
+	return false;
+}
+
+
+std::string
+CryptomatteContext::HashToLiteralStr(Hash hash)
+{
+	char hexStr[9];
+	
+	sprintf(hexStr, "<%08x>", hash);
+	
+	return std::string(hexStr);
+}
+
 
 CryptomatteContext::Level::Level(PF_InData *in_data, PF_ChannelRef &hash, PF_ChannelRef &coverage) :
 	_hash(NULL),

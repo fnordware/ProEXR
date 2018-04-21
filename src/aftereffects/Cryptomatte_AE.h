@@ -170,6 +170,8 @@ class CryptomatteContext
 	static FloatHash HashToFloatHash(const Hash &hash);
 	static Hash FloatHashToHash(const FloatHash &floatHash);
 	static Hash HashName(const std::string &name);
+	static bool GetHashIfLiteral(const std::string &name, Hash &result);
+	static std::string HashToLiteralStr(Hash hash);
 
 	class Level
 	{
