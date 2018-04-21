@@ -70,12 +70,13 @@ enum {
 
 enum {
 	DISPLAY_COLORS = 1,
+	DISPLAY_MATTED_COLORS,
 	DISPLAY_MATTED_RGBA,
 	DISPLAY_MATTE_ONLY,
 	DISPLAY_NUM_OPTIONS = DISPLAY_MATTE_ONLY
 };
 
-#define DISPLAY_MENU_STR "Colors|Matted RGBA|Matte Only"
+#define DISPLAY_MENU_STR "Colors|Matted Colors|Matted RGBA|Matte Only"
 
 
 typedef uint32_t Hash;
@@ -138,7 +139,7 @@ class CryptomatteContext
 	
 	float GetCoverage(int x, int y) const;
 	
-	PF_PixelFloat GetColor(int x, int y) const;
+	PF_PixelFloat GetColor(int x, int y, bool matted) const;
 	PF_PixelFloat GetSelectionColor(int x, int y) const;
 	
 	std::set<std::string> GetItems(int x, int y) const;
