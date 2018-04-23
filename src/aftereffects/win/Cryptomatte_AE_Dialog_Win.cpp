@@ -65,7 +65,7 @@ static BOOL CALLBACK DialogProc(HWND hwndDlg, UINT message, WPARAM wParam, LPARA
 { 
     BOOL fError; 
 
-    switch (message) 
+    switch(message) 
     { 
 		case WM_INITDIALOG:
 
@@ -76,23 +76,28 @@ static BOOL CALLBACK DialogProc(HWND hwndDlg, UINT message, WPARAM wParam, LPARA
 			return TRUE;
 
         case WM_COMMAND: 
-			g_item_clicked = LOWORD(wParam);
+			const WORD item_clicked = LOWORD(wParam);
 
-            switch (LOWORD(wParam)) 
-            { 
-                case DLOG_OK: 
-					SetStrFromField(hwndDlg, DLOG_Layer_Text, g_layer);
-					SetStrFromField(hwndDlg, DLOG_Selection_Text, g_selection);
-					SetStrFromField(hwndDlg, DLOG_Manifest_Text, g_manifest);
+			if(item_clicked == DLOG_OK || item_clicked == DLOG_Cancel)
+			{
+				g_item_clicked = item_clicked;
 
-				case DLOG_Cancel:
+				switch(item_clicked) 
+				{ 
+					case DLOG_OK: 
+						SetStrFromField(hwndDlg, DLOG_Layer_Text, g_layer);
+						SetStrFromField(hwndDlg, DLOG_Selection_Text, g_selection);
+						SetStrFromField(hwndDlg, DLOG_Manifest_Text, g_manifest);
 
-					//PostMessage((HWND)hwndDlg, WM_QUIT, (WPARAM)WA_ACTIVE, lParam);
-					EndDialog(hwndDlg, 0);
-                    //DestroyWindow(hwndDlg); 
+					case DLOG_Cancel:
 
-                    return TRUE;
-            } 
+						//PostMessage((HWND)hwndDlg, WM_QUIT, (WPARAM)WA_ACTIVE, lParam);
+						EndDialog(hwndDlg, 0);
+						//DestroyWindow(hwndDlg); 
+
+						return TRUE;
+				} 
+			}
     } 
 
     return FALSE; 

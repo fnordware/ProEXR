@@ -1,0 +1,219 @@
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+	
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+	
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+resource 'PiPL' (16000) {
+	{	
+		
+		Kind {
+			AEEffect
+		},
+		
+		Name {
+			"Cryptomatte"
+		},
+		
+		Category {
+	
+
+
+            "$$$/AE/Effect/Category/3DChannel=3D Channel" 
+	
+		},
+		
+
+	
+		CodeWin64X86 {"PluginMain"},
+	
+
+
+
+
+
+
+
+
+
+
+		AE_PiPL_Version {
+			2,
+			0
+		},
+		
+		AE_Effect_Spec_Version {
+			13,
+			9
+		},
+		
+		AE_Effect_Version {
+			1050112
+		},
+		
+		AE_Effect_Info_Flags {
+			0
+		},
+		
+
+
+
+
+
+		AE_Effect_Global_OutFlags {
+			33588288 + 1
+		},
+
+
+
+
+
+		AE_Effect_Global_OutFlags_2 {
+			5128 + 8388608
+		},
+		
+		AE_Effect_Match_Name {
+			"Cryptomatte"
+		},
+		
+		AE_Reserved_Info {
+			0
+		}
+	}
+};
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
