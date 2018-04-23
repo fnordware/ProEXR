@@ -183,38 +183,42 @@ ArbCopy(PF_InData *in_data, PF_OutData *out_data,
 	
 	if(src_arbH && dst_arbPH)
 	{
-		// allocate using the creation function
-		err = ArbNewDefault(in_data, out_data, refconPV, dst_arbPH);
-		
-		if(!err)
+		CryptomatteArbitraryData *in_arb_data = (CryptomatteArbitraryData *)PF_LOCK_HANDLE(src_arbH),
+						*out_arb_data = NULL;
+
+		if(in_arb_data->magic[0] == 'c' &&	in_arb_data->magic[1] == 'r' &&
+			in_arb_data->magic[2] == 'y' && in_arb_data->magic[3] == '1')
 		{
-			const A_u_longlong siz = PF_GET_HANDLE_SIZE(src_arbH);
-			
-			PF_RESIZE_HANDLE(siz, dst_arbPH);
-		
-			CryptomatteArbitraryData *in_arb_data = (CryptomatteArbitraryData *)PF_LOCK_HANDLE(src_arbH),
-							*out_arb_data = (CryptomatteArbitraryData *)PF_LOCK_HANDLE(*dst_arbPH);
-			
-			assert(in_arb_data->magic[0] == 'c' &&	in_arb_data->magic[1] == 'r' &&
-					in_arb_data->magic[2] == 'y' && in_arb_data->magic[3] == '1');
-				
-			assert(out_arb_data->magic[0] == 'c' &&	out_arb_data->magic[1] == 'r' &&
-					out_arb_data->magic[2] == 'y' && out_arb_data->magic[3] == '1');
-					
+			const size_t siz = PF_GET_HANDLE_SIZE(src_arbH);
+
+			*dst_arbPH = PF_NEW_HANDLE(siz);
+
+			out_arb_data = (CryptomatteArbitraryData *)PF_LOCK_HANDLE(*dst_arbPH);
+
 			memcpy(out_arb_data, in_arb_data, siz);
-			
-		#ifndef NDEBUG
-			HashManifest(out_arb_data);
-			HashSelection(out_arb_data);
-			
-			assert(out_arb_data->manifest_hash == in_arb_data->manifest_hash);
-			assert(out_arb_data->selection_hash == in_arb_data->selection_hash);
-		#endif
-			
-			PF_UNLOCK_HANDLE(src_arbH);
-			PF_UNLOCK_HANDLE(*dst_arbPH);
 		}
+		else
+		{
+			assert(FALSE);
+
+			err = ArbNewDefault(in_data, out_data, refconPV, dst_arbPH);
+
+			out_arb_data = (CryptomatteArbitraryData *)PF_LOCK_HANDLE(*dst_arbPH);
+		}
+		
+	#ifndef NDEBUG
+		HashManifest(out_arb_data);
+		HashSelection(out_arb_data);
+		
+		assert(out_arb_data->manifest_hash == in_arb_data->manifest_hash);
+		assert(out_arb_data->selection_hash == in_arb_data->selection_hash);
+	#endif
+		
+		PF_UNLOCK_HANDLE(src_arbH);
+		PF_UNLOCK_HANDLE(*dst_arbPH);
 	}
+	else
+		assert(FALSE);
 	
 	return err;
 }
@@ -276,26 +280,29 @@ ArbUnFlatten(PF_InData *in_data, PF_OutData *out_data,
 	
 	if(arbPH && flat_dataPV)
 	{
-		// they provide a flat buffer, we have to make the handle (using the default function)
-		err = ArbNewDefault(in_data, out_data, refconPV, arbPH);
+		CryptomatteArbitraryData *in_arb_data = (CryptomatteArbitraryData *)flat_dataPV,
+									*out_arb_data = NULL;
+
+		if(in_arb_data->magic[0] == 'c' &&	in_arb_data->magic[1] == 'r' &&
+			in_arb_data->magic[2] == 'y' && in_arb_data->magic[3] == '1')
+		{
+			*arbPH = PF_NEW_HANDLE(buf_sizeLu);
+
+			out_arb_data = (CryptomatteArbitraryData *)PF_LOCK_HANDLE(*arbPH);
+
+			memcpy(out_arb_data, flat_dataPV, buf_sizeLu);
+		}
+		else
+		{
+			assert(FALSE);
+
+			err = ArbNewDefault(in_data, out_data, refconPV, arbPH);
+
+			out_arb_data = (CryptomatteArbitraryData *)PF_LOCK_HANDLE(*arbPH);
+		}
 		
 		if(!err && *arbPH)
 		{
-			PF_RESIZE_HANDLE(buf_sizeLu, arbPH);
-			
-			CryptomatteArbitraryData *in_arb_data = (CryptomatteArbitraryData *)flat_dataPV,
-							*out_arb_data = (CryptomatteArbitraryData *)PF_LOCK_HANDLE(*arbPH);
-			
-			
-			assert(in_arb_data->magic[0] == 'c' &&	in_arb_data->magic[1] == 'r' &&
-					in_arb_data->magic[2] == 'y' && in_arb_data->magic[3] == '1');
-				
-			assert(out_arb_data->magic[0] == 'c' &&	out_arb_data->magic[1] == 'r' &&
-					out_arb_data->magic[2] == 'y' && out_arb_data->magic[3] == '1');
-			assert(buf_sizeLu <= PF_GET_HANDLE_SIZE(*arbPH));
-		
-			memcpy(out_arb_data, in_arb_data, buf_sizeLu);
-			
 		#ifdef AE_BIG_ENDIAN
 			// swap bytes back to PPC style (?)
 			SwapArbData(out_arb_data);
@@ -313,9 +320,9 @@ ArbUnFlatten(PF_InData *in_data, PF_OutData *out_data,
 			assert(old_manifest_hash == out_arb_data->manifest_hash);
 			assert(old_selection_hash == out_arb_data->selection_hash);
 		#endif
-		
-			PF_UNLOCK_HANDLE(*arbPH);
 		}
+		
+		PF_UNLOCK_HANDLE(*arbPH);
 	}
 	
 	return err;
@@ -335,25 +342,42 @@ ArbInterpolate(PF_InData *in_data, PF_OutData *out_data,
 	
 	if(left_arbH && right_arbH && interpPH)
 	{
-		// allocate using our own func
-		err = ArbNewDefault(in_data, out_data, refconPV, interpPH);
-		
-		if(!err && *interpPH)
+		CryptomatteArbitraryData *in_arb_data = (CryptomatteArbitraryData *)PF_LOCK_HANDLE(left_arbH),
+						*out_arb_data = NULL;
+
+		if(in_arb_data->magic[0] == 'c' &&	in_arb_data->magic[1] == 'r' &&
+			in_arb_data->magic[2] == 'y' && in_arb_data->magic[3] == '1')
 		{
-			const A_u_longlong siz = PF_GET_HANDLE_SIZE(left_arbH);
-			
-			PF_RESIZE_HANDLE(siz, interpPH);
-			
-			// we're just going to copy the left_data
-			CryptomatteArbitraryData *in_arb_data = (CryptomatteArbitraryData *)PF_LOCK_HANDLE(left_arbH),
-							*out_arb_data = (CryptomatteArbitraryData *)PF_LOCK_HANDLE(*interpPH);
-			
+			const size_t siz = PF_GET_HANDLE_SIZE(left_arbH);
+
+			*interpPH = PF_NEW_HANDLE(siz);
+
+			out_arb_data = (CryptomatteArbitraryData *)PF_LOCK_HANDLE(*interpPH);
+
 			memcpy(out_arb_data, in_arb_data, siz);
-			
-			PF_UNLOCK_HANDLE(left_arbH);
-			PF_UNLOCK_HANDLE(*interpPH);
 		}
+		else
+		{
+			assert(FALSE);
+
+			err = ArbNewDefault(in_data, out_data, refconPV, interpPH);
+
+			out_arb_data = (CryptomatteArbitraryData *)PF_LOCK_HANDLE(*interpPH);
+		}
+		
+	#ifndef NDEBUG
+		HashManifest(out_arb_data);
+		HashSelection(out_arb_data);
+		
+		assert(out_arb_data->manifest_hash == in_arb_data->manifest_hash);
+		assert(out_arb_data->selection_hash == in_arb_data->selection_hash);
+	#endif
+		
+		PF_UNLOCK_HANDLE(left_arbH);
+		PF_UNLOCK_HANDLE(*interpPH);
 	}
+	else
+		assert(FALSE);
 	
 	return err;
 }
