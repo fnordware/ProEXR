@@ -49,7 +49,7 @@
 			<Tool
 				Name="VCCLCompilerTool"
 				Optimization="0"
-				AdditionalIncludeDirectories="..\..\src\aftereffects;&quot;..\..\ext\Adobe After Effects CC 2015 Win SDK\Examples\Headers&quot;;&quot;..\..\ext\Adobe After Effects CC 2015 Win SDK\Examples\Headers\SP&quot;;&quot;..\..\ext\Adobe After Effects CC 2015 Win SDK\Examples\Headers\Win&quot;;&quot;..\..\ext\Adobe After Effects CC 2015 Win SDK\Examples\Resources&quot;;&quot;..\..\ext\Adobe After Effects CC 2015 Win SDK\Examples\Util&quot;;..\..\ext\picojson"
+				AdditionalIncludeDirectories="..\..\src\aftereffects;&quot;..\..\ext\Adobe After Effects CC 2015 Win SDK\Examples\Headers&quot;;&quot;..\..\ext\Adobe After Effects CC 2015 Win SDK\Examples\Headers\SP&quot;;&quot;..\..\ext\Adobe After Effects CC 2015 Win SDK\Examples\Headers\Win&quot;;&quot;..\..\ext\Adobe After Effects CC 2015 Win SDK\Examples\Resources&quot;;&quot;..\..\ext\Adobe After Effects CC 2015 Win SDK\Examples\Util&quot;;..\..\ext\picojson;..\..\ext\smhasher\src"
 				PreprocessorDefinitions="MSWindows;WIN32;_DEBUG;_WINDOWS"
 				RuntimeLibrary="3"
 				StructMemberAlignment="3"
@@ -149,7 +149,7 @@
 			<Tool
 				Name="VCCLCompilerTool"
 				Optimization="2"
-				AdditionalIncludeDirectories="..\..\src\aftereffects;&quot;..\..\ext\Adobe After Effects CC 2015 Win SDK\Examples\Headers&quot;;&quot;..\..\ext\Adobe After Effects CC 2015 Win SDK\Examples\Headers\SP&quot;;&quot;..\..\ext\Adobe After Effects CC 2015 Win SDK\Examples\Headers\Win&quot;;&quot;..\..\ext\Adobe After Effects CC 2015 Win SDK\Examples\Resources&quot;;&quot;..\..\ext\Adobe After Effects CC 2015 Win SDK\Examples\Util&quot;;..\..\ext\picojson"
+				AdditionalIncludeDirectories="..\..\src\aftereffects;&quot;..\..\ext\Adobe After Effects CC 2015 Win SDK\Examples\Headers&quot;;&quot;..\..\ext\Adobe After Effects CC 2015 Win SDK\Examples\Headers\SP&quot;;&quot;..\..\ext\Adobe After Effects CC 2015 Win SDK\Examples\Headers\Win&quot;;&quot;..\..\ext\Adobe After Effects CC 2015 Win SDK\Examples\Resources&quot;;&quot;..\..\ext\Adobe After Effects CC 2015 Win SDK\Examples\Util&quot;;..\..\ext\picojson;..\..\ext\smhasher\src"
 				PreprocessorDefinitions="MSWindows;WIN32;NDEBUG;_WINDOWS"
 				RuntimeLibrary="2"
 				StructMemberAlignment="3"
@@ -248,7 +248,7 @@
 			<Tool
 				Name="VCCLCompilerTool"
 				Optimization="0"
-				AdditionalIncludeDirectories="..\..\src\aftereffects;&quot;..\..\ext\Adobe After Effects CS6 Win SDK\Examples\Headers&quot;;&quot;..\..\ext\Adobe After Effects CS6 Win SDK\Examples\Headers\SP&quot;;&quot;..\..\ext\Adobe After Effects CS6 Win SDK\Examples\Headers\Win&quot;;&quot;..\..\ext\Adobe After Effects CS6 Win SDK\Examples\Resources&quot;;&quot;..\..\ext\Adobe After Effects CS6 Win SDK\Examples\Util&quot;;..\..\ext\picojson"
+				AdditionalIncludeDirectories="..\..\src\aftereffects;&quot;..\..\ext\Adobe After Effects CS6 Win SDK\Examples\Headers&quot;;&quot;..\..\ext\Adobe After Effects CS6 Win SDK\Examples\Headers\SP&quot;;&quot;..\..\ext\Adobe After Effects CS6 Win SDK\Examples\Headers\Win&quot;;&quot;..\..\ext\Adobe After Effects CS6 Win SDK\Examples\Resources&quot;;&quot;..\..\ext\Adobe After Effects CS6 Win SDK\Examples\Util&quot;;..\..\ext\picojson;..\..\ext\smhasher\src"
 				PreprocessorDefinitions="MSWindows;WIN32;_DEBUG;_WINDOWS"
 				RuntimeLibrary="3"
 				StructMemberAlignment="3"
@@ -348,7 +348,7 @@
 			<Tool
 				Name="VCCLCompilerTool"
 				Optimization="2"
-				AdditionalIncludeDirectories="..\..\src\aftereffects;&quot;..\..\ext\Adobe After Effects CS6 Win SDK\Examples\Headers&quot;;&quot;..\..\ext\Adobe After Effects CS6 Win SDK\Examples\Headers\SP&quot;;&quot;..\..\ext\Adobe After Effects CS6 Win SDK\Examples\Headers\Win&quot;;&quot;..\..\ext\Adobe After Effects CS6 Win SDK\Examples\Resources&quot;;&quot;..\..\ext\Adobe After Effects CS6 Win SDK\Examples\Util&quot;;..\..\ext\picojson"
+				AdditionalIncludeDirectories="..\..\src\aftereffects;&quot;..\..\ext\Adobe After Effects CS6 Win SDK\Examples\Headers&quot;;&quot;..\..\ext\Adobe After Effects CS6 Win SDK\Examples\Headers\SP&quot;;&quot;..\..\ext\Adobe After Effects CS6 Win SDK\Examples\Headers\Win&quot;;&quot;..\..\ext\Adobe After Effects CS6 Win SDK\Examples\Resources&quot;;&quot;..\..\ext\Adobe After Effects CS6 Win SDK\Examples\Util&quot;;..\..\ext\picojson;..\..\ext\smhasher\src"
 				PreprocessorDefinitions="MSWindows;WIN32;NDEBUG;_WINDOWS"
 				RuntimeLibrary="2"
 				StructMemberAlignment="3"
