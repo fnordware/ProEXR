@@ -1080,7 +1080,26 @@ GlobalSetup (
 								PF_OutFlag2_SUPPORTS_GET_FLATTENED_SEQUENCE_DATA |
 							#endif
 								PF_OutFlag2_FLOAT_COLOR_AWARE;
-	
+
+
+#if AE135_RENDER_THREAD_MADNESS
+	if(in_data->version.major == PF_AE135_PLUG_IN_VERSION && in_data->version.minor < PF_AE135_PLUG_IN_SUBVERS)
+	{
+		PF_SPRINTF(out_data->return_msg, "Your version of the Cryptomatte plug-in is meant for After Effects CC 2015 and later. "
+											"Please use the CS6 version.");
+
+		return PF_Err_BAD_CALLBACK_PARAM;
+	}
+#else
+	if(in_data->version.major == PF_AE135_PLUG_IN_VERSION && in_data->version.minor >= PF_AE135_PLUG_IN_SUBVERS)
+	{
+		PF_SPRINTF(out_data->return_msg, "Your version of the Cryptomatte plug-in is meant for After Effects CC 2014 and earlier. "
+											"Please the regular version, not the CS6 version.");
+
+		return PF_Err_BAD_CALLBACK_PARAM;
+	}
+#endif
+
 
 	AEGP_SuiteHandler suites(in_data->pica_basicP);
 	suites.UtilitySuite()->AEGP_RegisterWithAEGP(NULL, NAME, &gAEGPPluginID);
@@ -1808,8 +1827,10 @@ DoDialog(
 		
 		std::string layer = GetLayer(arb);
 		std::string selection = GetSelection(arb);
-		std::string manifest =GetManifest(arb);
+		std::string manifest = GetManifest(arb);
 		
+		PF_UNLOCK_HANDLE(params[CRYPTO_DATA]->u.arb_d.value);
+
 		const bool clicked_ok = Cryptomatte_Dialog(layer, selection, manifest, plugHndl, mwnd);
 		
 		if(clicked_ok)
@@ -1818,8 +1839,6 @@ DoDialog(
 			
 			params[CRYPTO_DATA]->uu.change_flags = PF_ChangeFlag_CHANGED_VALUE;
 		}
-		
-		PF_UNLOCK_HANDLE(params[CRYPTO_DATA]->u.arb_d.value);
 	}
 	
 	return err;

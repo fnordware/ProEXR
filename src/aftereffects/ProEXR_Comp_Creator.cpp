@@ -1763,24 +1763,28 @@ static A_Err BuildEXRcompsFromLayer(AEGP_LayerH layerH)
 						A_Handle handle = MakeCryptomatteHandle(suites, layer.name(), manifest);
 						
 						AEGP_EffectRefH new_effectH;
-						AEGP_StreamRefH arb_stream;
-						AEGP_StreamValue2 val;
+						const A_Err applyErr = suites.EffectSuite()->AEGP_ApplyEffect(S_mem_id, footage_layerH, gCryptomatte_key, &new_effectH);
 						
-						val.val.arbH = handle;
+						if(applyErr == A_Err_NONE && new_effectH != NULL)
+						{
+							AEGP_StreamRefH arb_stream;
+							AEGP_StreamValue2 val;
+							
+							val.val.arbH = handle;
 						
-						suites.EffectSuite()->AEGP_ApplyEffect(S_mem_id, footage_layerH, gCryptomatte_key, &new_effectH);
-						
-						
-						suites.StreamSuite()->AEGP_GetNewEffectStreamByIndex(S_mem_id,
-											new_effectH, CRYPTOMATTE_ARB_INDEX, &arb_stream);
-						
-						suites.StreamSuite()->AEGP_SetStreamValue(S_mem_id, arb_stream, &val);
-						
-						//suites.StreamSuite()->AEGP_DisposeStreamValue(&val);
-						
-						suites.StreamSuite()->AEGP_DisposeStream(arb_stream);
-						
-						suites.EffectSuite()->AEGP_DisposeEffect(new_effectH);
+							suites.StreamSuite()->AEGP_GetNewEffectStreamByIndex(S_mem_id,
+															new_effectH, CRYPTOMATTE_ARB_INDEX, &arb_stream);
+							
+							suites.StreamSuite()->AEGP_SetStreamValue(S_mem_id, arb_stream, &val);
+							
+							//suites.StreamSuite()->AEGP_DisposeStreamValue(&val);
+							
+							suites.StreamSuite()->AEGP_DisposeStream(arb_stream);
+							
+							suites.EffectSuite()->AEGP_DisposeEffect(new_effectH);
+						}
+						else
+							suites.HandleSuite()->host_dispose_handle((PF_Handle)handle); // maybe they were using the wrong Cryptomatte plug-in?
 					}
 				}
 				else if(layer.channels().at(0)->pixelType() == Imf::UINT && gIDentifier_key)
