@@ -433,6 +433,10 @@
 				RelativePath="..\..\src\aftereffects\fnord_SuiteHandler.cpp"
 				>
 			</File>
+			<File
+				RelativePath="..\..\ext\smhasher\src\MurmurHash3.cpp"
+				>
+			</File>
 		</Filter>
 		<Filter
 			Name="Header Files"
@@ -452,6 +456,10 @@
 			</File>
 			<File
 				RelativePath="..\..\src\aftereffects\fnord_SuiteHandler.h"
+				>
+			</File>
+			<File
+				RelativePath="..\..\ext\smhasher\src\MurmurHash3.h"
 				>
 			</File>
 			<File

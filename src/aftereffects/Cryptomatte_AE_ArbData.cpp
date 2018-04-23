@@ -13,9 +13,10 @@
 
 #include "Cryptomatte_AE.h"
 
-#include "MurmurHash3.h"
-
 #include <assert.h>
+
+//#include "MurmurHash3.h"
+void MurmurHash3_x86_32  ( const void * key, int len, unsigned int seed, void * out );
 
 
 #ifndef SWAP_LONG
