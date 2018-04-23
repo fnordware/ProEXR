@@ -48,7 +48,7 @@
 			<Tool
 				Name="VCCLCompilerTool"
 				Optimization="0"
-				AdditionalIncludeDirectories="..\..\src\aftereffects;..\..\src\common;..\..\src\common\VRimg;..\..\ext\zlib;..\..\ext\lcms\include;..\..\ext\lcms\src;..\..\ext\openexr\OpenEXR\config.windows;..\..\ext\openexr\OpenEXR\IlmImf;..\..\ext\openexr\IlmBase\config.windows;..\..\ext\openexr\IlmBase\Imath;..\..\ext\openexr\IlmBase\IlmThread;..\..\ext\openexr\IlmBase\Iex;..\..\ext\openexr\IlmBase\Half;..\..\ext\adobe_photoshop_cs6_sdk_win\pluginsdk\photoshopapi\photoshop;&quot;..\..\ext\Adobe After Effects CS6 Win SDK\Examples\Headers&quot;;&quot;..\..\ext\Adobe After Effects CS6 Win SDK\Examples\Headers\SP&quot;;&quot;..\..\ext\Adobe After Effects CS6 Win SDK\Examples\Headers\Win&quot;;&quot;..\..\ext\Adobe After Effects CS6 Win SDK\Examples\Resources&quot;;&quot;..\..\ext\Adobe After Effects CS6 Win SDK\Examples\Util&quot;"
+				AdditionalIncludeDirectories="..\..\src\aftereffects;..\..\src\common;..\..\src\common\VRimg;..\..\ext\zlib;..\..\ext\lcms\include;..\..\ext\lcms\src;..\..\ext\smhasher\src;..\..\ext\openexr\OpenEXR\config.windows;..\..\ext\openexr\OpenEXR\IlmImf;..\..\ext\openexr\IlmBase\config.windows;..\..\ext\openexr\IlmBase\Imath;..\..\ext\openexr\IlmBase\IlmThread;..\..\ext\openexr\IlmBase\Iex;..\..\ext\openexr\IlmBase\Half;..\..\ext\adobe_photoshop_cs6_sdk_win\pluginsdk\photoshopapi\photoshop;&quot;..\..\ext\Adobe After Effects CS6 Win SDK\Examples\Headers&quot;;&quot;..\..\ext\Adobe After Effects CS6 Win SDK\Examples\Headers\SP&quot;;&quot;..\..\ext\Adobe After Effects CS6 Win SDK\Examples\Headers\Win&quot;;&quot;..\..\ext\Adobe After Effects CS6 Win SDK\Examples\Resources&quot;;&quot;..\..\ext\Adobe After Effects CS6 Win SDK\Examples\Util&quot;"
 				PreprocessorDefinitions="MSWindows;WIN32;_DEBUG;_WINDOWS"
 				RuntimeLibrary="3"
 				StructMemberAlignment="3"
@@ -143,7 +143,7 @@
 			<Tool
 				Name="VCCLCompilerTool"
 				Optimization="2"
-				AdditionalIncludeDirectories="..\..\src\aftereffects;..\..\src\common;..\..\src\common\VRimg;..\..\ext\zlib;..\..\ext\lcms\include;..\..\ext\lcms\src;..\..\ext\openexr\OpenEXR\config.windows;..\..\ext\openexr\OpenEXR\IlmImf;..\..\ext\openexr\IlmBase\config.windows;..\..\ext\openexr\IlmBase\Imath;..\..\ext\openexr\IlmBase\IlmThread;..\..\ext\openexr\IlmBase\Iex;..\..\ext\openexr\IlmBase\Half;..\..\ext\adobe_photoshop_cs6_sdk_win\pluginsdk\photoshopapi\photoshop;&quot;..\..\ext\Adobe After Effects CS6 Win SDK\Examples\Headers&quot;;&quot;..\..\ext\Adobe After Effects CS6 Win SDK\Examples\Headers\SP&quot;;&quot;..\..\ext\Adobe After Effects CS6 Win SDK\Examples\Headers\Win&quot;;&quot;..\..\ext\Adobe After Effects CS6 Win SDK\Examples\Resources&quot;;&quot;..\..\ext\Adobe After Effects CS6 Win SDK\Examples\Util&quot;"
+				AdditionalIncludeDirectories="..\..\src\aftereffects;..\..\src\common;..\..\src\common\VRimg;..\..\ext\zlib;..\..\ext\lcms\include;..\..\ext\lcms\src;..\..\ext\smhasher\src;..\..\ext\openexr\OpenEXR\config.windows;..\..\ext\openexr\OpenEXR\IlmImf;..\..\ext\openexr\IlmBase\config.windows;..\..\ext\openexr\IlmBase\Imath;..\..\ext\openexr\IlmBase\IlmThread;..\..\ext\openexr\IlmBase\Iex;..\..\ext\openexr\IlmBase\Half;..\..\ext\adobe_photoshop_cs6_sdk_win\pluginsdk\photoshopapi\photoshop;&quot;..\..\ext\Adobe After Effects CS6 Win SDK\Examples\Headers&quot;;&quot;..\..\ext\Adobe After Effects CS6 Win SDK\Examples\Headers\SP&quot;;&quot;..\..\ext\Adobe After Effects CS6 Win SDK\Examples\Headers\Win&quot;;&quot;..\..\ext\Adobe After Effects CS6 Win SDK\Examples\Resources&quot;;&quot;..\..\ext\Adobe After Effects CS6 Win SDK\Examples\Util&quot;"
 				PreprocessorDefinitions="MSWindows;WIN32;NDEBUG;_WINDOWS"
 				RuntimeLibrary="2"
 				StructMemberAlignment="3"
@@ -226,6 +226,10 @@
 				>
 			</File>
 			<File
+				RelativePath="..\..\ext\smhasher\src\MurmurHash3.h"
+				>
+			</File>
+			<File
 				RelativePath="..\..\src\aftereffects\OpenEXR_ChannelMap.h"
 				>
 			</File>
@@ -293,11 +297,11 @@
 				Name="Windows"
 				>
 				<File
-					RelativePath="..\..\..\..\..\..\..\..\..\Program Files\Microsoft Visual Studio\VC98\Include\BASETSD.H"
+					RelativePath="..\..\..\..\..\..\..\..\..\devstudio\Include\BASETSD.H"
 					>
 				</File>
 				<File
-					RelativePath="..\..\..\..\..\..\..\..\..\devstudio\Include\BASETSD.H"
+					RelativePath="..\..\..\..\..\..\..\..\..\Program Files\Microsoft Visual Studio\VC98\Include\BASETSD.H"
 					>
 				</File>
 			</Filter>
@@ -388,11 +392,11 @@
 						>
 					</File>
 					<File
-						RelativePath="..\..\ext\Adobe After Effects CS6 Win SDK\Examples\Headers\SPAdapts.h"
+						RelativePath="..\..\ext\Adobe After Effects CS6 Win SDK\Examples\Headers\PICA\SPAdapts.h"
 						>
 					</File>
 					<File
-						RelativePath="..\..\ext\Adobe After Effects CS6 Win SDK\Examples\Headers\PICA\SPAdapts.h"
+						RelativePath="..\..\ext\Adobe After Effects CS6 Win SDK\Examples\Headers\SPAdapts.h"
 						>
 					</File>
 					<File
@@ -404,15 +408,11 @@
 						>
 					</File>
 					<File
-						RelativePath="..\..\ext\Adobe After Effects CS6 Win SDK\Examples\Headers\SPCaches.h"
-						>
-					</File>
-					<File
 						RelativePath="..\..\ext\Adobe After Effects CS6 Win SDK\Examples\Headers\PICA\SPCaches.h"
 						>
 					</File>
 					<File
-						RelativePath="..\..\ext\Adobe After Effects CS6 Win SDK\Examples\Headers\SPConfig.h"
+						RelativePath="..\..\ext\Adobe After Effects CS6 Win SDK\Examples\Headers\SPCaches.h"
 						>
 					</File>
 					<File
@@ -420,11 +420,15 @@
 						>
 					</File>
 					<File
-						RelativePath="..\..\ext\Adobe After Effects CS6 Win SDK\Examples\Headers\SPErrorCodes.h"
+						RelativePath="..\..\ext\Adobe After Effects CS6 Win SDK\Examples\Headers\SPConfig.h"
 						>
 					</File>
 					<File
 						RelativePath="..\..\ext\Adobe After Effects CS6 Win SDK\Examples\Headers\PICA\SPErrorCodes.h"
+						>
+					</File>
+					<File
+						RelativePath="..\..\ext\Adobe After Effects CS6 Win SDK\Examples\Headers\SPErrorCodes.h"
 						>
 					</File>
 					<File
@@ -440,15 +444,11 @@
 						>
 					</File>
 					<File
-						RelativePath="..\..\ext\Adobe After Effects CS6 Win SDK\Examples\Headers\SPMData.h"
-						>
-					</File>
-					<File
 						RelativePath="..\..\ext\Adobe After Effects CS6 Win SDK\Examples\Headers\PICA\SPMData.h"
 						>
 					</File>
 					<File
-						RelativePath="..\..\ext\Adobe After Effects CS6 Win SDK\Examples\Headers\SPPiPL.h"
+						RelativePath="..\..\ext\Adobe After Effects CS6 Win SDK\Examples\Headers\SPMData.h"
 						>
 					</File>
 					<File
@@ -456,11 +456,15 @@
 						>
 					</File>
 					<File
-						RelativePath="..\..\ext\Adobe After Effects CS6 Win SDK\Examples\Headers\SPPlugs.h"
+						RelativePath="..\..\ext\Adobe After Effects CS6 Win SDK\Examples\Headers\SPPiPL.h"
 						>
 					</File>
 					<File
 						RelativePath="..\..\ext\Adobe After Effects CS6 Win SDK\Examples\Headers\PICA\SPPlugs.h"
+						>
+					</File>
+					<File
+						RelativePath="..\..\ext\Adobe After Effects CS6 Win SDK\Examples\Headers\SPPlugs.h"
 						>
 					</File>
 					<File
@@ -472,11 +476,11 @@
 						>
 					</File>
 					<File
-						RelativePath="..\..\ext\Adobe After Effects CS6 Win SDK\Examples\Headers\SPStrngs.h"
+						RelativePath="..\..\ext\Adobe After Effects CS6 Win SDK\Examples\Headers\PICA\SPStrngs.h"
 						>
 					</File>
 					<File
-						RelativePath="..\..\ext\Adobe After Effects CS6 Win SDK\Examples\Headers\PICA\SPStrngs.h"
+						RelativePath="..\..\ext\Adobe After Effects CS6 Win SDK\Examples\Headers\SPStrngs.h"
 						>
 					</File>
 					<File
@@ -484,11 +488,11 @@
 						>
 					</File>
 					<File
-						RelativePath="..\..\ext\Adobe After Effects CS6 Win SDK\Examples\Headers\SPTypes.h"
+						RelativePath="..\..\ext\Adobe After Effects CS6 Win SDK\Examples\Headers\PICA\SPTypes.h"
 						>
 					</File>
 					<File
-						RelativePath="..\..\ext\Adobe After Effects CS6 Win SDK\Examples\Headers\PICA\SPTypes.h"
+						RelativePath="..\..\ext\Adobe After Effects CS6 Win SDK\Examples\Headers\SPTypes.h"
 						>
 					</File>
 				</Filter>
@@ -649,6 +653,10 @@
 		</File>
 		<File
 			RelativePath="..\..\src\common\ImfHybridInputFile.cpp"
+			>
+		</File>
+		<File
+			RelativePath="..\..\ext\smhasher\src\MurmurHash3.cpp"
 			>
 		</File>
 		<File
