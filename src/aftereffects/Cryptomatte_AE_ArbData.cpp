@@ -23,6 +23,25 @@ void MurmurHash3_x86_32  ( const void * key, int len, unsigned int seed, void * 
 #define SWAP_LONG(a)		((a >> 24) | ((a >> 8) & 0xff00) | ((a << 8) & 0xff0000) | (a << 24))
 #endif
 
+// Notice this is not defined, i.e. we still get crashes and the "can't resize locked handle" errors
+// when we don't actually resize handles, i.e. the bug is AE's not ours.
+#ifdef NOT_RESIZING_HANDLES_FIXES_AE_CRASH
+#define MY_RESIZE_HANDLE(NEW_SIZE, PF_HANDLE_P) \
+	do{ \
+		PF_Handle temp = PF_NEW_HANDLE(NEW_SIZE); \
+		void *tempP = PF_LOCK_HANDLE(temp); \
+		const size_t old_size = PF_GET_HANDLE_SIZE(*PF_HANDLE_P); \
+		void *oldP = PF_LOCK_HANDLE(*PF_HANDLE_P); \
+		memcpy(tempP, oldP, MIN(old_size, NEW_SIZE)); \
+		PF_UNLOCK_HANDLE(temp); \
+		PF_DISPOSE_HANDLE(*PF_HANDLE_P); \
+		*PF_HANDLE_P = temp; \
+	}while(0);
+#else
+#define MY_RESIZE_HANDLE(NEW_SIZE, PF_HANDLE_P) PF_RESIZE_HANDLE(NEW_SIZE, PF_HANDLE_P)
+#endif
+
+
 static void 
 SwapArbData(CryptomatteArbitraryData *arb_data)
 {
@@ -84,7 +103,9 @@ SetArb(PF_InData *in_data, PF_ArbitraryH *arbH, const std::string &l, const std:
 		const size_t handle_siz = PF_GET_HANDLE_SIZE(*arbH);
 		
 		if(siz != handle_siz)
-			PF_RESIZE_HANDLE(siz, arbH);
+		{
+			MY_RESIZE_HANDLE(siz, arbH);
+		}
 	}
 	
 	CryptomatteArbitraryData *arb = (CryptomatteArbitraryData *)PF_LOCK_HANDLE(*arbH);
@@ -130,7 +151,7 @@ SetArbSelection(PF_InData *in_data, PF_ArbitraryH *arbH, const std::string &sele
 	{
 		PF_UNLOCK_HANDLE(*arbH);
 		
-		PF_RESIZE_HANDLE(siz, arbH);
+		MY_RESIZE_HANDLE(siz, arbH);
 		
 		arb = (CryptomatteArbitraryData *)PF_LOCK_HANDLE(*arbH);
 	}

@@ -1899,6 +1899,7 @@ PluginMain (
 				err = HandleEvent(in_data, out_data, params, output, (PF_EventExtra	*)extra);
 				break;
 			case PF_Cmd_DO_DIALOG:
+				assert(FALSE); // only we should be calling DoDialog when the users clicks our effect UI
 				err = DoDialog(in_data, out_data, params, output);
 				break;	
 			case PF_Cmd_ARBITRARY_CALLBACK:
