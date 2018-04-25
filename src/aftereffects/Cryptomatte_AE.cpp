@@ -151,7 +151,6 @@ CryptomatteContext::Update(CryptomatteArbitraryData *arb)
 						const Hash &hash = _manifest[val];
 						
 						_float_selection.insert( HashToFloatHash(hash) );
-						
 					}
 					else if(GetHashIfLiteral(val, literal_val))
 					{
@@ -181,99 +180,132 @@ CryptomatteContext::LoadLevels(PF_InData *in_data)
 
 	_levels.clear();
 	
-
-	if(!_layer.empty())
+	
+	AEGP_SuiteHandler suites(in_data->pica_basicP);
+	PF_ChannelSuite *cs = suites.PFChannelSuite();
+	
+	A_long num_channels = 0;
+	cs->PF_GetLayerChannelCount(in_data->effect_ref, CRYPTO_INPUT, &num_channels);
+	
+	if(_layer.empty() && num_channels > 0)
 	{
-		AEGP_SuiteHandler suites(in_data->pica_basicP);
-		
-		PF_ChannelSuite *cs = suites.PFChannelSuite();
-		
-		A_long num_channels = 0;
-		cs->PF_GetLayerChannelCount(in_data->effect_ref, CRYPTO_INPUT, &num_channels);
-		
-		if(num_channels > 0)
+		// search channels to see if we have a layer even though it hasn't been named in the ArbData
+		for(int i=0; i < num_channels && _layer.empty(); i++)
 		{
-			// first we try to find 4-channel names
-			for(int s = NAMING_BEGIN; s <= NAMING_END; s++)
+			PF_Boolean found;
+			PF_ChannelRef channelRef;
+			PF_ChannelDesc channelDesc;
+			
+			cs->PF_GetLayerChannelIndexedRefAndDesc(in_data->effect_ref,
+													CRYPTO_INPUT,
+													i,
+													&found,
+													&channelRef,
+													&channelDesc);
+			
+			if(found && channelDesc.channel_type && channelDesc.data_type == PF_DataType_FLOAT &&
+				channelDesc.dimension == 1)
 			{
-				std::string nextFourName;
-				CalculateNext4Name(nextFourName, (NamingStyle)s);
+				const std::string chan_name = channelDesc.name;
 				
-				PF_ChannelRef four;
+				const std::string::size_type dot_pos = chan_name.rfind(".");
 				
-				for(int i=0; i < num_channels; i++)
+				if(dot_pos != std::string::npos && dot_pos > 3)
 				{
-					PF_Boolean found;
-					PF_ChannelRef channelRef;
-					PF_ChannelDesc channelDesc;
+					const std::string color_name = chan_name.substr(dot_pos + 1);
+					const std::string layer_num = chan_name.substr(dot_pos - 2, 2);
 					
-					cs->PF_GetLayerChannelIndexedRefAndDesc(in_data->effect_ref,
-															CRYPTO_INPUT,
-															i,
-															&found,
-															&channelRef,
-															&channelDesc);
-															
-					if(found && channelDesc.channel_type && channelDesc.data_type == PF_DataType_FLOAT &&
-						channelDesc.dimension == 4 && channelDesc.name == nextFourName)
+					if((color_name == "R" || color_name == "r" || color_name == "red") && layer_num == "00")
 					{
-						_levels.push_back(new Level(in_data, four, false) );
-						_levels.push_back(new Level(in_data, four, true) );
-						
-						CalculateNext4Name(nextFourName, (NamingStyle)s);
-						
-						i = 0; // start over
+						_layer = chan_name.substr(0, dot_pos - 2);
 					}
 				}
 			}
+		}
+	}
+
+	if(!_layer.empty() && num_channels > 0)
+	{
+		// first we try to find 4-channel names
+		for(int s = NAMING_BEGIN; s <= NAMING_END; s++)
+		{
+			std::string nextFourName;
+			CalculateNext4Name(nextFourName, (NamingStyle)s);
 			
+			PF_ChannelRef four;
 			
-			for(int s = NAMING_BEGIN; s <= NAMING_END; s++)
+			for(int i=0; i < num_channels; i++)
 			{
-				std::string nextHashName, nextCoverageName;
-				CalculateNextNames(nextHashName, nextCoverageName, (NamingStyle)s);
+				PF_Boolean found;
+				PF_ChannelRef channelRef;
+				PF_ChannelDesc channelDesc;
 				
-				PF_ChannelRef hash, coverage;
-				bool foundHash = false, foundCoverage = false;
+				cs->PF_GetLayerChannelIndexedRefAndDesc(in_data->effect_ref,
+														CRYPTO_INPUT,
+														i,
+														&found,
+														&channelRef,
+														&channelDesc);
 				
-				for(int i=0; i < num_channels; i++)
+				if(found && channelDesc.channel_type && channelDesc.data_type == PF_DataType_FLOAT &&
+					channelDesc.dimension == 4 && channelDesc.name == nextFourName)
 				{
-					PF_Boolean found;
-					PF_ChannelRef channelRef;
-					PF_ChannelDesc channelDesc;
+					_levels.push_back(new Level(in_data, four, false) );
+					_levels.push_back(new Level(in_data, four, true) );
 					
-					cs->PF_GetLayerChannelIndexedRefAndDesc(in_data->effect_ref,
-															CRYPTO_INPUT,
-															i,
-															&found,
-															&channelRef,
-															&channelDesc);
-															
-					if(found && channelDesc.channel_type && channelDesc.data_type == PF_DataType_FLOAT && channelDesc.dimension == 1)
+					CalculateNext4Name(nextFourName, (NamingStyle)s);
+					
+					i = 0; // start over
+				}
+			}
+		}
+		
+		
+		for(int s = NAMING_BEGIN; s <= NAMING_END; s++)
+		{
+			std::string nextHashName, nextCoverageName;
+			CalculateNextNames(nextHashName, nextCoverageName, (NamingStyle)s);
+			
+			PF_ChannelRef hash, coverage;
+			bool foundHash = false, foundCoverage = false;
+			
+			for(int i=0; i < num_channels; i++)
+			{
+				PF_Boolean found;
+				PF_ChannelRef channelRef;
+				PF_ChannelDesc channelDesc;
+				
+				cs->PF_GetLayerChannelIndexedRefAndDesc(in_data->effect_ref,
+														CRYPTO_INPUT,
+														i,
+														&found,
+														&channelRef,
+														&channelDesc);
+				
+				if(found && channelDesc.channel_type && channelDesc.data_type == PF_DataType_FLOAT && channelDesc.dimension == 1)
+				{
+					if(channelDesc.name == nextHashName || channelDesc.name == nextCoverageName)
 					{
-						if(channelDesc.name == nextHashName || channelDesc.name == nextCoverageName)
+						if(channelDesc.name == nextHashName)
 						{
-							if(channelDesc.name == nextHashName)
-							{
-								hash = channelRef;
-								foundHash = true;
-							}
-							else
-							{
-								coverage = channelRef;
-								foundCoverage = true;
-							}
+							hash = channelRef;
+							foundHash = true;
+						}
+						else
+						{
+							coverage = channelRef;
+							foundCoverage = true;
+						}
+						
+						if(foundHash && foundCoverage)
+						{
+							_levels.push_back(new Level(in_data, hash, coverage) );
 							
-							if(foundHash && foundCoverage)
-							{
-								_levels.push_back(new Level(in_data, hash, coverage) );
-								
-								CalculateNextNames(nextHashName, nextCoverageName, (NamingStyle)s);
-								foundHash = false;
-								foundCoverage = false;
-								
-								i = 0; // start over
-							}
+							CalculateNextNames(nextHashName, nextCoverageName, (NamingStyle)s);
+							foundHash = false;
+							foundCoverage = false;
+							
+							i = 0; // start over
 						}
 					}
 				}
