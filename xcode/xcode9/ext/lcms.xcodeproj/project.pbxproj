@@ -1,0 +1,322 @@
+// !$*UTF8*$!
+{
+	archiveVersion = 1;
+	classes = {
+	};
+	objectVersion = 45;
+	objects = {
+
+/* Begin PBXBuildFile section */
+		2A8F80B71760373D00E03502 /* lcms2.h in Headers */ = {isa = PBXBuildFile; fileRef = 2A8F7FCA1760373D00E03502 /* lcms2.h */; };
+		2A8F80B81760373D00E03502 /* lcms2_plugin.h in Headers */ = {isa = PBXBuildFile; fileRef = 2A8F7FCB1760373D00E03502 /* lcms2_plugin.h */; };
+		2A8F80BD1760373D00E03502 /* cmscam02.c in Sources */ = {isa = PBXBuildFile; fileRef = 2A8F80571760373D00E03502 /* cmscam02.c */; };
+		2A8F80BE1760373D00E03502 /* cmscgats.c in Sources */ = {isa = PBXBuildFile; fileRef = 2A8F80581760373D00E03502 /* cmscgats.c */; };
+		2A8F80BF1760373D00E03502 /* cmscnvrt.c in Sources */ = {isa = PBXBuildFile; fileRef = 2A8F80591760373D00E03502 /* cmscnvrt.c */; };
+		2A8F80C01760373D00E03502 /* cmserr.c in Sources */ = {isa = PBXBuildFile; fileRef = 2A8F805A1760373D00E03502 /* cmserr.c */; };
+		2A8F80C11760373D00E03502 /* cmsgamma.c in Sources */ = {isa = PBXBuildFile; fileRef = 2A8F805B1760373D00E03502 /* cmsgamma.c */; };
+		2A8F80C21760373D00E03502 /* cmsgmt.c in Sources */ = {isa = PBXBuildFile; fileRef = 2A8F805C1760373D00E03502 /* cmsgmt.c */; };
+		2A8F80C31760373D00E03502 /* cmshalf.c in Sources */ = {isa = PBXBuildFile; fileRef = 2A8F805D1760373D00E03502 /* cmshalf.c */; };
+		2A8F80C41760373D00E03502 /* cmsintrp.c in Sources */ = {isa = PBXBuildFile; fileRef = 2A8F805E1760373D00E03502 /* cmsintrp.c */; };
+		2A8F80C51760373D00E03502 /* cmsio0.c in Sources */ = {isa = PBXBuildFile; fileRef = 2A8F805F1760373D00E03502 /* cmsio0.c */; };
+		2A8F80C71760373D00E03502 /* cmslut.c in Sources */ = {isa = PBXBuildFile; fileRef = 2A8F80611760373D00E03502 /* cmslut.c */; };
+		2A8F80C81760373D00E03502 /* cmsmd5.c in Sources */ = {isa = PBXBuildFile; fileRef = 2A8F80621760373D00E03502 /* cmsmd5.c */; };
+		2A8F80C91760373D00E03502 /* cmsmtrx.c in Sources */ = {isa = PBXBuildFile; fileRef = 2A8F80631760373D00E03502 /* cmsmtrx.c */; };
+		2A8F80CA1760373D00E03502 /* cmsnamed.c in Sources */ = {isa = PBXBuildFile; fileRef = 2A8F80641760373D00E03502 /* cmsnamed.c */; };
+		2A8F80CB1760373D00E03502 /* cmsopt.c in Sources */ = {isa = PBXBuildFile; fileRef = 2A8F80651760373D00E03502 /* cmsopt.c */; };
+		2A8F80CC1760373D00E03502 /* cmspack.c in Sources */ = {isa = PBXBuildFile; fileRef = 2A8F80661760373D00E03502 /* cmspack.c */; };
+		2A8F80CD1760373D00E03502 /* cmspcs.c in Sources */ = {isa = PBXBuildFile; fileRef = 2A8F80671760373D00E03502 /* cmspcs.c */; };
+		2A8F80CE1760373D00E03502 /* cmsplugin.c in Sources */ = {isa = PBXBuildFile; fileRef = 2A8F80681760373D00E03502 /* cmsplugin.c */; };
+		2A8F80CF1760373D00E03502 /* cmsps2.c in Sources */ = {isa = PBXBuildFile; fileRef = 2A8F80691760373D00E03502 /* cmsps2.c */; };
+		2A8F80D01760373D00E03502 /* cmssamp.c in Sources */ = {isa = PBXBuildFile; fileRef = 2A8F806A1760373D00E03502 /* cmssamp.c */; };
+		2A8F80D11760373D00E03502 /* cmssm.c in Sources */ = {isa = PBXBuildFile; fileRef = 2A8F806B1760373D00E03502 /* cmssm.c */; };
+		2A8F80D21760373D00E03502 /* cmstypes.c in Sources */ = {isa = PBXBuildFile; fileRef = 2A8F806C1760373D00E03502 /* cmstypes.c */; };
+		2A8F80D31760373D00E03502 /* cmsvirt.c in Sources */ = {isa = PBXBuildFile; fileRef = 2A8F806D1760373D00E03502 /* cmsvirt.c */; };
+		2A8F80D41760373D00E03502 /* cmswtpnt.c in Sources */ = {isa = PBXBuildFile; fileRef = 2A8F806E1760373D00E03502 /* cmswtpnt.c */; };
+		2A8F80D51760373D00E03502 /* cmsxform.c in Sources */ = {isa = PBXBuildFile; fileRef = 2A8F806F1760373D00E03502 /* cmsxform.c */; };
+		2A8F80D61760373D00E03502 /* lcms2_internal.h in Headers */ = {isa = PBXBuildFile; fileRef = 2A8F80711760373D00E03502 /* lcms2_internal.h */; };
+		2A8F82CA176064E000E03502 /* cmsio1.c in Sources */ = {isa = PBXBuildFile; fileRef = 2A8F80601760373D00E03502 /* cmsio1.c */; };
+/* End PBXBuildFile section */
+
+/* Begin PBXFileReference section */
+		2A8F7FCA1760373D00E03502 /* lcms2.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = lcms2.h; sourceTree = "<group>"; };
+		2A8F7FCB1760373D00E03502 /* lcms2_plugin.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = lcms2_plugin.h; sourceTree = "<group>"; };
+		2A8F80571760373D00E03502 /* cmscam02.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; path = cmscam02.c; sourceTree = "<group>"; };
+		2A8F80581760373D00E03502 /* cmscgats.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; path = cmscgats.c; sourceTree = "<group>"; };
+		2A8F80591760373D00E03502 /* cmscnvrt.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; path = cmscnvrt.c; sourceTree = "<group>"; };
+		2A8F805A1760373D00E03502 /* cmserr.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; path = cmserr.c; sourceTree = "<group>"; };
+		2A8F805B1760373D00E03502 /* cmsgamma.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; path = cmsgamma.c; sourceTree = "<group>"; };
+		2A8F805C1760373D00E03502 /* cmsgmt.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; path = cmsgmt.c; sourceTree = "<group>"; };
+		2A8F805D1760373D00E03502 /* cmshalf.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; path = cmshalf.c; sourceTree = "<group>"; };
+		2A8F805E1760373D00E03502 /* cmsintrp.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; path = cmsintrp.c; sourceTree = "<group>"; };
+		2A8F805F1760373D00E03502 /* cmsio0.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; path = cmsio0.c; sourceTree = "<group>"; };
+		2A8F80601760373D00E03502 /* cmsio1.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; path = cmsio1.c; sourceTree = "<group>"; };
+		2A8F80611760373D00E03502 /* cmslut.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; path = cmslut.c; sourceTree = "<group>"; };
+		2A8F80621760373D00E03502 /* cmsmd5.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; path = cmsmd5.c; sourceTree = "<group>"; };
+		2A8F80631760373D00E03502 /* cmsmtrx.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; path = cmsmtrx.c; sourceTree = "<group>"; };
+		2A8F80641760373D00E03502 /* cmsnamed.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; path = cmsnamed.c; sourceTree = "<group>"; };
+		2A8F80651760373D00E03502 /* cmsopt.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; path = cmsopt.c; sourceTree = "<group>"; };
+		2A8F80661760373D00E03502 /* cmspack.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; path = cmspack.c; sourceTree = "<group>"; };
+		2A8F80671760373D00E03502 /* cmspcs.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; path = cmspcs.c; sourceTree = "<group>"; };
+		2A8F80681760373D00E03502 /* cmsplugin.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; path = cmsplugin.c; sourceTree = "<group>"; };
+		2A8F80691760373D00E03502 /* cmsps2.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; path = cmsps2.c; sourceTree = "<group>"; };
+		2A8F806A1760373D00E03502 /* cmssamp.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; path = cmssamp.c; sourceTree = "<group>"; };
+		2A8F806B1760373D00E03502 /* cmssm.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; path = cmssm.c; sourceTree = "<group>"; };
+		2A8F806C1760373D00E03502 /* cmstypes.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; path = cmstypes.c; sourceTree = "<group>"; };
+		2A8F806D1760373D00E03502 /* cmsvirt.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; path = cmsvirt.c; sourceTree = "<group>"; };
+		2A8F806E1760373D00E03502 /* cmswtpnt.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; path = cmswtpnt.c; sourceTree = "<group>"; };
+		2A8F806F1760373D00E03502 /* cmsxform.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; path = cmsxform.c; sourceTree = "<group>"; };
+		2A8F80711760373D00E03502 /* lcms2_internal.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = lcms2_internal.h; sourceTree = "<group>"; };
+		D2AAC046055464E500DB518D /* liblcms.a */ = {isa = PBXFileReference; explicitFileType = archive.ar; includeInIndex = 0; path = liblcms.a; sourceTree = BUILT_PRODUCTS_DIR; };
+/* End PBXFileReference section */
+
+/* Begin PBXFrameworksBuildPhase section */
+		D289987405E68DCB004EDB86 /* Frameworks */ = {
+			isa = PBXFrameworksBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXFrameworksBuildPhase section */
+
+/* Begin PBXGroup section */
+		08FB7794FE84155DC02AAC07 /* lcms */ = {
+			isa = PBXGroup;
+			children = (
+				2A8F7FB61760373C00E03502 /* lcms */,
+				1AB674ADFE9D54B511CA2CBB /* Products */,
+			);
+			name = lcms;
+			sourceTree = "<group>";
+		};
+		1AB674ADFE9D54B511CA2CBB /* Products */ = {
+			isa = PBXGroup;
+			children = (
+				D2AAC046055464E500DB518D /* liblcms.a */,
+			);
+			name = Products;
+			sourceTree = "<group>";
+		};
+		2A8F7FB61760373C00E03502 /* lcms */ = {
+			isa = PBXGroup;
+			children = (
+				2A8F7FC91760373D00E03502 /* include */,
+				2A8F80561760373D00E03502 /* src */,
+			);
+			name = lcms;
+			path = ../../../ext/lcms;
+			sourceTree = SOURCE_ROOT;
+		};
+		2A8F7FC91760373D00E03502 /* include */ = {
+			isa = PBXGroup;
+			children = (
+				2A8F7FCA1760373D00E03502 /* lcms2.h */,
+				2A8F7FCB1760373D00E03502 /* lcms2_plugin.h */,
+			);
+			path = include;
+			sourceTree = "<group>";
+		};
+		2A8F80561760373D00E03502 /* src */ = {
+			isa = PBXGroup;
+			children = (
+				2A8F80571760373D00E03502 /* cmscam02.c */,
+				2A8F80581760373D00E03502 /* cmscgats.c */,
+				2A8F80591760373D00E03502 /* cmscnvrt.c */,
+				2A8F805A1760373D00E03502 /* cmserr.c */,
+				2A8F805B1760373D00E03502 /* cmsgamma.c */,
+				2A8F805C1760373D00E03502 /* cmsgmt.c */,
+				2A8F805D1760373D00E03502 /* cmshalf.c */,
+				2A8F805E1760373D00E03502 /* cmsintrp.c */,
+				2A8F805F1760373D00E03502 /* cmsio0.c */,
+				2A8F80601760373D00E03502 /* cmsio1.c */,
+				2A8F80611760373D00E03502 /* cmslut.c */,
+				2A8F80621760373D00E03502 /* cmsmd5.c */,
+				2A8F80631760373D00E03502 /* cmsmtrx.c */,
+				2A8F80641760373D00E03502 /* cmsnamed.c */,
+				2A8F80651760373D00E03502 /* cmsopt.c */,
+				2A8F80661760373D00E03502 /* cmspack.c */,
+				2A8F80671760373D00E03502 /* cmspcs.c */,
+				2A8F80681760373D00E03502 /* cmsplugin.c */,
+				2A8F80691760373D00E03502 /* cmsps2.c */,
+				2A8F806A1760373D00E03502 /* cmssamp.c */,
+				2A8F806B1760373D00E03502 /* cmssm.c */,
+				2A8F806C1760373D00E03502 /* cmstypes.c */,
+				2A8F806D1760373D00E03502 /* cmsvirt.c */,
+				2A8F806E1760373D00E03502 /* cmswtpnt.c */,
+				2A8F806F1760373D00E03502 /* cmsxform.c */,
+				2A8F80711760373D00E03502 /* lcms2_internal.h */,
+			);
+			path = src;
+			sourceTree = "<group>";
+		};
+/* End PBXGroup section */
+
+/* Begin PBXHeadersBuildPhase section */
+		D2AAC043055464E500DB518D /* Headers */ = {
+			isa = PBXHeadersBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				2A8F80B71760373D00E03502 /* lcms2.h in Headers */,
+				2A8F80B81760373D00E03502 /* lcms2_plugin.h in Headers */,
+				2A8F80D61760373D00E03502 /* lcms2_internal.h in Headers */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXHeadersBuildPhase section */
+
+/* Begin PBXNativeTarget section */
+		D2AAC045055464E500DB518D /* lcms */ = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = 1DEB91EB08733DB70010E9CD /* Build configuration list for PBXNativeTarget "lcms" */;
+			buildPhases = (
+				D2AAC043055464E500DB518D /* Headers */,
+				D2AAC044055464E500DB518D /* Sources */,
+				D289987405E68DCB004EDB86 /* Frameworks */,
+			);
+			buildRules = (
+			);
+			dependencies = (
+			);
+			name = lcms;
+			productName = lcms;
+			productReference = D2AAC046055464E500DB518D /* liblcms.a */;
+			productType = "com.apple.product-type.library.static";
+		};
+/* End PBXNativeTarget section */
+
+/* Begin PBXProject section */
+		08FB7793FE84155DC02AAC07 /* Project object */ = {
+			isa = PBXProject;
+			attributes = {
+			};
+			buildConfigurationList = 1DEB91EF08733DB70010E9CD /* Build configuration list for PBXProject "lcms" */;
+			compatibilityVersion = "Xcode 3.1";
+			developmentRegion = English;
+			hasScannedForEncodings = 1;
+			knownRegions = (
+				English,
+				Japanese,
+				French,
+				German,
+			);
+			mainGroup = 08FB7794FE84155DC02AAC07 /* lcms */;
+			projectDirPath = "";
+			projectRoot = "";
+			targets = (
+				D2AAC045055464E500DB518D /* lcms */,
+			);
+		};
+/* End PBXProject section */
+
+/* Begin PBXSourcesBuildPhase section */
+		D2AAC044055464E500DB518D /* Sources */ = {
+			isa = PBXSourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				2A8F80BD1760373D00E03502 /* cmscam02.c in Sources */,
+				2A8F80BE1760373D00E03502 /* cmscgats.c in Sources */,
+				2A8F80BF1760373D00E03502 /* cmscnvrt.c in Sources */,
+				2A8F80C01760373D00E03502 /* cmserr.c in Sources */,
+				2A8F80C11760373D00E03502 /* cmsgamma.c in Sources */,
+				2A8F80C21760373D00E03502 /* cmsgmt.c in Sources */,
+				2A8F80C31760373D00E03502 /* cmshalf.c in Sources */,
+				2A8F80C41760373D00E03502 /* cmsintrp.c in Sources */,
+				2A8F80C51760373D00E03502 /* cmsio0.c in Sources */,
+				2A8F80C71760373D00E03502 /* cmslut.c in Sources */,
+				2A8F80C81760373D00E03502 /* cmsmd5.c in Sources */,
+				2A8F80C91760373D00E03502 /* cmsmtrx.c in Sources */,
+				2A8F80CA1760373D00E03502 /* cmsnamed.c in Sources */,
+				2A8F80CB1760373D00E03502 /* cmsopt.c in Sources */,
+				2A8F80CC1760373D00E03502 /* cmspack.c in Sources */,
+				2A8F80CD1760373D00E03502 /* cmspcs.c in Sources */,
+				2A8F80CE1760373D00E03502 /* cmsplugin.c in Sources */,
+				2A8F80CF1760373D00E03502 /* cmsps2.c in Sources */,
+				2A8F80D01760373D00E03502 /* cmssamp.c in Sources */,
+				2A8F80D11760373D00E03502 /* cmssm.c in Sources */,
+				2A8F80D21760373D00E03502 /* cmstypes.c in Sources */,
+				2A8F80D31760373D00E03502 /* cmsvirt.c in Sources */,
+				2A8F80D41760373D00E03502 /* cmswtpnt.c in Sources */,
+				2A8F80D51760373D00E03502 /* cmsxform.c in Sources */,
+				2A8F82CA176064E000E03502 /* cmsio1.c in Sources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXSourcesBuildPhase section */
+
+/* Begin XCBuildConfiguration section */
+		1DEB91EC08733DB70010E9CD /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ALWAYS_SEARCH_USER_PATHS = NO;
+				COPY_PHASE_STRIP = NO;
+				GCC_DYNAMIC_NO_PIC = NO;
+				GCC_ENABLE_FIX_AND_CONTINUE = YES;
+				GCC_MODEL_TUNING = G5;
+				GCC_OPTIMIZATION_LEVEL = 0;
+				INSTALL_PATH = /usr/local/lib;
+				PRODUCT_NAME = lcms;
+			};
+			name = Debug;
+		};
+		1DEB91ED08733DB70010E9CD /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ALWAYS_SEARCH_USER_PATHS = NO;
+				DEBUG_INFORMATION_FORMAT = "dwarf-with-dsym";
+				GCC_MODEL_TUNING = G5;
+				INSTALL_PATH = /usr/local/lib;
+				PRODUCT_NAME = lcms;
+			};
+			name = Release;
+		};
+		1DEB91F008733DB70010E9CD /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ARCHS = "$(ARCHS_STANDARD_32_64_BIT)";
+				GCC_C_LANGUAGE_STANDARD = gnu99;
+				GCC_OPTIMIZATION_LEVEL = 0;
+				GCC_WARN_ABOUT_RETURN_TYPE = YES;
+				GCC_WARN_UNUSED_VARIABLE = YES;
+				ONLY_ACTIVE_ARCH = YES;
+				PREBINDING = NO;
+				SDKROOT = macosx10.13;
+			};
+			name = Debug;
+		};
+		1DEB91F108733DB70010E9CD /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ARCHS = "$(ARCHS_STANDARD_32_64_BIT)";
+				GCC_C_LANGUAGE_STANDARD = gnu99;
+				GCC_WARN_ABOUT_RETURN_TYPE = YES;
+				GCC_WARN_UNUSED_VARIABLE = YES;
+				PREBINDING = NO;
+				SDKROOT = macosx10.13;
+			};
+			name = Release;
+		};
+/* End XCBuildConfiguration section */
+
+/* Begin XCConfigurationList section */
+		1DEB91EB08733DB70010E9CD /* Build configuration list for PBXNativeTarget "lcms" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				1DEB91EC08733DB70010E9CD /* Debug */,
+				1DEB91ED08733DB70010E9CD /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
+		1DEB91EF08733DB70010E9CD /* Build configuration list for PBXProject "lcms" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				1DEB91F008733DB70010E9CD /* Debug */,
+				1DEB91F108733DB70010E9CD /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
+/* End XCConfigurationList section */
+	};
+	rootObject = 08FB7793FE84155DC02AAC07 /* Project object */;
+}
