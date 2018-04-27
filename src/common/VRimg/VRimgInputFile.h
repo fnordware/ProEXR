@@ -26,7 +26,7 @@
 
 #include "VRimgHeader.h"
 
-#ifdef __APPLE__
+#ifdef USE_ROPE
 #include <ext/rope>
 typedef __gnu_cxx::crope Rope;
 #else
