@@ -232,8 +232,6 @@ CryptomatteContext::LoadLevels(PF_InData *in_data)
 			std::string nextFourName;
 			CalculateNext4Name(nextFourName, (NamingStyle)s);
 			
-			PF_ChannelRef four;
-			
 			for(int i=0; i < num_channels; i++)
 			{
 				PF_Boolean found;
@@ -250,8 +248,23 @@ CryptomatteContext::LoadLevels(PF_InData *in_data)
 				if(found && channelDesc.channel_type && channelDesc.data_type == PF_DataType_FLOAT &&
 					channelDesc.dimension == 4 && channelDesc.name == nextFourName)
 				{
-					_levels.push_back(new Level(in_data, four, false) );
-					_levels.push_back(new Level(in_data, four, true) );
+					PF_ChannelChunk channelChunk;
+					
+					PF_Err err = cs->PF_CheckoutLayerChannel(in_data->effect_ref,
+																&channelRef,
+																in_data->current_time,
+																in_data->time_step,
+																in_data->time_scale,
+																PF_DataType_FLOAT,
+																&channelChunk);
+					
+					if(err == PF_Err_NONE && channelChunk.dataPV != NULL)
+					{
+						_levels.push_back(new Level(in_data, channelChunk, false) );
+						_levels.push_back(new Level(in_data, channelChunk, true) );
+						
+						cs->PF_CheckinLayerChannel(in_data->effect_ref, &channelRef, &channelChunk);
+					}
 					
 					CalculateNext4Name(nextFourName, (NamingStyle)s);
 					
@@ -299,7 +312,35 @@ CryptomatteContext::LoadLevels(PF_InData *in_data)
 						
 						if(foundHash && foundCoverage)
 						{
-							_levels.push_back(new Level(in_data, hash, coverage) );
+							PF_ChannelChunk hashChunk, coverageChunk;
+						
+							PF_Err err = cs->PF_CheckoutLayerChannel(in_data->effect_ref,
+																		&hash,
+																		in_data->current_time,
+																		in_data->time_step,
+																		in_data->time_scale,
+																		PF_DataType_FLOAT,
+																		&hashChunk);
+							
+							if(err == PF_Err_NONE && hashChunk.dataPV != NULL)
+							{
+								err = cs->PF_CheckoutLayerChannel(in_data->effect_ref,
+																	&coverage,
+																	in_data->current_time,
+																	in_data->time_step,
+																	in_data->time_scale,
+																	PF_DataType_FLOAT,
+																	&coverageChunk);
+																	
+								if(err == PF_Err_NONE && coverageChunk.dataPV != NULL)
+								{
+									_levels.push_back(new Level(in_data, hashChunk, coverageChunk) );
+									
+									cs->PF_CheckinLayerChannel(in_data->effect_ref, &coverage, &coverageChunk);
+								}
+								
+								cs->PF_CheckinLayerChannel(in_data->effect_ref, &hash, &hashChunk);
+							}
 							
 							CalculateNextNames(nextHashName, nextCoverageName, (NamingStyle)s);
 							foundHash = false;
@@ -669,111 +710,46 @@ CryptomatteContext::HashToLiteralStr(Hash hash)
 }
 
 
-CryptomatteContext::Level::Level(PF_InData *in_data, PF_ChannelRef &hash, PF_ChannelRef &coverage) :
+CryptomatteContext::Level::Level(PF_InData *in_data, PF_ChannelChunk &hash, PF_ChannelChunk &coverage) :
 	_hash(NULL),
 	_coverage(NULL)
 {
-	AEGP_SuiteHandler suites(in_data->pica_basicP);
-
-	PF_ChannelSuite *cs = suites.PFChannelSuite();
-	
-	PF_ChannelChunk hashChunk;
-	
-	PF_Err err = cs->PF_CheckoutLayerChannel(in_data->effect_ref,
-												&hash,
-												in_data->current_time,
-												in_data->time_step,
-												in_data->time_scale,
-												PF_DataType_FLOAT,
-												&hashChunk);
-											
-	if(!err && hashChunk.dataPV != NULL)
-	{
-		assert(hashChunk.dimensionL == 1);
-		assert(hashChunk.data_type == PF_DataType_FLOAT);
+	assert(hash.dimensionL == 1);
+	assert(hash.data_type == PF_DataType_FLOAT);
 		
-		_hash = new FloatBuffer(in_data, (char *)hashChunk.dataPV, hashChunk.widthL, hashChunk.heightL, sizeof(float), hashChunk.row_bytesL);
-		
-		cs->PF_CheckinLayerChannel(in_data->effect_ref, &hash, &hashChunk);
-	}
-	else
-		throw CryptomatteException("Failed to load hash");
+	_hash = new FloatBuffer(in_data, (char *)hash.dataPV, hash.widthL, hash.heightL, sizeof(float), hash.row_bytesL);
 	
 	
-	PF_ChannelChunk coverageChunk;
-	
-	err = cs->PF_CheckoutLayerChannel(in_data->effect_ref,
-										&coverage,
-										in_data->current_time,
-										in_data->time_step,
-										in_data->time_scale,
-										PF_DataType_FLOAT,
-										&coverageChunk);
-												
-	if(!err && coverageChunk.dataPV != NULL)
-	{
-		assert(coverageChunk.dimensionL == 1);
-		assert(coverageChunk.data_type == PF_DataType_FLOAT);
+	assert(coverage.dimensionL == 1);
+	assert(coverage.data_type == PF_DataType_FLOAT);
 		
-		assert(coverageChunk.widthL == hashChunk.widthL);
-		assert(coverageChunk.heightL == hashChunk.heightL);
-		
-		_coverage = new FloatBuffer(in_data, (char *)coverageChunk.dataPV, coverageChunk.widthL, coverageChunk.heightL, sizeof(float), coverageChunk.row_bytesL);
-		
-		cs->PF_CheckinLayerChannel(in_data->effect_ref, &coverage, &coverageChunk);
-	}
-	else
-	{
-		delete _hash;
-		
-		throw CryptomatteException("Failed to load hash");
-	}
+	_coverage = new FloatBuffer(in_data, (char *)coverage.dataPV, coverage.widthL, coverage.heightL, sizeof(float), coverage.row_bytesL);
 }
 
 
-CryptomatteContext::Level::Level(PF_InData *in_data, PF_ChannelRef &four, bool secondHalf) :
+CryptomatteContext::Level::Level(PF_InData *in_data, PF_ChannelChunk &four, bool secondHalf) :
 	_hash(NULL),
 	_coverage(NULL)
 {
-	AEGP_SuiteHandler suites(in_data->pica_basicP);
-
-	PF_ChannelSuite *cs = suites.PFChannelSuite();
+	assert(four.dataPV != NULL);
+	assert(four.dimensionL == 4);
+	assert(four.data_type == PF_DataType_FLOAT);
 	
-	PF_ChannelChunk fourChunk;
+	// it'll be ARGB
 	
-	PF_Err err = cs->PF_CheckoutLayerChannel(in_data->effect_ref,
-												&four,
-												in_data->current_time,
-												in_data->time_step,
-												in_data->time_scale,
-												PF_DataType_FLOAT,
-												&fourChunk);
-											
-	if(!err && fourChunk.dataPV != NULL)
-	{
-		assert(fourChunk.dimensionL == 4);
-		assert(fourChunk.data_type == PF_DataType_FLOAT);
-		
-		// it'll be ARGB
-		
-		_hash = new FloatBuffer(in_data,
-								(char *)fourChunk.dataPV + (sizeof(float) * (secondHalf ? 3 : 1)),
-								fourChunk.widthL,
-								fourChunk.heightL,
-								sizeof(float) * 4,
-								fourChunk.row_bytesL);
-		
-		_coverage = new FloatBuffer(in_data,
-								(char *)fourChunk.dataPV + (sizeof(float) * (secondHalf ? 0 : 2)),
-								fourChunk.widthL,
-								fourChunk.heightL,
-								sizeof(float) * 4,
-								fourChunk.row_bytesL);
-								
-		cs->PF_CheckinLayerChannel(in_data->effect_ref, &four, &fourChunk);
-	}
-	else
-		throw CryptomatteException("Failed to load hash");
+	_hash = new FloatBuffer(in_data,
+							(char *)four.dataPV + (sizeof(float) * (secondHalf ? 3 : 1)),
+							four.widthL,
+							four.heightL,
+							sizeof(float) * 4,
+							four.row_bytesL);
+	
+	_coverage = new FloatBuffer(in_data,
+							(char *)four.dataPV + (sizeof(float) * (secondHalf ? 0 : 2)),
+							four.widthL,
+							four.heightL,
+							sizeof(float) * 4,
+							four.row_bytesL);
 }
 
 
@@ -1033,29 +1009,19 @@ CryptomatteContext::CalculateNext4Name(std::string &fourName, NamingStyle style)
 	
 	std::stringstream ss;
 	
+	ss << _layer << std::setw(2) << std::setfill('0') << layerNum;
+	
 	if(style == NAMING_rgba)
 	{
-		ss <<
-			_layer << std::setw(2) << std::setfill('0') << layerNum << ".a" << "|" <<
-			_layer << std::setw(2) << std::setfill('0') << layerNum << ".r" << "|" <<
-			_layer << std::setw(2) << std::setfill('0') << layerNum << ".g" << "|" <<
-			_layer << std::setw(2) << std::setfill('0') << layerNum << ".b";
+		ss << ".argb";
 	}
 	else if(style == NAMING_redgreenbluealpha)
 	{
-		ss <<
-			_layer << std::setw(2) << std::setfill('0') << layerNum << ".alpha" << "|" <<
-			_layer << std::setw(2) << std::setfill('0') << layerNum << ".red" << "|" <<
-			_layer << std::setw(2) << std::setfill('0') << layerNum << ".green" << "|" <<
-			_layer << std::setw(2) << std::setfill('0') << layerNum << ".blue";
+		ss << ".alpharedgreenblue";
 	}
 	else
 	{
-		ss <<
-			_layer << std::setw(2) << std::setfill('0') << layerNum << ".A" << "|" <<
-			_layer << std::setw(2) << std::setfill('0') << layerNum << ".R" << "|" <<
-			_layer << std::setw(2) << std::setfill('0') << layerNum << ".G" << "|" <<
-			_layer << std::setw(2) << std::setfill('0') << layerNum << ".B";
+		ss << ".ARGB";
 	}
 	
 	fourName = ss.str();

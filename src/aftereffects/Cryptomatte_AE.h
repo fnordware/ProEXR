@@ -177,8 +177,8 @@ class CryptomatteContext
 	class Level
 	{
 	  public:
-		Level(PF_InData *in_data, PF_ChannelRef &hash, PF_ChannelRef &coverage);
-		Level(PF_InData *in_data, PF_ChannelRef &four, bool secondHalf);
+		Level(PF_InData *in_data, PF_ChannelChunk &hash, PF_ChannelChunk &coverage);
+		Level(PF_InData *in_data, PF_ChannelChunk &four, bool secondHalf);
 		~Level();
 		
 		float GetCoverage(const std::set<FloatHash> &selection, int x, int y, bool &levelsEnd) const;
