@@ -477,14 +477,14 @@ CryptomatteContext::GetItemsFromSelectionColor(const PF_PixelFloat &pixel) const
 {
 	std::set<std::string> items;
 
-	Hash red = FloatHashToHash(pixel.red);
+	const Hash red = FloatHashToHash(pixel.red);
 
 	if(red != 0)
 	{
 		items.insert( ItemForHash(red) );
 	}
 
-	Hash blue = FloatHashToHash(pixel.blue);
+	const Hash blue = FloatHashToHash(pixel.blue);
 
 	if(blue != 0)
 	{
@@ -910,6 +910,7 @@ CryptomatteContext::Level::FloatBuffer::~FloatBuffer()
 		free(_buf);
 }
 
+
 std::string
 CryptomatteContext::ItemForHash(const Hash &hash) const
 {
@@ -945,6 +946,7 @@ CryptomatteContext::ItemForHash(const Hash &hash) const
 	// finally, use a hex code
 	return HashToLiteralStr(hash);
 }
+
 
 void
 CryptomatteContext::CalculateNextNames(std::string &nextHashName, std::string &nextCoverageName, NamingStyle style) const

@@ -103,7 +103,7 @@ DoClick(
 	// when the user clicked.  We just get the pixel position, and see what objects are in the buffers
 	// at those locations.
 	//
-	// For CC 2015 and later, things you put in sequence data during no render longer find their way back to the
+	// For CC 2015 and later, things you put in sequence data during render longer find their way back to the
 	// UI thread.  AE does provide calls for getting pixel buffers, including the rendered result.  But we
 	// don't want regular ARGB pixels, we want auxiliary channels.  So what we do is render a special
 	// selection mode (turned on via a hidden check box, then turned off after we get the buffer) that has
