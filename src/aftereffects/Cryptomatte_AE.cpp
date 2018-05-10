@@ -120,7 +120,7 @@ CryptomatteContext::Update(CryptomatteArbitraryData *arb)
 				{
 					Hash literal_val;
 					if(GetHashIfLiteral("<" + value.get<std::string>() + ">", literal_val))
-						_manifest[name] = literal_val;
+						_manifest[literal_val] = name;
 				}
 			}
 		}
@@ -146,13 +146,7 @@ CryptomatteContext::Update(CryptomatteArbitraryData *arb)
 
 					Hash literal_val;
 
-					if( _manifest.count(val) )
-					{
-						const Hash &hash = _manifest[val];
-						
-						_float_selection.insert( HashToFloatHash(hash) );
-					}
-					else if(GetHashIfLiteral(val, literal_val))
+					if(GetHashIfLiteral(val, literal_val))
 					{
 						_float_selection.insert(HashToFloatHash(literal_val));
 					}
@@ -934,13 +928,11 @@ CryptomatteContext::ItemForHash(const Hash &hash) const
 	}
 
 	// then check the manifest
-	for(std::map<std::string, Hash>::const_iterator j = _manifest.begin(); j != _manifest.end(); ++j)
+	std::map<Hash, std::string>::const_iterator manifest_obj = _manifest.find(hash);
+	
+	if(manifest_obj != _manifest.end())
 	{
-		const std::string &name = j->first;
-		const Hash &value = j->second;
-
-		if(hash == value)
-			return name;
+		return manifest_obj->second; // can't do _manifest[hash] because of const
 	}
 
 	// finally, use a hex code

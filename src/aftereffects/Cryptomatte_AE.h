@@ -165,7 +165,7 @@ class CryptomatteContext
 	
 	std::string _layer;
 	std::string _selection;
-	std::map<std::string, Hash> _manifest;
+	std::map<Hash, std::string> _manifest;
 	std::set<FloatHash> _float_selection; // stored as FloatHash for fast ==
 	
 	static FloatHash HashToFloatHash(const Hash &hash);
