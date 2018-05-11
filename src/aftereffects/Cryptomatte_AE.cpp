@@ -60,7 +60,8 @@ static int gNumContexts = 0;
 
 CryptomatteContext::CryptomatteContext(CryptomatteArbitraryData *arb) :
 	_manifestHash(0),
-	_selectionHash(0)
+	_selectionHash(0),
+	_buffer(NULL)
 {
 	if(arb == NULL)
 		throw CryptomatteException("no arb");
@@ -79,12 +80,7 @@ CryptomatteContext::CryptomatteContext(CryptomatteArbitraryData *arb) :
 
 CryptomatteContext::~CryptomatteContext()
 {
-	for(std::vector<Level *>::iterator i = _levels.begin(); i != _levels.end(); ++i)
-	{
-		Level *level = *i;
-		
-		delete level;
-	}
+	delete _buffer;
 
 #ifndef NDEBUG
 	gNumContexts--;
@@ -171,14 +167,12 @@ CryptomatteContext::Update(CryptomatteArbitraryData *arb)
 void
 CryptomatteContext::LoadLevels(PF_InData *in_data)
 {
-	for(std::vector<Level *>::iterator i = _levels.begin(); i != _levels.end(); ++i)
+	if(_buffer != NULL)
 	{
-		Level *level = *i;
+		delete _buffer;
 		
-		delete level;
+		_buffer = NULL;
 	}
-
-	_levels.clear();
 	
 	
 	AEGP_SuiteHandler suites(in_data->pica_basicP);
@@ -226,11 +220,14 @@ CryptomatteContext::LoadLevels(PF_InData *in_data)
 
 	if(!_layer.empty() && num_channels > 0)
 	{
+		unsigned int numLevels = 0;
+		std::vector<PF_ChannelRef> channelRefs;
+	
 		// first we try to find 4-channel names
 		for(int s = NAMING_BEGIN; s <= NAMING_END; s++)
 		{
 			std::string nextFourName;
-			CalculateNext4Name(nextFourName, (NamingStyle)s);
+			CalculateNext4Name(nextFourName, (NamingStyle)s, numLevels);
 			
 			for(int i=0; i < num_channels; i++)
 			{
@@ -248,25 +245,11 @@ CryptomatteContext::LoadLevels(PF_InData *in_data)
 				if(found && channelDesc.channel_type && channelDesc.data_type == PF_DataType_FLOAT &&
 					channelDesc.dimension == 4 && channelDesc.name == nextFourName)
 				{
-					PF_ChannelChunk channelChunk;
+					numLevels += 2;
 					
-					PF_Err err = cs->PF_CheckoutLayerChannel(in_data->effect_ref,
-																&channelRef,
-																in_data->current_time,
-																in_data->time_step,
-																in_data->time_scale,
-																PF_DataType_FLOAT,
-																&channelChunk);
+					channelRefs.push_back(channelRef);
 					
-					if(err == PF_Err_NONE && channelChunk.dataPV != NULL)
-					{
-						_levels.push_back(new Level(in_data, channelChunk, false) );
-						_levels.push_back(new Level(in_data, channelChunk, true) );
-						
-						cs->PF_CheckinLayerChannel(in_data->effect_ref, &channelRef, &channelChunk);
-					}
-					
-					CalculateNext4Name(nextFourName, (NamingStyle)s);
+					CalculateNext4Name(nextFourName, (NamingStyle)s, numLevels);
 					
 					i = 0; // start over
 				}
@@ -277,7 +260,7 @@ CryptomatteContext::LoadLevels(PF_InData *in_data)
 		for(int s = NAMING_BEGIN; s <= NAMING_END; s++)
 		{
 			std::string nextHashName, nextCoverageName;
-			CalculateNextNames(nextHashName, nextCoverageName, (NamingStyle)s);
+			CalculateNextNames(nextHashName, nextCoverageName, (NamingStyle)s, numLevels);
 			
 			PF_ChannelRef hash, coverage;
 			bool foundHash = false, foundCoverage = false;
@@ -312,37 +295,12 @@ CryptomatteContext::LoadLevels(PF_InData *in_data)
 						
 						if(foundHash && foundCoverage)
 						{
-							PF_ChannelChunk hashChunk, coverageChunk;
-						
-							PF_Err err = cs->PF_CheckoutLayerChannel(in_data->effect_ref,
-																		&hash,
-																		in_data->current_time,
-																		in_data->time_step,
-																		in_data->time_scale,
-																		PF_DataType_FLOAT,
-																		&hashChunk);
+							numLevels += 1;
 							
-							if(err == PF_Err_NONE && hashChunk.dataPV != NULL)
-							{
-								err = cs->PF_CheckoutLayerChannel(in_data->effect_ref,
-																	&coverage,
-																	in_data->current_time,
-																	in_data->time_step,
-																	in_data->time_scale,
-																	PF_DataType_FLOAT,
-																	&coverageChunk);
-																	
-								if(err == PF_Err_NONE && coverageChunk.dataPV != NULL)
-								{
-									_levels.push_back(new Level(in_data, hashChunk, coverageChunk) );
-									
-									cs->PF_CheckinLayerChannel(in_data->effect_ref, &coverage, &coverageChunk);
-								}
-								
-								cs->PF_CheckinLayerChannel(in_data->effect_ref, &hash, &hashChunk);
-							}
+							channelRefs.push_back(hash);
+							channelRefs.push_back(coverage);
 							
-							CalculateNextNames(nextHashName, nextCoverageName, (NamingStyle)s);
+							CalculateNextNames(nextHashName, nextCoverageName, (NamingStyle)s, numLevels);
 							foundHash = false;
 							foundCoverage = false;
 							
@@ -351,6 +309,13 @@ CryptomatteContext::LoadLevels(PF_InData *in_data)
 					}
 				}
 			}
+		}
+		
+		if(numLevels > 0)
+		{
+			assert(channelRefs.size() > 0);
+			
+			_buffer = new CryptomatteBuffer(in_data, channelRefs, numLevels);
 		}
 	}
 	
@@ -364,19 +329,20 @@ float
 CryptomatteContext::GetCoverage(int x, int y) const
 {
 	float coverage = 0.f;
-
-	for(std::vector<Level *>::const_iterator i = _levels.begin(); i != _levels.end(); ++i)
+	
+	const CryptomatteBuffer::Level *level = _buffer->GetLevelGroup(x, y);
+	
+	for(int i=0; i < _buffer->NumLevels(); i++)
 	{
-		const Level *level = *i;
-		
-		bool levelsEnd = false;
-		
-		const float level_coverage = level->GetCoverage(_float_selection, x, y, levelsEnd);
-		
-		if(levelsEnd)
+		if(level->coverage == 0.f)
 			break;
+			
+		if( _float_selection.count(level->hash) )
+		{
+			coverage += level->coverage;
+		}
 		
-		coverage += level_coverage;
+		level++;
 	}
 	
 	return coverage;
@@ -389,20 +355,25 @@ CryptomatteContext::GetColor(int x, int y, bool matted) const
 	PF_PixelFloat color;
 	
 	color.alpha = color.red = color.green = color.blue = 0.f;
-
-	for(std::vector<Level *>::const_iterator i = _levels.begin(); i != _levels.end(); ++i)
+	
+	
+	const CryptomatteBuffer::Level *level = _buffer->GetLevelGroup(x, y);
+	
+	for(int i=0; i < _buffer->NumLevels(); i++)
 	{
-		const Level *level = *i;
+		if(level->coverage == 0.f)
+			break;
+	
+		int exp;
 		
-		const PF_PixelFloat level_color = level->GetColor(x, y);
+		// this method copied from the Nuke plug-in
+		color.red	+= level->coverage * fmodf(frexpf(fabsf(level->hash), &exp) * 1, 0.25);
+		color.green	+= level->coverage * fmodf(frexpf(fabsf(level->hash), &exp) * 4, 0.25);
+		color.blue	+= level->coverage * fmodf(frexpf(fabsf(level->hash), &exp) * 16, 0.25);
 		
-		//if(level_color.red == 0.f && level_color.green == 0.f && level_color.blue == 0.f)
-		//	break;
-		
-		color.red += level_color.red;
-		color.green += level_color.green;
-		color.blue += level_color.blue;
+		level++;
 	}
+	
 	
 	const float selectedCoverage = this->GetCoverage(x, y);
 	
@@ -425,19 +396,23 @@ CryptomatteContext::GetSelectionColor(int x, int y) const
 	PF_PixelFloat color;
 
 	color.alpha = 1.f;
+	
+	const CryptomatteBuffer::Level *level = _buffer->GetLevelGroup(x, y);
 
-	if(_levels.size() >= 1)
+	if(_buffer->NumLevels() >= 1)
 	{
-		color.red = _levels[0]->GetHash(x, y);
+		color.red = level->hash;
 	}
 	else
 		color.red = 0.f;
 	
-	color.green = this->GetCoverage(x, y);
+	color.green = 0.f; //this->GetCoverage(x, y);
 
-	if(_levels.size() >= 2)
+	if(_buffer->NumLevels() >= 2)
 	{
-		color.blue = _levels[1]->GetHash(x, y);
+		level++;
+		
+		color.blue = level->hash;
 	}
 	else
 		color.blue = 0.f;
@@ -451,21 +426,21 @@ CryptomatteContext::GetItems(int x, int y) const
 {
 	std::set<std::string> items;
 	
-	for(std::vector<Level *>::const_iterator i = _levels.begin(); i != _levels.end(); ++i)
+	const CryptomatteBuffer::Level *level = _buffer->GetLevelGroup(x, y);
+	
+	for(int i=0; i < _buffer->NumLevels(); i++)
 	{
-		const Level *level = *i;
-		
-		const float coverage = level->GetCoverage(x, y);
-		
-		if(coverage > 0.f)
+		if(level->coverage > 0.f)
 		{
-			const FloatHash floatHash = level->GetHash(x, y);
+			const Hash hash = FloatHashToHash(level->hash);
 			
-			const Hash hash = FloatHashToHash(floatHash);
-		
 			if(hash > 0)
 				items.insert( ItemForHash(hash) );
 		}
+		else
+			break;
+		
+		level++;
 	}
 	
 	return items;
@@ -588,55 +563,17 @@ CryptomatteContext::quotedTokenize(const std::string &str, std::vector<std::stri
 }
 
 
-int
+unsigned int
 CryptomatteContext::Width() const
 {
-#ifdef NDEBUG
-	if(_levels.size() > 0)
-		return _levels[0]->Width();
-	else
-		return 0;
-#else
-	int width = 0;
-	
-	for(std::vector<Level *>::const_iterator i = _levels.begin(); i != _levels.end(); ++i)
-	{
-		const Level *level = *i;
-		
-		if(width == 0)
-			width = level->Width();
-		else
-			assert(width == level->Width());
-	}
-	
-	return width;
-#endif
+	return (_buffer != NULL ? _buffer->Width() : 0);
 }
 
 
-int
+unsigned int
 CryptomatteContext::Height() const
 {
-#ifdef NDEBUG
-	if(_levels.size() > 0)
-		return _levels[0]->Height();
-	else
-		return 0;
-#else
-	int height = 0;
-	
-	for(std::vector<Level *>::const_iterator i = _levels.begin(); i != _levels.end(); ++i)
-	{
-		const Level *level = *i;
-		
-		if(height == 0)
-			height = level->Height();
-		else
-			assert(height == level->Height());
-	}
-	
-	return height;
-#endif
+	return (_buffer != NULL ? _buffer->Height() : 0);
 }
 
 
@@ -710,124 +647,19 @@ CryptomatteContext::HashToLiteralStr(Hash hash)
 }
 
 
-CryptomatteContext::Level::Level(PF_InData *in_data, PF_ChannelChunk &hash, PF_ChannelChunk &coverage) :
-	_hash(NULL),
-	_coverage(NULL)
-{
-	assert(hash.dimensionL == 1);
-	assert(hash.data_type == PF_DataType_FLOAT);
-		
-	_hash = new FloatBuffer(in_data, (char *)hash.dataPV, hash.widthL, hash.heightL, sizeof(float), hash.row_bytesL);
-	
-	
-	assert(coverage.dimensionL == 1);
-	assert(coverage.data_type == PF_DataType_FLOAT);
-		
-	_coverage = new FloatBuffer(in_data, (char *)coverage.dataPV, coverage.widthL, coverage.heightL, sizeof(float), coverage.row_bytesL);
-}
-
-
-CryptomatteContext::Level::Level(PF_InData *in_data, PF_ChannelChunk &four, bool secondHalf) :
-	_hash(NULL),
-	_coverage(NULL)
-{
-	assert(four.dataPV != NULL);
-	assert(four.dimensionL == 4);
-	assert(four.data_type == PF_DataType_FLOAT);
-	
-	// it'll be ARGB
-	
-	_hash = new FloatBuffer(in_data,
-							(char *)four.dataPV + (sizeof(float) * (secondHalf ? 3 : 1)),
-							four.widthL,
-							four.heightL,
-							sizeof(float) * 4,
-							four.row_bytesL);
-	
-	_coverage = new FloatBuffer(in_data,
-							(char *)four.dataPV + (sizeof(float) * (secondHalf ? 0 : 2)),
-							four.widthL,
-							four.heightL,
-							sizeof(float) * 4,
-							four.row_bytesL);
-}
-
-
-CryptomatteContext::Level::~Level()
-{
-	delete _hash;
-	delete _coverage;
-}
-
-
-float
-CryptomatteContext::Level::GetCoverage(const std::set<FloatHash> &selection, int x, int y, bool &levelsEnd) const
-{
-	const float coverage = _coverage->Get(x, y);
-	
-	if(coverage > 0.f)
-	{
-		levelsEnd = false;
-		
-		const FloatHash floatHash = _hash->Get(x, y);
-		
-		return (selection.count(floatHash) ? coverage : 0.f);
-	}
-	else
-	{
-		levelsEnd = true; // because there was 0.0 coverage for all hashes, not just the selection
-		
-		return 0.f;
-	}
-}
-
-
-float
-CryptomatteContext::Level::GetCoverage(int x, int y) const
-{
-	return _coverage->Get(x, y);
-}
-
-
-PF_PixelFloat
-CryptomatteContext::Level::GetColor(int x, int y) const
-{
-	const float floatHash = _hash->Get(x, y);
-	
-	const float coverage = _coverage->Get(x, y);
-	
-	
-	int exp;
-	
-	PF_PixelFloat color;
-	
-	// this method copied from the Nuke plug-in
-	color.red	= coverage * fmodf(frexpf(fabsf(floatHash), &exp) * 1, 0.25);
-	color.green	= coverage * fmodf(frexpf(fabsf(floatHash), &exp) * 4, 0.25);
-	color.blue	= coverage * fmodf(frexpf(fabsf(floatHash), &exp) * 16, 0.25);
-	
-	color.alpha = 1.f;
-	
-	return color;
-}
-
-
-CryptomatteContext::FloatHash
-CryptomatteContext::Level::GetHash(int x, int y) const
-{
-	return _hash->Get(x, y);
-}
-
-
-typedef struct FloatBufferIterateData {
+typedef struct CryptomatteBufferIterateData {
 	char *buf;
+	unsigned int dimension;
+	unsigned int numLevels;
 	char *origin;
-	int width;
+	unsigned int width;
 	ptrdiff_t xStride;
 	ptrdiff_t yStride;
 	
-	FloatBufferIterateData(char *b, char *o, int w, ptrdiff_t x, ptrdiff_t y) :
+	CryptomatteBufferIterateData(char *b, unsigned int d, unsigned int n, char *o, unsigned int w, ptrdiff_t x, ptrdiff_t y) :
 		buf(b),
+		dimension(d),
+		numLevels(n),
 		origin(o),
 		width(w),
 		xStride(x),
@@ -837,74 +669,180 @@ typedef struct FloatBufferIterateData {
 
 
 static PF_Err
-FloatBuffer_Iterate(void *refconPV,
+CryptomatteBuffer_Iterate(void *refconPV,
 					A_long thread_indexL,
 					A_long i,
 					A_long iterationsL)
 {
-	FloatBufferIterateData *i_data = (FloatBufferIterateData *)refconPV;
+	CryptomatteBufferIterateData *i_data = (CryptomatteBufferIterateData *)refconPV;
 	
-	const size_t rowbytes = sizeof(float) * i_data->width;
+	const size_t rowbytes = sizeof(float) * 2 * i_data->numLevels * i_data->width;
 	
 	float *in = (float *)(i_data->origin + (i * i_data->yStride));
 	float *out = (float *)(i_data->buf + (i * rowbytes));
 	
-	const int inStep = (i_data->xStride / sizeof(float));
-	const int outStep = 1;
-	
-	for(int x=0; x < i_data->width; x++)
+	if(i_data->dimension == 4)
 	{
-		*out = *in;
+		const int inStep = (i_data->xStride / sizeof(float));
+		const int outStep = (i_data->numLevels * 2);
 		
-		in += inStep;
-		out += outStep;
+		float *a = (in + 0);
+		float *r = (in + 1);
+		float *g = (in + 2);
+		float *b = (in + 3);
+		
+		float *h1 = (out + 0);
+		float *c1 = (out + 1);
+		float *h2 = (out + 2);
+		float *c2 = (out + 3);
+		
+		for(int x=0; x < i_data->width; x++)
+		{
+			*h1 = *r;
+			*c1 = *g;
+			*h2 = *b;
+			*c2 = *a;
+			
+			r += inStep;
+			g += inStep;
+			b += inStep;
+			a += inStep;
+			
+			h1 += outStep;
+			c1 += outStep;
+			h2 += outStep;
+			c2 += outStep;
+		}
 	}
-
-	return PF_Err_NONE;
-}
-
-
-CryptomatteContext::Level::FloatBuffer::FloatBuffer(PF_InData *in_data, char *origin, int width, int height, ptrdiff_t xStride, ptrdiff_t yStride) :
-	_buf(NULL),
-	_width(width),
-	_height(height)
-{
-	const size_t rowbytes = sizeof(float) * _width;
-	const size_t siz = rowbytes * _height;
-	
-	_buf = (char *)malloc(siz);
-	
-	if(_buf == NULL)
-		throw CryptomatteException("Memory error");
-	
-	
-	AEGP_SuiteHandler suites(in_data->pica_basicP);
-	
-	FloatBufferIterateData iter(_buf,origin, width, xStride, yStride);
-	
-	suites.PFIterate8Suite()->iterate_generic(height, &iter, FloatBuffer_Iterate);
-	
-	/*
-	for(int y=0; y < height; y++)
+	else
 	{
-		float *in = (float *)(origin + (y * yStride));
-		float *out = (float *)(_buf + (y * rowbytes));
+		assert(i_data->dimension == 1);
 		
-		const int inStep = (xStride / sizeof(float));
-		const int outStep = 1;
-		
-		for(int x=0; x < width; x++)
+		const int inStep = (i_data->xStride / sizeof(float));
+		const int outStep = (i_data->numLevels * 2);
+	
+		for(int x=0; x < i_data->width; x++)
 		{
 			*out = *in;
 			
 			in += inStep;
 			out += outStep;
 		}
-	}*/
+	}
+
+	return PF_Err_NONE;
 }
 
 
-CryptomatteContext::Level::FloatBuffer::~FloatBuffer()
+CryptomatteContext::CryptomatteBuffer::CryptomatteBuffer(PF_InData *in_data, std::vector<PF_ChannelRef> &channelRefs, unsigned int numLevels) :
+	_buf(NULL),
+	_width(0),
+	_height(0),
+	_numLevels(numLevels)
+{
+	AEGP_SuiteHandler suites(in_data->pica_basicP);
+	PF_ChannelSuite *cs = suites.PFChannelSuite();
+
+	unsigned int levelNum = 0;
+	
+	for(int c=0; c < channelRefs.size(); c++)
+	{
+		PF_ChannelRef &channelRef = channelRefs[c];
+	
+		PF_ChannelChunk channelChunk;
+		
+		PF_Err err = cs->PF_CheckoutLayerChannel(in_data->effect_ref,
+													&channelRef,
+													in_data->current_time,
+													in_data->time_step,
+													in_data->time_scale,
+													PF_DataType_FLOAT,
+													&channelChunk);
+													
+		if(err == PF_Err_NONE && channelChunk.dataPV != NULL)
+		{
+			assert(channelChunk.data_type == PF_DataType_FLOAT);
+			
+			if(_buf == NULL)
+			{
+				assert(_width == 0 && _height == 0);
+				
+				_width = channelChunk.widthL;
+				_height = channelChunk.heightL;
+			
+				const size_t siz = (_width * _height * _numLevels * sizeof(Level));
+				
+				_buf = (char *)malloc(siz);
+				
+				if(_buf == NULL)
+					throw CryptomatteException("Memory error");
+			}
+			else
+			{
+				assert(channelChunk.widthL == _width);
+				assert(channelChunk.heightL == _height);
+			}
+		
+			if(channelChunk.dimensionL == 4)
+			{
+				CryptomatteBufferIterateData iter(_buf + (levelNum * sizeof(Level)), 4, _numLevels, (char *)channelChunk.dataPV, _width, sizeof(float) * 4, channelChunk.row_bytesL);
+
+				suites.PFIterate8Suite()->iterate_generic(_height, &iter, CryptomatteBuffer_Iterate);
+				
+				levelNum += 2;
+			}
+			else
+			{
+				assert(channelChunk.dimensionL == 1);
+				
+				CryptomatteBufferIterateData hash_iter(_buf + (levelNum * sizeof(Level)), 1, _numLevels, (char *)channelChunk.dataPV, _width, sizeof(float), channelChunk.row_bytesL);
+
+				suites.PFIterate8Suite()->iterate_generic(_height, &hash_iter, CryptomatteBuffer_Iterate);
+				
+				
+				assert(channelRefs.size() > (c + 1));
+				
+				PF_ChannelRef &coverageChannelRef = channelRefs[c + 1];
+				
+				PF_ChannelChunk coverageChannelChunk;
+				
+				err = cs->PF_CheckoutLayerChannel(in_data->effect_ref,
+													&coverageChannelRef,
+													in_data->current_time,
+													in_data->time_step,
+													in_data->time_scale,
+													PF_DataType_FLOAT,
+													&coverageChannelChunk);
+													
+				if(err == PF_Err_NONE && coverageChannelChunk.dataPV != NULL)
+				{
+					assert(coverageChannelChunk.data_type == PF_DataType_FLOAT);
+					assert(coverageChannelChunk.widthL == _width);
+					assert(coverageChannelChunk.heightL == _height);
+					
+					CryptomatteBufferIterateData coverage_iter(_buf + (levelNum * sizeof(Level)) + sizeof(float), 1, _numLevels, (char *)channelChunk.dataPV, _width, sizeof(float), channelChunk.row_bytesL);
+
+					suites.PFIterate8Suite()->iterate_generic(_height, &coverage_iter, CryptomatteBuffer_Iterate);
+					
+					cs->PF_CheckinLayerChannel(in_data->effect_ref, &coverageChannelRef, &coverageChannelChunk);
+				}
+				else
+					assert(FALSE);
+				
+				c++;
+				
+				levelNum += 1;
+			}
+			
+			cs->PF_CheckinLayerChannel(in_data->effect_ref, &channelRef, &channelChunk);
+		}
+		else
+			assert(FALSE);
+	}
+}
+
+
+CryptomatteContext::CryptomatteBuffer::~CryptomatteBuffer()
 {
 	if(_buf)
 		free(_buf);
@@ -949,10 +887,10 @@ CryptomatteContext::ItemForHash(const Hash &hash) const
 
 
 void
-CryptomatteContext::CalculateNextNames(std::string &nextHashName, std::string &nextCoverageName, NamingStyle style) const
+CryptomatteContext::CalculateNextNames(std::string &nextHashName, std::string &nextCoverageName, NamingStyle style, int levels) const
 {
-	const int layerNum = (_levels.size() / 2);
-	const bool useBA = (_levels.size() % 2);
+	const int layerNum = (levels / 2);
+	const bool useBA = (levels % 2);
 	
 	std::stringstream ss1, ss2;
 	
@@ -1005,9 +943,9 @@ CryptomatteContext::CalculateNextNames(std::string &nextHashName, std::string &n
 
 
 void
-CryptomatteContext::CalculateNext4Name(std::string &fourName, NamingStyle style) const
+CryptomatteContext::CalculateNext4Name(std::string &fourName, NamingStyle style, int levels) const
 {
-	const int layerNum = (_levels.size() / 2);
+	const int layerNum = (levels / 2);
 	
 	std::stringstream ss;
 	

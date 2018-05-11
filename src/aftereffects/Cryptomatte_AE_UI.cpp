@@ -99,11 +99,11 @@ DoClick(
 	// When the user clicks, we change the selection in our arbitrary data.
 	//
 	// After Effects CC 2015 drastically changed how this is done.  For versions before CC 2015,
-	// during render we would load all the CryptoMatte layers and store them in buffers, accessible
-	// when the user clicked.  We just get the pixel position, and see what objects are in the buffers
-	// at those locations.
+	// during render we load all the CryptoMatte levels and store them in a buffer.
+	// When the user clicks, we just get the pixel position and see what objects are in the buffer
+	// at that location.
 	//
-	// For CC 2015 and later, things you put in sequence data during render longer find their way back to the
+	// For CC 2015 and later, things you put in sequence data during render no longer find their way back to the
 	// UI thread.  AE does provide calls for getting pixel buffers, including the rendered result.  But we
 	// don't want regular ARGB pixels, we want auxiliary channels.  So what we do is render a special
 	// selection mode (turned on via a hidden check box, then turned off after we get the buffer) that has

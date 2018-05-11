@@ -135,7 +135,7 @@ class CryptomatteContext
 	
 	void LoadLevels(PF_InData *in_data);
 	
-	bool Valid() const { return _levels.size() > 0; }
+	bool Valid() const { return _buffer != NULL && _buffer->NumLevels() > 0; }
 	
 	float GetCoverage(int x, int y) const;
 	
@@ -145,8 +145,8 @@ class CryptomatteContext
 	std::set<std::string> GetItems(int x, int y) const;
 	std::set<std::string> GetItemsFromSelectionColor(const PF_PixelFloat &pixel) const;
 	
-	int Width() const;
-	int Height() const;
+	unsigned int Width() const;
+	unsigned int Height() const;
 	
 	const PF_RationalScale & DownsampleX() const { return _downsampleX; }
 	const PF_RationalScale & DownsampleY() const { return _downsampleY; }
@@ -173,47 +173,33 @@ class CryptomatteContext
 	static Hash HashName(const std::string &name);
 	static bool GetHashIfLiteral(const std::string &name, Hash &result);
 	static std::string HashToLiteralStr(Hash hash);
-
-	class Level
+	
+	class CryptomatteBuffer
 	{
 	  public:
-		Level(PF_InData *in_data, PF_ChannelChunk &hash, PF_ChannelChunk &coverage);
-		Level(PF_InData *in_data, PF_ChannelChunk &four, bool secondHalf);
-		~Level();
+		CryptomatteBuffer(PF_InData *in_data, std::vector<PF_ChannelRef> &channelRefs, unsigned int numLevels);
+		~CryptomatteBuffer();
 		
-		float GetCoverage(const std::set<FloatHash> &selection, int x, int y, bool &levelsEnd) const;
-		float GetCoverage(int x, int y) const;
+		unsigned int Width() const { return _width; }
+		unsigned int Height() const { return _height; }
+		unsigned int NumLevels() const { return _numLevels; }
 		
-		PF_PixelFloat GetColor(int x, int y) const;
+		typedef struct Level {
+			FloatHash	hash;
+			float		coverage;
+		} Level;
 		
-		FloatHash GetHash(int x, int y) const;
-		
-		inline int Width() const { return (_hash ? _hash->Width() : 0); }
-		inline int Height() const { return (_hash ? _hash->Height() : 0); }
-		
-	  private:		
-		class FloatBuffer
-		{
-		  public:
-			FloatBuffer(PF_InData *in_data, char *origin, int width, int height, ptrdiff_t xStride, ptrdiff_t yStride);
-			~FloatBuffer();
-			
-			inline const float & Get(int x, int y) const { return *((float *)_buf + (_width * y) + x); }
-			
-			inline const int & Width() const { return _width; }
-			inline const int & Height() const { return _height; }
-		
-		  private:
-			char *_buf;
-			int _width;
-			int _height;
-		};
-		
-		FloatBuffer *_hash;
-		FloatBuffer *_coverage;
+		 // like a cryptopixel, with an array of Levels instead of RGB
+		const Level * GetLevelGroup(int x, int y) const { return (Level *)(_buf + (((y * _width) + x) * _numLevels * sizeof(Level))); }
+	
+	  private:
+		char *_buf;
+		unsigned int _width;
+		unsigned int _height;
+		unsigned int _numLevels;
 	};
 	
-	std::vector<Level *> _levels;
+	CryptomatteBuffer *_buffer;
 	
 	PF_RationalScale _downsampleX;
 	PF_RationalScale _downsampleY;
@@ -230,8 +216,8 @@ class CryptomatteContext
 		NAMING_END = NAMING_redgreenbluealpha
 	};
 
-	void CalculateNextNames(std::string &nextHashName, std::string &nextCoverageName, NamingStyle style) const;
-	void CalculateNext4Name(std::string &fourName, NamingStyle style) const;
+	void CalculateNextNames(std::string &nextHashName, std::string &nextCoverageName, NamingStyle style, int levels) const;
+	void CalculateNext4Name(std::string &fourName, NamingStyle style, int levels) const;
 };
 
 extern "C" {
