@@ -137,10 +137,9 @@ class CryptomatteContext
 	
 	bool Valid() const { return _buffer != NULL && _buffer->NumLevels() > 0; }
 	
-	float GetCoverage(int x, int y) const;
-	
-	PF_PixelFloat GetColor(int x, int y, bool matted) const;
-	PF_PixelFloat GetSelectionColor(int x, int y) const;
+	void GetCoverage(PF_PixelFloat *row, unsigned int len, int x, int y) const;
+	void GetColor(PF_PixelFloat *row, unsigned int len, int x, int y, bool matted) const;
+	void GetSelectionColor(PF_PixelFloat *row, unsigned int len, int x, int y) const;
 	
 	std::set<std::string> GetItems(int x, int y) const;
 	std::set<std::string> GetItemsFromSelectionColor(const PF_PixelFloat &pixel) const;
@@ -151,7 +150,6 @@ class CryptomatteContext
 	const PF_RationalScale & DownsampleX() const { return _downsampleX; }
 	const PF_RationalScale & DownsampleY() const { return _downsampleY; }
 	const A_long & CurrentTime() const { return _currentTime; }
-	
 	
 	static std::string searchReplace(const std::string &str, const std::string &search, const std::string &replace);
 	static std::string deQuote(const std::string &s);

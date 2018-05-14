@@ -325,99 +325,133 @@ CryptomatteContext::LoadLevels(PF_InData *in_data)
 }
 
 
-float
-CryptomatteContext::GetCoverage(int x, int y) const
+void
+CryptomatteContext::GetCoverage(PF_PixelFloat *row, unsigned int len, int x, int y) const
 {
-	float coverage = 0.f;
-	
+	PF_PixelFloat *pix = row;
+
 	const CryptomatteBuffer::Level *level = _buffer->GetLevelGroup(x, y);
 	
-	for(int i=0; i < _buffer->NumLevels(); i++)
+	const unsigned int numLevels = _buffer->NumLevels();
+	
+	while(len--)
 	{
-		if(level->coverage == 0.f)
-			break;
-			
-		if( _float_selection.count(level->hash) )
+		float coverage = 0.f;
+	
+		for(int i=0; i < numLevels; i++)
 		{
-			coverage += level->coverage;
+			if(level->coverage == 0.f)
+			{
+				level += (numLevels - i);
+				break;
+			}
+				
+			if( _float_selection.count(level->hash) )
+			{
+				coverage += level->coverage;
+			}
+			
+			level++;
 		}
 		
-		level++;
+		pix->alpha = coverage;
+		
+		pix++;
 	}
-	
-	return coverage;
 }
 
 
-PF_PixelFloat
-CryptomatteContext::GetColor(int x, int y, bool matted) const
+void
+CryptomatteContext::GetColor(PF_PixelFloat *row, unsigned int len, int x, int y, bool matted) const
 {
-	PF_PixelFloat color;
-	
-	color.alpha = color.red = color.green = color.blue = 0.f;
-	
+	PF_PixelFloat *pix = row;
 	
 	const CryptomatteBuffer::Level *level = _buffer->GetLevelGroup(x, y);
 	
-	for(int i=0; i < _buffer->NumLevels(); i++)
+	const unsigned int numLevels = _buffer->NumLevels();
+	
+	while(len--)
 	{
-		if(level->coverage == 0.f)
-			break;
-	
-		int exp;
+		pix->alpha = pix->red = pix->green = pix->blue = 0.f;
 		
-		// this method copied from the Nuke plug-in
-		color.red	+= level->coverage * fmodf(frexpf(fabsf(level->hash), &exp) * 1, 0.25);
-		color.green	+= level->coverage * fmodf(frexpf(fabsf(level->hash), &exp) * 4, 0.25);
-		color.blue	+= level->coverage * fmodf(frexpf(fabsf(level->hash), &exp) * 16, 0.25);
+		float coverage = 0.f;
+	
+		for(int i=0; i < numLevels; i++)
+		{
+			if(level->coverage == 0.f)
+			{
+				level += (numLevels - i);
+				break;
+			}
 		
-		level++;
+			if( _float_selection.count(level->hash) )
+			{
+				coverage += level->coverage;
+			}
+			
+			int exp;
+			
+			// this method copied from the Nuke plug-in
+			pix->red	+= level->coverage * fmodf(frexpf(fabsf(level->hash), &exp) * 1, 0.25);
+			pix->green	+= level->coverage * fmodf(frexpf(fabsf(level->hash), &exp) * 4, 0.25);
+			pix->blue	+= level->coverage * fmodf(frexpf(fabsf(level->hash), &exp) * 16, 0.25);
+			
+			level++;
+		}
+		
+		if(coverage > 0.f)
+		{
+			pix->red	+= (coverage * (1.0f - pix->red));
+			pix->green	+= (coverage * (1.0f - pix->green));
+			pix->blue	+= (coverage * (1.0f - pix->blue));
+		}
+		
+		pix->alpha = (matted ? coverage : 1.f);
+		
+		pix++;
 	}
-	
-	
-	const float selectedCoverage = this->GetCoverage(x, y);
-	
-	if(selectedCoverage > 0.f)
-	{
-		color.red	+= (selectedCoverage * (1.0f - color.red));
-		color.green	+= (selectedCoverage * (1.0f - color.green));
-		color.blue	+= (selectedCoverage * (1.0f - color.blue));
-	}
-	
-	color.alpha = (matted ? selectedCoverage : 1.f);
-	
-	return color;
 }
 
 
-PF_PixelFloat
-CryptomatteContext::GetSelectionColor(int x, int y) const
+void
+CryptomatteContext::GetSelectionColor(PF_PixelFloat *row, unsigned int len, int x, int y) const
 {
-	PF_PixelFloat color;
-
-	color.alpha = 1.f;
+	PF_PixelFloat *pix = row;
+	
+	const unsigned int numLevels = _buffer->NumLevels();
 	
 	const CryptomatteBuffer::Level *level = _buffer->GetLevelGroup(x, y);
 
-	if(_buffer->NumLevels() >= 1)
+	while(len--)
 	{
-		color.red = level->hash;
-	}
-	else
-		color.red = 0.f;
-	
-	color.green = 0.f; //this->GetCoverage(x, y);
-
-	if(_buffer->NumLevels() >= 2)
-	{
-		level++;
+		pix->alpha = 1.f;
 		
-		color.blue = level->hash;
-	}
-	else
-		color.blue = 0.f;
+		if(numLevels >= 1)
+		{
+			pix->red = level->hash;
+		}
+		else
+			pix->red = 0.f;
+		
+		pix->green = 0.f; // used to put coverage here when this mode was visible
 
-	return color;
+		if(numLevels >= 2)
+		{
+			level++;
+			
+			pix->blue = level->hash;
+			
+			level += (numLevels - 1);
+		}
+		else
+		{
+			pix->blue = 0.f;
+			
+			level += numLevels;
+		}
+		
+		pix++;
+	}
 }
 
 
@@ -1384,41 +1418,94 @@ DrawMatte_Iterate(void *refconPV,
 	
 	if(i_data->selection)
 	{
-		for(int x=0; x < i_data->width; x++)
+		if(sizeof(PIXTYPE) == sizeof(PF_PixelFloat))
 		{
-			const PF_PixelFloat color = i_data->context->GetSelectionColor(x + i_data->channelMove.h, i + i_data->channelMove.v);
+			i_data->context->GetSelectionColor((PF_PixelFloat *)pix, i_data->width, i_data->channelMove.h, i + i_data->channelMove.v);
+		}
+		else
+		{
+			PF_PixelFloat *tempRow = (PF_PixelFloat *)malloc(i_data->width * sizeof(PF_PixelFloat));
 			
-			pix->alpha	= FloatToChan<CHANTYPE>(color.alpha);
-			pix->red	= FloatToChan<CHANTYPE>(color.red);
-			pix->green	= FloatToChan<CHANTYPE>(color.green);
-			pix->blue	= FloatToChan<CHANTYPE>(color.blue);
-			
-			pix++;
+			if(tempRow != NULL)
+			{
+				i_data->context->GetSelectionColor(tempRow, i_data->width, i_data->channelMove.h, i + i_data->channelMove.v);
+				
+				PF_PixelFloat *tempPix = tempRow;
+				
+				for(int x=0; x < i_data->width; x++)
+				{
+					pix->alpha	= FloatToChan<CHANTYPE>(tempPix->alpha);
+					pix->red	= FloatToChan<CHANTYPE>(tempPix->red);
+					pix->green	= FloatToChan<CHANTYPE>(tempPix->green);
+					pix->blue	= FloatToChan<CHANTYPE>(tempPix->blue);
+					
+					pix++;
+					tempPix++;
+				}
+				
+				free(tempRow);
+			}
 		}
 	}
 	else if(i_data->display == DISPLAY_COLORS || i_data->display == DISPLAY_MATTED_COLORS)
 	{
 		const bool matted = (i_data->display == DISPLAY_MATTED_COLORS);
 		
-		for(int x=0; x < i_data->width; x++)
+		if(sizeof(PIXTYPE) == sizeof(PF_PixelFloat))
 		{
-			const PF_PixelFloat color = i_data->context->GetColor(x + i_data->channelMove.h, i + i_data->channelMove.v, matted);
+			i_data->context->GetColor((PF_PixelFloat *)pix, i_data->width, i_data->channelMove.h, i + i_data->channelMove.v, matted);
+		}
+		else
+		{
+			PF_PixelFloat *tempRow = (PF_PixelFloat *)malloc(i_data->width * sizeof(PF_PixelFloat));
 			
-			pix->alpha	= FloatToChan<CHANTYPE>(color.alpha);
-			pix->red	= FloatToChan<CHANTYPE>(color.red);
-			pix->green	= FloatToChan<CHANTYPE>(color.green);
-			pix->blue	= FloatToChan<CHANTYPE>(color.blue);
-			
-			pix++;
+			if(tempRow != NULL)
+			{
+				i_data->context->GetColor(tempRow, i_data->width, i_data->channelMove.h, i + i_data->channelMove.v, matted);
+				
+				PF_PixelFloat *tempPix = tempRow;
+				
+				for(int x=0; x < i_data->width; x++)
+				{
+					pix->alpha	= FloatToChan<CHANTYPE>(tempPix->alpha);
+					pix->red	= FloatToChan<CHANTYPE>(tempPix->red);
+					pix->green	= FloatToChan<CHANTYPE>(tempPix->green);
+					pix->blue	= FloatToChan<CHANTYPE>(tempPix->blue);
+					
+					pix++;
+					tempPix++;
+				}
+				
+				free(tempRow);
+			}
 		}
 	}
 	else
 	{
-		for(int x=0; x < i_data->width; x++)
+		if(sizeof(PIXTYPE) == sizeof(PF_PixelFloat))
 		{
-			pix->alpha = FloatToChan<CHANTYPE>(i_data->context->GetCoverage(x + i_data->channelMove.h, i + i_data->channelMove.v));
+			i_data->context->GetCoverage((PF_PixelFloat *)pix, i_data->width, i_data->channelMove.h, i + i_data->channelMove.v);
+		}
+		else
+		{
+			PF_PixelFloat *tempRow = (PF_PixelFloat *)malloc(i_data->width * sizeof(PF_PixelFloat));
 			
-			pix++;
+			if(tempRow != NULL)
+			{
+				i_data->context->GetCoverage(tempRow, i_data->width, i_data->channelMove.h, i + i_data->channelMove.v);
+				
+				PF_PixelFloat *tempPix = tempRow;
+				
+				for(int x=0; x < i_data->width; x++)
+				{
+					pix->alpha = FloatToChan<CHANTYPE>(tempPix->alpha);
+					
+					pix++;
+					tempPix++;
+				}
+				
+				free(tempRow);
+			}
 		}
 	}
 
