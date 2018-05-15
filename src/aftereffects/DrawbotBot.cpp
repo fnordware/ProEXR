@@ -31,6 +31,8 @@ OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 #include "ProEXR_UTF.h"
 
+#include <assert.h>
+
 
 DrawbotBot::DrawbotBot(struct SPBasicSuite *pica_basicP, PF_ContextH contextH, A_long appl_id) :
     suites(pica_basicP),

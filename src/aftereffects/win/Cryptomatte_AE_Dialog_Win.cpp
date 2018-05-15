@@ -12,6 +12,8 @@
 
 #include "Cryptomatte_AE_Dialog.h"
 
+#include "ProEXR_UTF.h"
+
 #include <windows.h>
 //#include <Shlwapi.h>
 //#include <ShlObj.h>
@@ -42,11 +44,28 @@ static std::string g_selection;
 static std::string g_manifest;
 
 
+static void SetFieldFromString(HWND hDlg, int nIDDlgItem, const std::string &str)
+{
+	const size_t len = str.size() + 1;
+
+	WCHAR *wstr = (WCHAR *)malloc(len * sizeof(WCHAR));
+
+	if(wstr != NULL)
+	{
+		UTF8toUTF16(str, (utf16_char *)wstr, len);
+
+		SetDlgItemText(hDlg, nIDDlgItem, wstr);
+
+		free(wstr);
+	}
+}
+
+
 static void SetStrFromField(HWND hDlg, int nIDDlgItem, std::string &str)
 {
 	const int len = SendMessage(GetDlgItem(hDlg, nIDDlgItem), WM_GETTEXTLENGTH, (WPARAM)0, (LPARAM)0) + 1;
 
-	char *buf = (char *)malloc(len * sizeof(char));
+	WCHAR *buf = (WCHAR *)malloc(len * sizeof(WCHAR));
 
 	if(buf)
 	{
@@ -54,7 +73,7 @@ static void SetStrFromField(HWND hDlg, int nIDDlgItem, std::string &str)
 
 		assert(copied == len - 1);
 
-		str = buf;
+		str = UTF16toUTF8((utf16_char *)buf);
 
 		free(buf);
 	}
@@ -69,9 +88,9 @@ static BOOL CALLBACK DialogProc(HWND hwndDlg, UINT message, WPARAM wParam, LPARA
     { 
 		case WM_INITDIALOG:
 
-			SetDlgItemText(hwndDlg, DLOG_Layer_Text, g_layer.c_str());
-			SetDlgItemText(hwndDlg, DLOG_Selection_Text, g_selection.c_str());
-			SetDlgItemText(hwndDlg, DLOG_Manifest_Text, g_manifest.c_str());
+			SetFieldFromString(hwndDlg, DLOG_Layer_Text, g_layer.c_str());
+			SetFieldFromString(hwndDlg, DLOG_Selection_Text, g_selection.c_str());
+			SetFieldFromString(hwndDlg, DLOG_Manifest_Text, g_manifest.c_str());
 
 			return TRUE;
 
@@ -118,7 +137,7 @@ bool Cryptomatte_Dialog(
 	g_manifest = manifest;
 
 
-	int status = DialogBox((HINSTANCE)hDllInstance, (LPSTR)"DIALOG", (HWND)mwnd, (DLGPROC)DialogProc);
+	int status = DialogBox((HINSTANCE)hDllInstance, TEXT("DIALOG"), (HWND)mwnd, (DLGPROC)DialogProc);
 
 
 	if(g_item_clicked == DLOG_OK)
