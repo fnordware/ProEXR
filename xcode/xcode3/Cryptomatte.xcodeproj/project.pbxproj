@@ -31,6 +31,8 @@
 		2A4877E82084B1D700A88487 /* Cryptomatte_AE_Dialog_Controller.m in Sources */ = {isa = PBXBuildFile; fileRef = 2A3C7AD52072FA270026DA3D /* Cryptomatte_AE_Dialog_Controller.m */; };
 		2A4877EA2084B1D700A88487 /* Cocoa.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 2A3BAA7010C0F40600AD32F2 /* Cocoa.framework */; };
 		2A4877EC2084B1D700A88487 /* Cryptomatte_AE_PiPL.r in Rez */ = {isa = PBXBuildFile; fileRef = 2A3C79B32071B9E60026DA3D /* Cryptomatte_AE_PiPL.r */; };
+		2A7699C620AA483800D8244B /* ProEXR_UTF.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 2A7699C420AA483800D8244B /* ProEXR_UTF.cpp */; };
+		2A7699C720AA483800D8244B /* ProEXR_UTF.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 2A7699C420AA483800D8244B /* ProEXR_UTF.cpp */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
@@ -54,6 +56,8 @@
 		2A3C7ADF2072FAD00026DA3D /* Cryptomatte_AE_Dialog.xib */ = {isa = PBXFileReference; lastKnownFileType = file.xib; name = Cryptomatte_AE_Dialog.xib; path = ../../src/aftereffects/mac/Cryptomatte_AE_Dialog.xib; sourceTree = SOURCE_ROOT; };
 		2A3C7B8720751C710026DA3D /* picojson.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = picojson.h; path = ../../ext/picojson/picojson.h; sourceTree = SOURCE_ROOT; };
 		2A4877F02084B1D700A88487 /* Cryptomatte CS6.plugin */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = "Cryptomatte CS6.plugin"; sourceTree = BUILT_PRODUCTS_DIR; };
+		2A7699C420AA483800D8244B /* ProEXR_UTF.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = ProEXR_UTF.cpp; path = ../../src/common/ProEXR_UTF.cpp; sourceTree = SOURCE_ROOT; };
+		2A7699C520AA483800D8244B /* ProEXR_UTF.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = ProEXR_UTF.h; path = ../../src/common/ProEXR_UTF.h; sourceTree = SOURCE_ROOT; };
 		C4E618CC095A3CE80012CA3F /* Cryptomatte.plugin */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = Cryptomatte.plugin; sourceTree = BUILT_PRODUCTS_DIR; };
 /* End PBXFileReference section */
 
@@ -92,6 +96,8 @@
 				2A3C7ADF2072FAD00026DA3D /* Cryptomatte_AE_Dialog.xib */,
 				2A3C7A842072F28D0026DA3D /* DrawbotBot.h */,
 				2A3C7A832072F28D0026DA3D /* DrawbotBot.cpp */,
+				2A7699C520AA483800D8244B /* ProEXR_UTF.h */,
+				2A7699C420AA483800D8244B /* ProEXR_UTF.cpp */,
 				2A3C7AA72072F37F0026DA3D /* fnord_SuiteHandler.h */,
 				2A3C7AA62072F37F0026DA3D /* fnord_SuiteHandler.cpp */,
 				2A3C7AA52072F37F0026DA3D /* fnord_MissingSuiteError.cpp */,
@@ -230,6 +236,7 @@
 				2A4877E72084B1D700A88487 /* Cryptomatte_Dialog_Cocoa.mm in Sources */,
 				2A4877E82084B1D700A88487 /* Cryptomatte_AE_Dialog_Controller.m in Sources */,
 				2A2B8789208BC46700A9FCA5 /* MurmurHash3.cpp in Sources */,
+				2A7699C620AA483800D8244B /* ProEXR_UTF.cpp in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -246,6 +253,7 @@
 				2A3C7AD62072FA270026DA3D /* Cryptomatte_Dialog_Cocoa.mm in Sources */,
 				2A3C7AD72072FA270026DA3D /* Cryptomatte_AE_Dialog_Controller.m in Sources */,
 				2A2B878A208BC46700A9FCA5 /* MurmurHash3.cpp in Sources */,
+				2A7699C720AA483800D8244B /* ProEXR_UTF.cpp in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

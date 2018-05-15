@@ -151,9 +151,11 @@ class CryptomatteContext
 	const PF_RationalScale & DownsampleY() const { return _downsampleY; }
 	const A_long & CurrentTime() const { return _currentTime; }
 	
+	static std::string enQuote(const std::string &s);
+	static std::string enQuoteIfNecessary(const std::string &s, const std::string &quoteChars = "\", ");
 	static std::string searchReplace(const std::string &str, const std::string &search, const std::string &replace);
 	static std::string deQuote(const std::string &s);
-	static void quotedTokenize(const std::string &str, std::vector<std::string> &tokens, const std::string& delimiters = " ");
+	static void quotedTokenize(const std::string &str, std::vector<std::string> &tokens, const std::string& delimiters = ", ");
 
   private:
 	Hash _manifestHash;

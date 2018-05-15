@@ -258,20 +258,17 @@ DoClick(
 
 						selectionInfoList += item;
 						
-						if(item.find(" ") != std::string::npos || item.find(",") != std::string::npos)
-							item = "\"" + item + "\"";
-						
 						newSelection.insert(item);
 					}
 				}
 				else
 				{
 					std::vector<std::string> currenSelection;
-					CryptomatteContext::quotedTokenize(GetSelection(arb_data), currenSelection, ", ");
+					CryptomatteContext::quotedTokenize(GetSelection(arb_data), currenSelection);
 					
 					for(std::vector<std::string>::const_iterator i = currenSelection.begin(); i != currenSelection.end(); ++i)
 					{
-						newSelection.insert(*i);
+						newSelection.insert(CryptomatteContext::deQuote(*i));
 					}
 						
 					if(event_extra->u.do_click.modifiers & PF_Mod_SHIFT_KEY) // add
@@ -289,9 +286,6 @@ DoClick(
 								selectionInfoList += ", ";
 
 							selectionInfoList += item;
-							
-							if(item.find(" ") != std::string::npos || item.find(",") != std::string::npos)
-								item = "\"" + item + "\"";
 							
 							newSelection.insert(item);
 						}
@@ -311,7 +305,7 @@ DoClick(
 							{
 								const std::string &currItem = *j;
 								
-								if(item == currItem || item == CryptomatteContext::deQuote(currItem))
+								if(item == currItem)
 								{
 									newSelection.erase(j);
 
@@ -337,7 +331,7 @@ DoClick(
 						selectedString += ", ";
 					}
 					
-					selectedString += *i;
+					selectedString += CryptomatteContext::enQuoteIfNecessary(*i);
 				}
 				
 				

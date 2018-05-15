@@ -505,6 +505,27 @@ CryptomatteContext::GetItemsFromSelectionColor(const PF_PixelFloat &pixel) const
 
 
 std::string
+CryptomatteContext::enQuote(const std::string &s)
+{
+	return std::string("\"") + searchReplace(s, "\"", "\\\"") + std::string("\"");
+}
+
+
+std::string
+CryptomatteContext::enQuoteIfNecessary(const std::string &s, const std::string &quoteChars)
+{
+	const bool isNecessary = (std::string::npos != s.find_first_of(quoteChars));
+	
+	if(isNecessary)
+	{
+		return enQuote(s);
+	}
+	else
+		return s;
+}
+
+
+std::string
 CryptomatteContext::searchReplace(const std::string &str, const std::string &search, const std::string &replace)
 {
 	std::string s = str;

@@ -29,6 +29,8 @@ OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 #include "DrawbotBot.h"
 
+#include "ProEXR_UTF.h"
+
 
 DrawbotBot::DrawbotBot(struct SPBasicSuite *pica_basicP, PF_ContextH contextH, A_long appl_id) :
     suites(pica_basicP),
@@ -220,21 +222,16 @@ void DrawbotBot::DrawString(
     DRAWBOT_TextTruncation truncate,
     float truncation_width) const
 {
-	int n = 0;
     DRAWBOT_UTF16Char u_str[256] = {'\0'};
     
-    DRAWBOT_UTF16Char *u = u_str;
-    const char *c = str;
+	std::string u8_str = str;
+	
+	if(u8_str.size() > 255)
+		u8_str.resize(255);
     
-    if(*c != '\0')
-    {
-        do{
-            *u++ = *c++;
-            
-        }while(*c != '\0' && ++n < 255);
-        
-        *u = '\0';
-    }
-    
+	const bool converted = UTF8toUTF16(u8_str, u_str, 255);
+	
+	assert(converted);
+	
     DrawString(u_str, align, truncate, truncation_width);
 }
