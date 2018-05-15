@@ -231,7 +231,7 @@ void DrawbotBot::DrawString(
 	if(u8_str.size() > 255)
 		u8_str.resize(255);
     
-	const bool converted = UTF8toUTF16(u8_str, u_str, 255);
+	const bool converted = UTF8toUTF16(u8_str, u_str, 256);
 	
 	assert(converted);
 	
