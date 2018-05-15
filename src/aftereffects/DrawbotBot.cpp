@@ -226,11 +226,8 @@ void DrawbotBot::DrawString(
 {
     DRAWBOT_UTF16Char u_str[256] = {'\0'};
     
-	std::string u8_str = str;
+	std::string u8_str(str, 255);
 	
-	if(u8_str.size() > 255)
-		u8_str.resize(255);
-    
 	const bool converted = UTF8toUTF16(u8_str, u_str, 256);
 	
 	assert(converted);
